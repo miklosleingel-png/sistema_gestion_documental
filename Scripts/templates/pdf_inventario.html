@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Inventario de Expedientes</title>
+    <style>
+        @page {
+            size: A4 landscape;
+            margin: 1cm;
+        }
+        body {
+            font-family: Arial, sans-serif;
+            font-size: 10px;
+        }
+        .encabezado {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        .encabezado img {
+            height: 50px;
+        }
+        h2 {
+            text-align: center;
+            margin: 5px 0;
+            font-size: 14px;
+        }
+        .subtitulo {
+            text-align: center;
+            font-size: 11px;
+            margin-bottom: 15px;
+        }
+        .fecha {
+            text-align: right;
+            font-size: 9px;
+            color: #666;
+            margin-bottom: 10px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 9px;
+        }
+        th, td {
+            border: 1px solid #999;
+            padding: 4px;
+            text-align: left;
+        }
+        th {
+            background-color: #0275d8;
+            color: white;
+        }
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+    </style>
+</head>
+<body>
+
+    <table width="100%" style="margin-bottom: 10px;">
+    <tr>
+        <td align="left">
+            <img src="C:/Users/miklo/OneDrive/Documentos/Sistema de Gestión documental/Scripts/static/logo_gobierno.png" height="50">
+        </td>
+        <td align="right">
+            <img src="C:/Users/miklo/OneDrive/Documentos/Sistema de Gestión documental/Scripts/static/logo_smadsot.png" height="50">
+        </td>
+    </tr>
+</table>
+
+    <h2>Inventario de Expedientes</h2>
+
+    <div class="subtitulo">
+        Unidad Administrativa: {{ filtros_unidad }}<br>
+        Área Generadora: {{ filtros_area }}
+    </div>
+
+    <div class="fecha">
+        Fecha de generación: {{ now.strftime('%d/%m/%Y %H:%M') }}
+    </div>
+
+  <table width="100%" style="border-collapse: collapse; font-size: 9px;">
+    <thead>
+        <tr>
+            <th width="60">Clave CGCA</th>
+            <th width="60">Fondo</th>
+            <th width="90">Unidad</th>
+            <th width="90">Área</th>
+            <th width="60">Número</th>
+            <th width="250">Descripción</th>
+            <th width="80">Apertura</th>
+            <th width="80">Cierre</th>
+            <th width="50">Legajos</th>
+            <th width="50">Total de folios</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for e in expedientes %}
+        <tr>
+            <td>{{ e[0] }}</td>  <!-- Clave CGCA -->
+            <td>{{ e[2] }}</td>  <!-- Fondo -->
+            <td>{{ e[4] }}</td>  <!-- Unidad -->
+            <td>{{ e[5] }}</td>  <!-- Área -->
+            <td>{{ e[3] }}</td>  <!-- Número -->
+            <td>{{ e[6] }}</td>  <!-- Descripción -->
+            <td>{{ e[7] }}</td>  <!-- Apertura -->
+            <td>{{ e[8] }}</td>  <!-- Cierre -->
+            <td>{{ e[9] }}</td>  <!-- Legajos -->
+            <td>{{ e[12] }}</td> <!-- Total de folios -->
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+</body>
+</html>

@@ -1,0 +1,27 @@
+Registro de Formularios
+
+Formularios de acceso
+"C:\Users\miklo\OneDrive\Documentos\Sistema de Gestión documental\Scripts\acceso_usuario.py"
+"C:\Users\miklo\OneDrive\Documentos\Sistema de Gestión documental\Scripts\ejecutar_registro_usuario.bat"
+"C:\Users\miklo\OneDrive\Documentos\Sistema de Gestión documental\Scripts\registro_usuario.py"
+
+Pantallas principales
+"C:\Users\miklo\OneDrive\Documentos\Sistema de Gestión documental\Scripts\formulario_principal.py"
+
+Capturas
+
+"C:\Users\miklo\OneDrive\Documentos\Sistema de Gestión documental\Scripts\captura_procedimientos.py"
+"C:\Users\miklo\OneDrive\Documentos\Sistema de Gestión documental\Scripts\captura_areas_externas.py"
+"C:\Users\miklo\OneDrive\Documentos\Sistema de Gestión documental\Scripts\captura_areas_generadoras.py"
+"C:\Users\miklo\OneDrive\Documentos\Sistema de Gestión documental\Scripts\captura_dependencias.py"
+"C:\Users\miklo\OneDrive\Documentos\Sistema de Gestión documental\Scripts\captura_expedientes.py"
+"C:\Users\miklo\OneDrive\Documentos\Sistema de Gestión documental\Scripts\captura_funcionarios.py"
+"C:\Users\miklo\OneDrive\Documentos\Sistema de Gestión documental\Scripts\captura_funciones.py"
+
+Visualizaciones
+"C:\Users\miklo\OneDrive\Documentos\Sistema de Gestión documental\Scripts\vista_CGCA.py"
+"C:\Users\miklo\OneDrive\Documentos\Sistema de Gestión documental\Scripts\vista_fichas_valor.py"
+"C:\Users\miklo\OneDrive\Documentos\Sistema de Gestión documental\Scripts\vista_guia_arch.py"
+"C:\Users\miklo\OneDrive\Documentos\Sistema de Gestión documental\Scripts\vista_inv_general.py"
+"C:\Users\miklo\OneDrive\Documentos\Sistema de Gestión documental\Scripts\vista_inv_por_area.py"
+"C:\Users\miklo\OneDrive\Documentos\Sistema de Gestión documental\Scripts\vista_CDD.py"

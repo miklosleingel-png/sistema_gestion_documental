@@ -1,0 +1,24 @@
+<!-- encabezado.html -->
+<div style="width: 100%; background-color: #f0f0f0; padding: 10px; font-family: Arial, sans-serif;">
+  <table width="100%" style="text-align: center;">
+    <tr>
+      <td><img src="{{ url_for('static', filename='logo_smadsot.png') }}" height="60"></td>
+      <td><img src="{{ url_for('static', filename='logo_archivos.png') }}" height="60"></td>
+      <td><img src="{{ url_for('static', filename='logo_gobierno.png') }}" height="60"></td>
+    </tr>
+  </table>
+  <hr>
+  <table width="100%" style="font-size: 14px;">
+    <tr>
+      <td style="text-align: center; font-weight: bold;">
+        Sistema de Gestión Documental
+      </td>
+      <td style="text-align: right;">
+        Bienvenid@: {{ usuario }}<br>
+        Tipo de usuario: {{ rol }}<br>
+        Unidad Administrativa: {{ unidad }}
+      </td>
+    </tr>
+  </table>
+  <hr>
+</div>

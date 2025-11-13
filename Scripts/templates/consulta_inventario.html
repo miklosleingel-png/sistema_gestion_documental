@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Inventario de Expedientes</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='estilos.css') }}">
+    <style>
+        body {
+            font-family: Arial, sans-serif; 
+            background-color: #f4f4f4;}
+        h2 {
+            text-align: center;
+            margin-top: 40px;}
+        form {
+            margin: 20px auto;
+            width: 95%;
+            background-color: #eef;
+            padding: 15px;
+            border-radius: 8px;}
+        .filtros {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;}
+        .filtros div {
+            flex: 1;}
+        label {
+            font-weight: bold;}
+        input[type="text"], input[type="date"] {
+            width: 100%;
+            padding: 6px;
+            margin-top: 4px;}
+        button {
+            padding: 8px 16px;
+            margin: 10px;
+            font-size: 14px;
+            cursor: pointer;}
+        .boton-exportar {
+            display: inline-block;}
+        table {
+            width: 95%;
+            margin: 30px auto;
+            border-collapse: collapse;
+            background-color: #fff;}
+        th, td {
+            border: 1px solid #ccc;
+            padding: 8px;
+            text-align: left;
+            font-size: 13px;}
+        th {
+            background-color: #0275d8;
+            color: white;}
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+
+.filtros div {
+    flex: 1 1 250px;
+    min-width: 250px;
+}
+
+.filtros label {
+    display: block;
+    margin-bottom: 4px;
+    font-weight: bold;
+}
+
+.filtros select,
+.filtros input[type="date"] {
+    width: 100%;
+    padding: 6px;
+    font-size: 14px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+    background-color: #fff;
+    appearance: none;
+}
+
+table th:nth-child(1) { width: 60px; }  /* Clave CGCA */
+table th:nth-child(2) { width: 60px; }   /* Año */
+table th:nth-child(3) { width: 60px; }  /* Fondo */
+table th:nth-child(4) { width: 60px; }   /* Número */
+table th:nth-child(5) { width: 150px; }  /* Unidad */
+table th:nth-child(6) { width: 150px; }  /* Área */
+table th:nth-child(7) { width: 300px; }  /* Descripción */
+table th:nth-child(8) { width: 100px; }  /* Apertura */
+table th:nth-child(9) { width: 100px; }  /* Cierre */
+table th:nth-child(10) { width: 50px; }  /* Legajo */
+table th:nth-child(11) { width: 50px; } /* Total Legajos */
+table th:nth-child(12) { width: 50px; } /* Folios Legajo */
+table th:nth-child(13) { width: 50px; } /* Folios Expediente */
+table th:nth-child(14) { width: 150px; } /* Archivo */
+table th:nth-child(15) { width: 50px; } /* Estantería */
+table th:nth-child(16) { width: 50px; }  /* Caja */
+    </style>
+</head>
+
+
+<body>
+
+    {% include 'encabezado.html' %}
+
+    <h2>Inventario de Expedientes</h2>
+
+    <!-- Filtros de búsqueda -->
+    
+    <form method="GET" action="/consulta_inventario">
+        <div class="filtros">
+        <div>
+            <label>Clave CGCA:</label>
+                <select name="clave_cgca">
+                      <option value="">-- Todas --
+                      </option>
+                {% for clave in claves %}
+                <option value="{{ clave }}" {% if request.args.get('clave_cgca') == clave %}selected{% endif %}>
+                      {{ clave }}
+                </option>
+                      {% endfor %}
+                </select>
+         </div>
+
+         <div>
+    
+                <label>
+                      Unidad Administrativa:
+                </label>
+                <select name="unidad_administrativa">
+                      <option value="">-- Todas --
+                </option>
+        {% for unidad in unidades %}
+        <option value="{{ unidad }}" {% if request.args.get('unidad_administrativa') == unidad %}selected{% endif %}>{{ unidad }}</option>
+        {% endfor %}
+    </select>
+</div>
+
+<div>
+    <label>Área Generadora:</label>
+    <select name="area_generadora">
+        <option value="">-- Todas --</option>
+        {% for area in areas %}
+        <option value="{{ area }}" {% if request.args.get('area_generadora') == area %}selected{% endif %}>{{ area }}</option>
+        {% endfor %}
+    </select>
+</div>
+
+<div>
+    <label>Caja:</label>
+    <select name="caja">
+        <option value="">-- Todas --</option>
+        {% for c in cajas %}
+        <option value="{{ c }}" {% if request.args.get('caja') == c %}selected{% endif %}>{{ c }}</option>
+        {% endfor %}
+    </select>
+</div>
+
+<div>
+    <label>Registrado por:</label>
+    <select name="registrado_por">
+        <option value="">-- Todos --</option>
+        {% for u in usuarios %}
+        <option value="{{ u }}" {% if request.args.get('registrado_por') == u %}selected{% endif %}>{{ u }}</option>
+        {% endfor %}
+    </select>
+</div>
+
+            <div>
+                <label>Fecha desde:</label>
+                <input type="date" name="fecha_desde" value="{{ request.args.get('fecha_desde', '') }}">
+            </div>
+            <div>
+                <label>Fecha hasta:</label>
+                <input type="date" name="fecha_hasta" value="{{ request.args.get('fecha_hasta', '') }}">
+            </div>
+        </div>
+        <div style="text-align: center;">
+            <button type="submit">🔍 Filtrar</button>
+        </div>
+    </form>
+
+    <!-- Botones de exportación -->
+
+<div style="width: 100%; text-align: center; margin-bottom: 20px;">
+    <div style="display: inline-block; margin-right: 10px;">
+<form method="GET" action="/generar_pdf">
+    {% for campo in ['clave_cgca', 'unidad_administrativa', 'area_generadora', 'caja', 'registrado_por', 'fecha_desde', 'fecha_hasta'] %}
+    <input type="hidden" name="{{ campo }}" value="{{ request.args.get(campo, '') }}">
+    {% endfor %}
+    <button type="submit">🖨️ Generar PDF</button>
+</form>
+    </div>
+
+    <div style="display: inline-block;">
+        <form method="GET" action="/generar_caratulas" style="display: inline;">
+            {% for campo in ['clave_cgca', 'unidad_administrativa', 'area_generadora', 'caja', 'registrado_por', 'fecha_desde', 'fecha_hasta'] %}
+            <input type="hidden" name="{{ campo }}" value="{{ request.args.get(campo, '') }}">
+            {% endfor %}
+            <button type="submit">🗂️ Generar carátulas</button>
+        </form>
+    </div>
+</div>
+
+    <!-- Tabla de resultados -->
+    <table>
+        <tr>
+            <th>Clave CGCA</th>
+            <th>Año</th>
+            <th>Fondo</th>
+            <th>Número</th>
+            <th>Unidad</th>
+            <th>Área</th>
+            <th>Descripción</th>
+            <th>Apertura</th>
+            <th>Cierre</th>
+            <th>Legajo</th>
+            <th>Total Legajos</th>
+            <th>Folios Legajo</th>
+            <th>Folios Expediente</th>
+            <th>Archivo</th>
+            <th>Estantería</th>
+            <th>Caja</th>
+        </tr>
+        {% for e in expedientes %}
+        <tr>
+            <td>{{ e[0] }}</td>
+            <td>{{ e[1] }}</td>
+            <td>{{ e[2] }}</td>
+            <td>{{ e[3] }}</td>
+            <td>{{ e[4] }}</td>
+            <td>{{ e[5] }}</td>
+            <td>{{ e[6] }}</td>
+            <td>{{ e[7] }}</td>
+            <td>{{ e[8] }}</td>
+            <td>{{ e[9] }}</td>
+            <td>{{ e[10] }}</td>
+            <td>{{ e[11] }}</td>
+            <td>{{ e[12] }}</td>
+            <td>{{ e[13] }}</td>
+            <td>{{ e[14] }}</td>
+            <td>{{ e[15] }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+
+</body>
+</html>

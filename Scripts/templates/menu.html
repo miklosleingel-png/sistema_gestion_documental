@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Menú principal</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='estilos.css') }}">
+</head>
+<body>
+
+    <!-- Encabezado institucional -->
+    <div class="encabezado">
+        <div class="logos">
+            <img src="{{ url_for('static', filename='logo_smadsot.png') }}">
+            <img src="{{ url_for('static', filename='logo_archivos.png') }}">
+            <img src="{{ url_for('static', filename='logo_gobierno.png') }}">
+        </div>
+        <hr>
+        <div class="info">
+            <div><strong>Sistema de Gestión Documental</strong></div>
+            <div>
+                Bienvenid@: {{ usuario }}<br>
+                Tipo de usuario: {{ rol }}<br>
+                Unidad Administrativa: {{ unidad }}
+            </div>
+        </div>
+        <hr>
+    </div>
+
+    <!-- Menú de botones con íconos -->
+    <div class="botones">
+        <button><img src="{{ url_for('static', filename='01icon_expedientes.png') }}">Captura de expedientes</button>
+        <button><img src="{{ url_for('static', filename='02icon_dependencias.png') }}">Captura de Dependencias</button>
+        <button><img src="{{ url_for('static', filename='03icon_areas.png') }}">Captura de Áreas Generadoras</button>
+        <button><img src="{{ url_for('static', filename='04icon_externas.png') }}">Captura de áreas externas</button>
+        <button><img src="{{ url_for('static', filename='05icon_funciones.png') }}">Captura de funciones</button>
+        <button><img src="{{ url_for('static', filename='06icon_procedimientos.png') }}">Captura de Procedimientos</button>
+        <button><img src="{{ url_for('static', filename='07icon_funcionarios.png') }}">Captura de Funcionarios</button>
+        <button><img src="{{ url_for('static', filename='13icon_guia.png') }}">Vista de Guía de Archivos</button>
+        <button><img src="{{ url_for('static', filename='12icon_inventario.png') }}">Inventario General</button>
+        <button><img src="{{ url_for('static', filename='11icon_inv_area.png') }}">Inventario por Área</button>
+        <button><img src="{{ url_for('static', filename='09icon_cdd.png') }}">Vista de CDD</button>
+        <button><img src="{{ url_for('static', filename='08icon_cgca.png') }}">Vista de CGCA</button>
+        <button><img src="{{ url_for('static', filename='10icon_valoración.png') }}">Vista Fichas de Valoración</button>
+    </div>
+
+    <!-- Botón de salir centrado -->
+    <div class="salir">
+        <form action="/logout" method="post">
+            <button type="submit">Salir</button>
+        </form>
+    </div>
+
+</body>
+</html>

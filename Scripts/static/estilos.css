@@ -1,0 +1,83 @@
+/* estilos.css */
+
+/* Tipografía y fondo general */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f9f9f9;
+    margin: 0;
+    padding: 0;
+}
+
+/* Encabezado institucional */
+.encabezado {
+    background-color: #f0f0f0;
+    padding: 10px;
+    border-bottom: 2px solid #ccc;
+}
+
+.logos {
+    text-align: center;
+}
+
+.logos img {
+    height: 60px;
+    margin: 0 20px;
+}
+
+.info {
+    display: flex;
+    justify-content: space-between;
+    padding: 10px 20px;
+    font-size: 14px;
+}
+
+/* Botones del menú principal */
+.botones {
+    padding: 20px;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 15px;
+}
+
+.botones button {
+    padding: 12px;
+    font-size: 14px;
+    cursor: pointer;
+    background-color: #ffffff;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    transition: background-color 0.3s ease;
+}
+
+.botones button:hover {
+    background-color: #e6f0ff;
+}
+
+.botones img {
+    height: 24px;
+    width: 24px;
+}
+
+/* Botón de salir */
+.salir {
+    text-align: center;
+    margin-top: 40px;
+}
+
+.salir button {
+    background-color: #d9534f;
+    color: white;
+    padding: 12px 30px;
+    font-size: 16px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.salir button:hover {
+    background-color: #c9302c;
+}

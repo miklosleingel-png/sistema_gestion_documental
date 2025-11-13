@@ -1,0 +1,13 @@
+Sistema de Gestión Documental – Secretaría de Medio Ambiente
+
+Copyright © 2025 Alejandro [Tu Apellido]
+
+Este software ha sido desarrollado de forma independiente por Alejandro [Tu Apellido], con fines de gestión documental institucional. Todos los derechos están reservados.
+
+No se autoriza la copia, distribución, modificación ni uso comercial del presente sistema sin el consentimiento expreso y por escrito del autor.
+
+El uso dentro de la Secretaría de Medio Ambiente está permitido únicamente mientras el sistema sea operado directamente por el autor.
+
+Para licencias institucionales, soporte técnico o acuerdos de implementación, contactar a: [tu correo electrónico]
+
+Última actualización: noviembre de 2025

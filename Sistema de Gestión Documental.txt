@@ -1,0 +1,95 @@
+Sistema de Gestión Documental
+
+Aplicación Web que permite gestionar expedientes, con la finalidad de cumplir con las obligaciones y atribuciones que marcan la Ley General de Archivos y la Ley de Archivos del Estado de Puebla que permite administrar expedientes (cerrados) a partir de procesos como:
+* Elaboración (captura) de inventario de Expedientes,
+* Visualización del inventario de Expedientes (con restricciones: administrador puede visualizar todo, superusuario puede ver todo lo de su unidad administrativa, usuario solo lo que él capturó). 
+* Visualización del inventario general (sumatorias de los expedientes capturados, agrupados a partir de su cópdigo archivístico).
+* Visualización del Cuadro General de Clasificación y Archivística, y su modificación por parte del administrador.
+* Visualización del Catálogo de Disposición Documental, y su modificación por parte del administrador.
+* Visualización de la Guía General de Archivos y su modificación por parte del administrador. 
+* Función para generar (en PDF) e imprimir las etiquetas de un expediente en específico o de un grupo de etiquetas
+* Función para generar (en PDF) e imprimir las etiquetas de las cajas.
+* Función para generar automáticamente los inventarios de baja documental y transferencias primarias y secundarias.
+* Función para la elaboración, modificación e impresión de las fichas de valoración documental.
+
+El sistema tiene tres tipos de usuario: administrador, superusuario y usuario.
+* Administrador es el que tiene acceso a toda la información y la capacidad de modificar toda la información.
+* Supersuario es el Responsable de un archivo de trámite, por lo tanto, tiene acceso a lo generado por toda el área generadora o productora de la información.
+* usuario es el que se encarga de la captura, por lo que solo puede visualizar lo que él creó.
+
+El diseño está orientado para trabajo en Web, creado desde cero. Tiene su propia imagen, pues responde a un proyecto denominado "Estrategia de Desarrollo Archivístico 2025-2030". Que tiene cinco ejes: 
+* Archivo Modelo: Hacer del archivo de la SMADSOT el primero en tener toda su normativa completa (manuales de orfanización, funciones y procedimientos), Sistemas de clasificación y conservación y un programa de digitalización básica de fondos para conservación preventiva y consulta remota.
+* Archivo inteligente: Elaboración de diagnóstiticos digitales para valoración (para bajas y transferencias primarias y secundarias), plataforma para consulta digital de los fondos seleccionados como archivos históricos y diseño y empleo de sobftware libre de gestión documental.
+* Archivos verdes: que es la selección de acervos medioambientales con declaratoria de archivo de valor histórico, construcción de una memoria foresta e hídrica y creación de una red de archivos comunitarios y rurales.
+* Escuela de archivos ambiantales: impartición de cursos, diplomados y talleres especializados en archivos medioambientales, (con fondos documentales que son predominantemente digitales y electrónicos), programas de visitas escolares y publicación de cuadernillos y cartillas. 
+* Archivos sin fronteras: Participación en redes nacionales e internacionales de archivos ambientales.
+
+Diseñado para diseño en Flask (Python).
+
+El Formulario de inicio debe tener la opción de ingresar usuario, el único que puede registrar nuevos usuarios es el administrador. 
+
+
+################################################
+
+              Usuario:   [      ]
+              Contraseña:[      ]
+              [Ingresar]
+
+################################################
+
+Este es el encabezado para todos los formularios (a excepción del ingreso)
+
+########################################################################################################################################
+#     _________                                        _________                                         _________                     #
+#    |         |                                      |         |                                       |         |                    # 
+#    |   LOGO  |                                      |   LOGO  |                                       |   LOGO  |                    #
+#    |_________|                                      |_________|                                       |_________|                    #
+#                                                                                                                                      #
+# ________________________________________________________________________________________________   _______________________________   #
+#|                                                                                                | |Bienvenid@: Alejandro Hernández|  #
+#|                                 Sistema de Gestión Documental                                  | |tipo de usuario: superusuario  |  #
+#|                                                                                                | |Unidad Administrativa: Árchivo |  #
+#|________________________________________________________________________________________________| |__de Concentración e Histórico_|  # 
+#                                                                                                                                      #  
+########################################################################################################################################
+
+Formulario 1: Botones de acceso a los formularios principales
+
+########################################################################################################################################
+#                                                                                                                                      #
+#    [Captura de expedientes   ]  [Captura de Dependencias   ]  [Captura de Áreas Generadoras]  [Captura de áreas externas  ]          #
+#    [Captura de funciones     ]  [Captura de Procedimientos ]  [Captura de Funcionarios     ]                                         #
+#                                                                                                                                      #
+#    [Vista de Guía de Archivos]  [Inventario General        ]  [Inventario por Área         ]  [Vista de CDD               ]          #
+#    [Vista de CGCA            ]  [Vista Fichas de Valoración]                                                                         #
+#                                                                                                                                      #
+#                                                [        Salir         ]                                                              #
+#                                                                                                                                      #
+########################################################################################################################################
+
+Formulario 2: Captura de Expedientes:
+
+########################################################################################################################################
+#                                                                                                                                      #
+#    Clave CGCA [         ]  Año de Apertura [        ]  Fondo documental [               ]  Número de Expediente [         ]          #
+#    Unidad Administrativa [Captura de funciones     ]        Área Generadora   [Captura de Funcionarios     ]                         #
+#                                                                                                                                      #
+#   Descripción de expediente                                                                                                          #
+#    _________________________________________________________________________________________________________________________________ # 
+#   |                                                                                                                                 |#
+#   |_________________________________________________________________________________________________________________________________|# 
+#                                                                                                                                      #
+#                    Fecha de apertura   [               ]            Fecha de cierre   [                    ]                         #
+#    Legajo [        ] Total de legajos  [           ]  Folios del legajo [            ] Folios del expediente [               ]       #
+#    Archivo de resguardo [                        ]         Estantería [             ]        Caja [          ]                       #
+#                                    [   Guardar y salir  ]   [   Capturar otro  ]                                                     #
+#                                                                                                                                      #
+########################################################################################################################################
+
+ 
+
+
+
+
+ 
+

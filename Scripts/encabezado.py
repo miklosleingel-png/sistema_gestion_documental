@@ -1,0 +1,1 @@
+#encabezado.py               ← Encabezado institucional
