@@ -17,13 +17,25 @@ app = Flask(__name__)
 app.secret_key = "clave_segura_2025"
 
 # 🔧 Configuración de conexión a PostgreSQL
+import os
+import psycopg2
+import urllib.parse as up
+
+# Leer DATABASE_URL desde el entorno
+DATABASE_URL = os.getenv("DATABASE_URL")
+
+# Parsear la URL para extraer los parámetros
+up.uses_netloc.append("postgres")
+url = up.urlparse(DATABASE_URL)
+
 DB_CONFIG = {
-    "dbname": "Sistema de Gestión Documental",
-    "user": "postgres",
-    "password": "18brumario",
-    "host": "localhost",
-    "port": "5432"
+    "dbname": url.path[1:],  # quita el "/" inicial
+    "user": url.username,
+    "password": url.password,
+    "host": url.hostname,
+    "port": url.port
 }
+
 
 # ---------------------- AUTENTICACIÓN ----------------------
 
