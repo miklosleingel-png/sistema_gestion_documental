@@ -1,0 +1,111 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container-capture">
+    <header class="section-header">
+        <h2 style="color: #691C32;">Editar Clasificación de Información</h2>
+        <p>Modifique la naturaleza de la información y actualice los fundamentos legales de la serie documental.</p>
+    </header>
+
+    <form action="{{ url_for('main.guardar_condiciones') }}" method="POST" id="form-condiciones">
+        
+        <div style="background:#f8f1f4; padding:20px; border-radius:8px; margin-bottom:20px; border-left: 5px solid #691C32;">
+            <label style="font-weight: bold; color: #691C32;">Serie Documental:</label>
+            <div style="font-size: 1.1rem; margin-top: 5px; color: #333;">
+                <strong>{{ serie.clave_cgca }}</strong> - {{ serie.nombre_serie }}
+            </div>
+            <input type="hidden" name="id_cgca" value="{{ serie.id_cgca }}">
+        </div>
+
+        <h3 style="color: #B08B57; border-bottom: 1px solid #eee; padding-bottom: 10px;">Clasificación Actual</h3>
+        
+        <div class="actividad-item" style="background: #fff; border: 1px solid #ddd; padding: 25px; border-radius: 8px; margin-bottom: 15px;">
+            
+            <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 20px; margin-bottom: 25px;">
+                <div style="background: #fdfdfd; padding: 15px; border: 1px solid #eee; border-radius: 6px; text-align: center;">
+                    <label style="cursor: pointer; display: block; width: 100%;">
+                        <input type="checkbox" name="publica" id="chk_publica" onchange="gestionarPaneles(event)" style="transform: scale(1.3); margin-right: 10px;"
+                               {% if condicion and condicion.es_publica %}checked{% endif %}>
+                        <span style="font-weight: bold; color: #28a745;">🟢 PÚBLICA</span>
+                    </label>
+                </div>
+                <div style="background: #fdfdfd; padding: 15px; border: 1px solid #eee; border-radius: 6px; text-align: center;">
+                    <label style="cursor: pointer; display: block; width: 100%;">
+                        <input type="checkbox" name="reservada" id="chk_reservada" onchange="gestionarPaneles(event)" style="transform: scale(1.3); margin-right: 10px;"
+                               {% if condicion and condicion.es_reservada %}checked{% endif %}>
+                        <span style="font-weight: bold; color: #dc3545;">🔴 RESERVADA</span>
+                    </label>
+                </div>
+                <div style="background: #fdfdfd; padding: 15px; border: 1px solid #eee; border-radius: 6px; text-align: center;">
+                    <label style="cursor: pointer; display: block; width: 100%;">
+                        <input type="checkbox" name="confidencial" id="chk_confidencial" onchange="gestionarPaneles(event)" style="transform: scale(1.3); margin-right: 10px;"
+                               {% if condicion and condicion.es_confidencial %}checked{% endif %}>
+                        <span style="font-weight: bold; color: #ffc107;">🟡 CONFIDENCIAL</span>
+                    </label>
+                </div>
+            </div>
+
+            <div id="panel_reserva" style="display: none; background: #fff5f5; border: 1px solid #feb2b2; padding: 20px; border-radius: 8px; margin-bottom: 20px; border-left: 5px solid #dc3545;">
+                <h5 style="color: #dc3545; margin-top: 0;">📋 Detalles de Información Reservada</h5>
+                <div style="margin-bottom: 15px;">
+                    <label style="font-size: 0.85rem; font-weight: bold;">Periodo de Reserva (Años):</label>
+                    <input type="number" name="anios_reserva" min="1" max="12" style="width: 100px; display: block; margin-top: 5px; padding: 5px; border: 1px solid #ccc; border-radius: 4px;"
+                           value="{{ condicion.anios_reserva if condicion and condicion.anios_reserva else '' }}">
+                </div>
+                <div>
+                    <label style="font-size: 0.85rem; font-weight: bold;">Justificación Legal (Reserva):</label>
+                    <textarea name="justificacion_reservada" rows="3" style="width:100%; border: 1px solid #ccc; border-radius:4px; padding:8px; margin-top: 5px; font-family: inherit;" placeholder="Indique los artículos y motivos...">{{ condicion.justificacion_reservada if condicion and condicion.justificacion_reservada else '' }}</textarea>
+                </div>
+            </div>
+
+            <div id="panel_confidencial" style="display: none; background: #fffcf0; border: 1px solid #fef3c7; padding: 20px; border-radius: 8px; margin-bottom: 20px; border-left: 5px solid #ffc107;">
+                <h5 style="color: #856404; margin-top: 0;">🔒 Detalles de Información Confidencial</h5>
+                <div>
+                    <label style="font-size: 0.85rem; font-weight: bold;">Justificación Legal (Confidencialidad):</label>
+                    <textarea name="justificacion_confidencial" rows="3" style="width:100%; border: 1px solid #ccc; border-radius:4px; padding:8px; margin-top: 5px; font-family: inherit;" placeholder="Indique los artículos relacionados con datos personales...">{{ condicion.justificacion_confidencial if condicion and condicion.justificacion_confidencial else '' }}</textarea>
+                </div>
+            </div>
+        </div>
+
+        <div style="display: flex; gap: 15px; border-top: 1px solid #eee; padding-top: 20px; margin-bottom: 50px;">
+            <button type="submit" style="background: #691C32; color: white; border: none; padding: 12px 25px; border-radius: 6px; cursor: pointer; font-weight: bold;">
+                💾 Actualizar Clasificación
+            </button>
+            <a href="{{ url_for('main.auditoria_archivo') }}" style="background: #eee; color: #333; padding: 12px 25px; border-radius: 6px; text-decoration: none; text-align: center;">
+                Cancelar
+            </a>
+        </div>
+    </form>
+</div>
+
+<script>
+    function gestionarPaneles(event) {
+        const pub = document.getElementById('chk_publica');
+        const res = document.getElementById('chk_reservada');
+        const con = document.getElementById('chk_confidencial');
+        
+        const panelRes = document.getElementById('panel_reserva');
+        const panelCon = document.getElementById('panel_confidencial');
+
+        // Lógica de exclusión mutua
+        if (event && event.target) {
+            const inputCausante = event.target.id;
+            if (inputCausante === 'chk_publica' && pub.checked) {
+                res.checked = false;
+                con.checked = false;
+            } else if ((inputCausante === 'chk_reservada' || inputCausante === 'chk_confidencial') && (res.checked || con.checked)) {
+                pub.checked = false;
+            }
+        }
+
+        // Mostrar u ocultar según el estado de los checkboxes
+        panelRes.style.display = res.checked ? 'block' : 'none';
+        panelCon.style.display = con.checked ? 'block' : 'none';
+    }
+
+    // Inicialización al cargar para modo edición
+    document.addEventListener('DOMContentLoaded', function() {
+        gestionarPaneles(null);
+    });
+</script>
+{% endblock %}

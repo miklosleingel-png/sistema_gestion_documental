@@ -1,0 +1,146 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="cap-container">
+
+    <div class="cap-header">
+        <div>
+            <h2 class="cap-title">Captura de Expedientes</h2>
+            <p class="cap-subtitle">Registro de expedientes por serie documental</p>
+        </div>
+        <a href="{{ url_for('main.dashboard') }}" class="cap-btn-menu">← Menú Principal</a>
+    </div>
+
+    <div class="cap-card">
+        <div class="cap-legend">Nuevo Registro de Expediente</div>
+
+        <form action="{{ url_for('main.guardar_expediente') }}" method="POST">
+
+            <div class="cap-grid-1">
+                <div class="cap-field">
+                    <label class="cap-label">Clave CGCA</label>
+                    <input type="text" name="clave_cgca" class="cap-input"
+                           placeholder="Ej. 1S.1.2" required autocomplete="off">
+                </div>
+            </div>
+
+            <div class="cap-grid-1">
+                <div class="cap-field">
+                    <label class="cap-label">Descripción / Asunto</label>
+                    <textarea name="descripcion" class="cap-textarea"
+                              placeholder="Descripción detallada del expediente" required></textarea>
+                </div>
+            </div>
+
+            <div class="cap-grid-2">
+                <div class="cap-field">
+                    <label class="cap-label">Fecha de Apertura</label>
+                    <input type="date" name="fecha_inicio" class="cap-input" required>
+                </div>
+                <div class="cap-field">
+                    <label class="cap-label">Fecha de Cierre</label>
+                    <input type="date" name="fecha_final" class="cap-input">
+                </div>
+            </div>
+
+            <div class="cap-grid-4">
+                <div class="cap-field">
+                    <label class="cap-label">Fojas Totales</label>
+                    <input type="number" name="fojas_expediente" class="cap-input"
+                           value="0" min="0" style="text-align:center;">
+                </div>
+                <div class="cap-field">
+                    <label class="cap-label">Fojas por Legajo</label>
+                    <input type="number" name="fojas_legajo" class="cap-input"
+                           value="0" min="0" style="text-align:center;">
+                </div>
+                <div class="cap-field">
+                    <label class="cap-label">No. de Legajo</label>
+                    <input type="number" name="legajo" class="cap-input"
+                           value="1" min="1" style="text-align:center;">
+                </div>
+                <div class="cap-field">
+                    <label class="cap-label">Total de Legajos</label>
+                    <input type="number" name="total_legajos" class="cap-input"
+                           value="1" min="1" style="text-align:center;">
+                </div>
+            </div>
+
+            <div class="cap-grid-3-1">
+                <div class="cap-field">
+                    <label class="cap-label">Archivo</label>
+                    <select name="id_archivo" class="cap-select" required>
+                        <option value="">-- Seleccionar Archivo --</option>
+                        {% for archivo in archivos %}
+                        <option value="{{ archivo.id_archivo }}">{{ archivo.nombre_archivo }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="cap-field">
+                    <label class="cap-label">Estantería</label>
+                    <input type="text" name="estanteria" class="cap-input" placeholder="Ej. A-1">
+                </div>
+                <div class="cap-field">
+                    <label class="cap-label">Caja</label>
+                    <input type="text" name="caja" class="cap-input" placeholder="Caja 05">
+                </div>
+            </div>
+
+            <div class="cap-actions">
+                <a href="{{ url_for('main.dashboard') }}" class="cap-btn-cancel">Cancelar</a>
+                <button type="submit" name="accion" value="menu" class="cap-btn-save">
+                    Guardar y salir al menú
+                </button>
+                <button type="submit" name="accion" value="otro" class="cap-btn-add">
+                    + Guardar y capturar otro
+                </button>
+            </div>
+
+        </form>
+    </div>
+
+    <hr class="cap-separator">
+
+    <h3 class="cap-table-title">Expedientes Capturados</h3>
+    <div class="cap-table-wrap">
+        <table class="cap-table">
+            <thead>
+                <tr>
+                    <th>Clave CGCA</th>
+                    <th>Descripción</th>
+                    <th>Apertura</th>
+                    <th>Fojas</th>
+                    <th>Legajo</th>
+                    <th>Caja</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for exp in expedientes %}
+                <tr>
+                    <td>
+                        <span class="td-clave">{{ exp.clave_cgca }}</span>
+                        <span class="td-muted">{{ exp.serie_maestra.nombre_cgca if exp.serie_maestra else '' }}</span>
+                    </td>
+                    <td>{{ exp.descripcion | truncate(45) }}</td>
+                    <td>{{ exp.fecha_inicio.strftime('%d/%m/%Y') if exp.fecha_inicio else '—' }}</td>
+                    <td style="text-align:center;">{{ exp.fojas_expediente }}</td>
+                    <td style="text-align:center;">{{ exp.legajo }}/{{ exp.total_legajos }}</td>
+                    <td>{{ exp.caja if exp.caja else '—' }}</td>
+                    <td>
+                        <div class="cap-table-actions">
+                            <a href="{{ url_for('main.editar_expediente', id=exp.id_expediente) }}"
+                               class="btn-tbl-edit">Editar</a>
+                        </div>
+                    </td>
+                </tr>
+                {% else %}
+                <tr>
+                    <td colspan="7" class="td-empty">No se han capturado expedientes aún.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+</div>
+{% endblock %}

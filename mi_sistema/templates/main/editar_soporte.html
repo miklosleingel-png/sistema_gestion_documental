@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container-capture">
+    <h2>Editar Tipo de Soporte</h2>
+    <form action="{{ url_for('main.editar_soporte', id_soporte=registro.id_soporte) }}" method="POST">
+        <label>Nombre del Soporte:</label>
+        <input type="text" name="soporte" value="{{ registro.soporte }}" style="width:100%; margin-bottom:20px; padding:10px;">
+        
+        <div>
+            <button type="submit" class="btn-next">Actualizar Soporte</button>
+            <a href="{{ url_for('main.cat_soporte') }}" class="btn-back">Cancelar</a>
+        </div>
+    </form>
+</div>
+{% endblock %}

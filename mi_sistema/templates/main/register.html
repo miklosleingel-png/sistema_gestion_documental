@@ -1,0 +1,67 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="auth-wrapper">
+    <div class="auth-card auth-card-wide">
+
+        <div class="auth-card-header auth-header-verde">
+            <h4 class="auth-title">Crear Cuenta de Acceso</h4>
+            <p class="auth-subtitle">Sistema de Gestión Documental · SMADSOT</p>
+        </div>
+
+        <div class="auth-card-body">
+            <div class="auth-tag">Solo personal autorizado de la SMADSOT</div>
+
+            <form action="{{ url_for('main.register') }}" method="POST">
+                <div class="auth-row">
+                    <div class="auth-field">
+                        <label for="nombre" class="auth-label">Nombre completo</label>
+                        <input type="text" name="nombre" id="nombre"
+                               class="auth-input text-uppercase"
+                               placeholder="JUAN PÉREZ MÉNDEZ"
+                               required autocomplete="off">
+                    </div>
+                    <div class="auth-field">
+                        <label for="username" class="auth-label">Nombre de usuario</label>
+                        <input type="text" name="username" id="username"
+                               class="auth-input"
+                               placeholder="jperez"
+                               required autocomplete="off">
+                    </div>
+                </div>
+
+                <div class="auth-field">
+                    <label for="email" class="auth-label">Correo electrónico institucional</label>
+                    <input type="email" name="email" id="email"
+                           class="auth-input"
+                           placeholder="usuario@puebla.gob.mx"
+                           required>
+                </div>
+
+                <div class="auth-field">
+                    <label for="password" class="auth-label">Contraseña</label>
+                    <input type="password" name="password" id="password"
+                           class="auth-input"
+                           placeholder="••••••••"
+                           required>
+                </div>
+
+                <button type="submit" class="auth-btn auth-btn-verde">
+                    Crear Cuenta
+                </button>
+            </form>
+
+            <hr class="auth-divider">
+
+            <p class="auth-link-text">
+                ¿Ya tienes cuenta?
+                <a href="{{ url_for('main.login') }}" class="auth-link">Inicia sesión</a>
+            </p>
+        </div>
+
+        <div class="auth-card-footer">
+            El acceso será habilitado por el administrador del sistema
+        </div>
+    </div>
+</div>
+{% endblock %}

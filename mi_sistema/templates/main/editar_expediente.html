@@ -1,0 +1,105 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="cap-container">
+
+    <div class="cap-header">
+        <div>
+            <h2 class="cap-title">Editar Expediente</h2>
+            <p class="cap-subtitle">Clave: {{ exp.clave_cgca }}</p>
+        </div>
+        <a href="{{ url_for('main.cap_expedientes') }}" class="cap-btn-menu">← Regresar</a>
+    </div>
+
+    <div class="cap-card">
+        <div class="cap-legend">Modificar Datos del Expediente</div>
+
+        <form method="POST">
+
+            <div class="cap-grid-2">
+                <div class="cap-field">
+                    <label class="cap-label">Clave CGCA</label>
+                    <input type="text" name="clave_cgca" class="cap-input"
+                           value="{{ exp.clave_cgca }}" required>
+                </div>
+                <div class="cap-field">
+                    <label class="cap-label">Archivo</label>
+                    <select name="id_archivo" class="cap-select" required>
+                        {% for arc in archivos %}
+                        <option value="{{ arc.id_archivo }}"
+                            {% if arc.id_archivo == exp.id_archivo %}selected{% endif %}>
+                            {{ arc.nombre_archivo }}
+                        </option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+
+            <div class="cap-grid-1">
+                <div class="cap-field">
+                    <label class="cap-label">Descripción / Asunto</label>
+                    <textarea name="descripcion" class="cap-textarea"
+                              rows="4">{{ exp.descripcion }}</textarea>
+                </div>
+            </div>
+
+            <div class="cap-grid-2">
+                <div class="cap-field">
+                    <label class="cap-label">Fecha de Apertura</label>
+                    <input type="date" name="fecha_inicio" class="cap-input"
+                           value="{{ exp.fecha_inicio.strftime('%Y-%m-%d') if exp.fecha_inicio else '' }}">
+                </div>
+                <div class="cap-field">
+                    <label class="cap-label">Fecha de Cierre</label>
+                    <input type="date" name="fecha_final" class="cap-input"
+                           value="{{ exp.fecha_final.strftime('%Y-%m-%d') if exp.fecha_final else '' }}">
+                </div>
+            </div>
+
+            <div class="cap-grid-4">
+                <div class="cap-field">
+                    <label class="cap-label">Fojas Totales</label>
+                    <input type="number" name="fojas_expediente" class="cap-input"
+                           value="{{ exp.fojas_expediente }}" min="0" style="text-align:center;">
+                </div>
+                <div class="cap-field">
+                    <label class="cap-label">Fojas por Legajo</label>
+                    <input type="number" name="fojas_legajo" class="cap-input"
+                           value="{{ exp.fojas_legajo }}" min="0" style="text-align:center;">
+                </div>
+                <div class="cap-field">
+                    <label class="cap-label">No. de Legajo</label>
+                    <input type="number" name="legajo" class="cap-input"
+                           value="{{ exp.legajo }}" min="1" style="text-align:center;">
+                </div>
+                <div class="cap-field">
+                    <label class="cap-label">Total de Legajos</label>
+                    <input type="number" name="total_legajos" class="cap-input"
+                           value="{{ exp.total_legajos }}" min="1" style="text-align:center;">
+                </div>
+            </div>
+
+            <div class="cap-grid-3-1">
+                <div class="cap-field">
+                    <label class="cap-label">Estantería</label>
+                    <input type="text" name="estanteria" class="cap-input"
+                           value="{{ exp.estanteria if exp.estanteria else '' }}"
+                           placeholder="Ej. A-1">
+                </div>
+                <div class="cap-field">
+                    <label class="cap-label">Caja</label>
+                    <input type="text" name="caja" class="cap-input"
+                           value="{{ exp.caja if exp.caja else '' }}"
+                           placeholder="Caja 05">
+                </div>
+            </div>
+
+            <div class="cap-actions">
+                <a href="{{ url_for('main.cap_expedientes') }}" class="cap-btn-cancel">Cancelar</a>
+                <button type="submit" class="cap-btn-save">Guardar Cambios</button>
+            </div>
+
+        </form>
+    </div>
+
+</div>
+{% endblock %}

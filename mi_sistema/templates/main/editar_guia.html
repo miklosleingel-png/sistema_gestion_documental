@@ -1,0 +1,114 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="cap-container">
+
+    <div class="cap-header">
+        <div>
+            <h2 class="cap-title">Editar Guía de Archivo</h2>
+            <p class="cap-subtitle">Serie: {{ guia.maestra.clave_cgca }} — {{ guia.maestra.nombre_cgca }}</p>
+        </div>
+        <a href="{{ url_for('main.cat_guia') }}" class="cap-btn-menu">← Regresar</a>
+    </div>
+
+    <div class="cap-card">
+        <div class="cap-legend">Modificar Datos de la Guía</div>
+
+        <form method="POST">
+
+            <div class="cap-grid-1">
+                <div class="cap-field">
+                    <label class="cap-label">Soporte(s) Documental(es)</label>
+                    <div id="soporte-container">
+                        {% for vinculo in guia.soportes_rel %}
+                        <div style="display:flex; gap:8px; margin-bottom:8px;">
+                            <select name="id_soporte[]" class="cap-select" required style="flex:1;">
+                                {% for sop in soportes %}
+                                <option value="{{ sop.id_soporte }}"
+                                    {% if vinculo.id_soporte == sop.id_soporte %}selected{% endif %}>
+                                    {{ sop.soporte }}
+                                </option>
+                                {% endfor %}
+                            </select>
+                            {% if loop.first %}
+                            <button type="button" onclick="agregarSoporte()"
+                                    class="cap-btn-add" style="padding:8px 14px; white-space:nowrap;">
+                                + Añadir
+                            </button>
+                            {% else %}
+                            <button type="button" onclick="this.parentElement.remove()"
+                                    class="cap-btn-cancel" style="padding:8px 12px;">
+                                — Quitar
+                            </button>
+                            {% endif %}
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+
+            <div class="cap-grid-1">
+                <div class="cap-field">
+                    <label class="cap-label">Archivo y Ubicación</label>
+                    <select name="id_archivo" class="cap-select" required>
+                        {% for arc in archivos %}
+                        <option value="{{ arc.id_archivo }}"
+                            {% if guia.id_archivo == arc.id_archivo %}selected{% endif %}>
+                            {{ arc.nombre_archivo }} — {{ arc.ubicacion }}
+                        </option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+
+            <div class="cap-grid-2">
+                <div class="cap-field">
+                    <label class="cap-label">Titular Responsable</label>
+                    <select name="id_funcionario" class="cap-select" required>
+                        {% for func in funcionarios %}
+                        <option value="{{ func.id_funcionarios }}"
+                            {% if guia.id_funcionario == func.id_funcionarios %}selected{% endif %}>
+                            {{ func.nombre_funcionario }} ({{ func.cargo_funcionario }})
+                        </option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="cap-field">
+                    <label class="cap-label">Enlace de Archivo</label>
+                    <select name="id_enlace" class="cap-select" required>
+                        {% for en in enlaces %}
+                        <option value="{{ en.id_enlace }}"
+                            {% if guia.id_enlace == en.id_enlace %}selected{% endif %}>
+                            {{ en.nombre_enlace }}
+                        </option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+
+            <div class="cap-actions">
+                <a href="{{ url_for('main.cat_guia') }}" class="cap-btn-cancel">Cancelar</a>
+                <button type="submit" class="cap-btn-save">Guardar Cambios</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+function agregarSoporte() {
+    const container = document.getElementById('soporte-container');
+    const div = document.createElement('div');
+    div.style.cssText = 'display:flex; gap:8px; margin-bottom:8px;';
+    div.innerHTML = `
+        <select name="id_soporte[]" class="cap-select" required style="flex:1;">
+            <option value="">Seleccione soporte...</option>
+            {% for sop in soportes %}
+            <option value="{{ sop.id_soporte }}">{{ sop.soporte }}</option>
+            {% endfor %}
+        </select>
+        <button type="button" onclick="this.parentElement.remove()"
+                class="cap-btn-cancel" style="padding:8px 12px;">— Quitar</button>
+    `;
+    container.appendChild(div);
+}
+</script>
+{% endblock %}

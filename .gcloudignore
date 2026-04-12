@@ -1,0 +1,6 @@
+# No excluir nada importante
+!Dockerfile
+!requirements.txt
+!app.py
+!static/
+!templates/

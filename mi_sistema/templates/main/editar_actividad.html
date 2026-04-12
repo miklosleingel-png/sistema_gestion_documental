@@ -1,0 +1,79 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container-capture">
+    <header class="section-header">
+        <h2 style="color: #691C32;">Editar Detalle de Actividad</h2>
+        <p>Actualice la descripción, el responsable y el área vinculada a esta actividad específica.</p>
+    </header>
+
+    <form action="{{ url_for('main.editar_actividad', id=actividad.id_actividad) }}" method="POST">
+        
+        <div style="margin-bottom: 20px;">
+            <label style="font-weight: bold; color: #691C32;">Descripción de la Actividad:</label>
+            <textarea name="descripcion_actividad" rows="3" 
+                      style="width: 100%; margin-top:10px; padding:12px; border:1px solid #ccc; border-radius:4px;" 
+                      required>{{ actividad.descripcion_actividad }}</textarea>
+        </div>
+
+        <div style="display:grid; grid-template-columns: 1fr 1fr; gap:20px; margin-bottom: 20px;">
+            <div>
+                <label style="font-weight: bold; font-size: 0.9rem;">Responsable (Cargo):</label>
+                <input type="text" name="responsable" value="{{ actividad.responsable_ejecucion }}" 
+                       style="width:100%; padding:10px; border:1px solid #ccc; border-radius:4px;" required>
+            </div>
+            <div>
+                <label style="font-weight: bold; font-size: 0.9rem;">Producto (Tipo Documental):</label>
+                <input type="text" name="producto" value="{{ actividad.tipo_documental_producido }}" 
+                       style="width:100%; padding:10px; border:1px solid #ccc; border-radius:4px;" required>
+            </div>
+        </div>
+
+        <div style="background: #fdfaf3; padding: 20px; border-radius: 8px; border: 1px solid #f0e6d2; margin-bottom: 30px;">
+            <h4 style="color: #B08B57; margin-top: 0; font-size: 1rem; border-bottom: 1px solid #eaddca; padding-bottom: 8px;">Vinculación con Áreas</h4>
+            
+            <div style="display: grid; grid-template-columns: 1fr 2fr; gap: 15px; margin-top: 15px;">
+                <div>
+                    <label style="font-weight: bold; font-size: 0.85rem;">Tipo de Origen:</label>
+                    <select name="tipo_coord" class="form-control" style="width: 100%; height: 40px;">
+                        <option value="INT" {% if actividad.id_ua %}selected{% endif %}>INTERNA (SMADSOT)</option>
+                        <option value="EXT" {% if actividad.id_area_ext %}selected{% endif %}>EXTERNA (Otras Inst.)</option>
+                    </select>
+                </div>
+                <div>
+                    <label style="font-weight: bold; font-size: 0.85rem;">Área Específica Seleccionada:</label>
+                    <select name="id_coord" class="form-control" style="width: 100%; height: 40px;">
+                        <optgroup label="UNIDADES ADMINISTRATIVAS">
+                            {% for u in unidades %}
+                            <option value="{{ u.id_ua }}" {% if actividad.id_ua == u.id_ua %}selected{% endif %}>
+                                {{ u.siglas_ua }} - {{ u.nombre_ua }}
+                            </option>
+                            {% endfor %}
+                        </optgroup>
+                        <optgroup label="ÁREAS EXTERNAS">
+                            {% for e in externas %}
+                            <option value="{{ e.id_area_ext }}" {% if actividad.id_area_ext == e.id_area_ext %}selected{% endif %}>
+                                {{ e.nombre_institucion }} - {{ e.nombre_area_externa }}
+                            </option>
+                            {% endfor %}
+                        </optgroup>
+                    </select>
+                </div>
+            </div>
+            <small style="color: #888; display: block; margin-top: 10px;">
+                * Seleccione el tipo y luego el área correspondiente de la lista desplegable.
+            </small>
+        </div>
+        
+        <div style="display: flex; gap: 15px; border-top: 1px solid #eee; padding-top: 25px;">
+            <button type="submit" class="btn-next" style="background: #691C32; color: white; border: none; padding: 12px 35px; border-radius: 6px; cursor: pointer; font-weight: bold;">
+                💾 Guardar Cambios
+            </button>
+            <a href="{{ url_for('main.cat_procedimientos') }}" class="btn-back" 
+               style="background: #eee; color: #333; padding: 12px 35px; border-radius: 6px; text-decoration: none; text-align: center; font-weight: bold;">
+                Cancelar
+            </a>
+        </div>
+    </form>
+</div>
+{% endblock %}

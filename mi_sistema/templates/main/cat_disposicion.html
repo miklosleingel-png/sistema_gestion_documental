@@ -1,0 +1,192 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="cap-container">
+
+    <div class="cap-header">
+        <div>
+            <h2 class="cap-title">Valoración Documental (CDD)</h2>
+            <p class="cap-subtitle">Configuración de vigencias y valores por serie documental</p>
+        </div>
+        <a href="{{ url_for('main.dashboard') }}" class="cap-btn-menu">← Menú Principal</a>
+    </div>
+
+    <div class="cap-card">
+        <div class="cap-legend">Valoración y Vigencia Documental</div>
+
+        <form action="{{ url_for('main.cat_disposicion') }}" method="POST">
+
+            <div class="cap-grid-1">
+                <div class="cap-field">
+                    <label class="cap-label">Serie Documental</label>
+                    <select name="id_cgca" class="cap-select" required>
+                        <option value="">-- Seleccione Serie para Valorar --</option>
+                        {% for s in series %}
+                        <option value="{{ s.id_cgca }}">{{ s.clave_cgca }} — {{ s.nombre_cgca }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+
+            <div class="cap-grid-3">
+                <div class="cap-field">
+                    <label class="cap-label">Años en Archivo de Trámite (AT)</label>
+                    <input type="number" name="anios_tramite" id="v_tramite"
+                           class="cap-input" value="0" min="0" style="text-align:center;">
+                </div>
+                <div class="cap-field">
+                    <label class="cap-label">Años en Archivo de Concentración (AC)</label>
+                    <input type="number" name="anios_concentracion" id="v_concentra"
+                           class="cap-input" value="0" min="0" style="text-align:center;">
+                </div>
+                <div class="cap-field">
+                    <label class="cap-label">Vigencia Total (AT + AC)</label>
+                    <input type="text" id="v_total_display" class="cap-input cap-input-readonly"
+                           value="0" readonly style="text-align:center; font-size:1.1rem;">
+                    <input type="hidden" name="anio_total" id="v_total_val" value="0">
+                </div>
+            </div>
+
+            <div class="cap-values-block cap-values-primarios">
+                <div class="cap-values-title">Valores Primarios</div>
+                <div class="cap-checkbox-row">
+                    <span class="cap-checkbox-label">Administrativo</span>
+                    <input type="checkbox" name="administrativo">
+                    <input type="text" name="justificacion_admvo" class="cap-input"
+                           placeholder="Justificación administrativa" style="flex:1;">
+                </div>
+                <div class="cap-checkbox-row">
+                    <span class="cap-checkbox-label">Legal</span>
+                    <input type="checkbox" name="legal">
+                    <input type="text" name="justificacion_legal" class="cap-input"
+                           placeholder="Justificación legal" style="flex:1;">
+                </div>
+                <div class="cap-checkbox-row">
+                    <span class="cap-checkbox-label">Fiscal</span>
+                    <input type="checkbox" name="fiscal">
+                    <input type="text" name="justificacion_fiscal" class="cap-input"
+                           placeholder="Justificación fiscal" style="flex:1;">
+                </div>
+            </div>
+
+            <div class="cap-values-block cap-values-secundarios">
+                <div class="cap-values-title">Valores Secundarios</div>
+                <div class="cap-checkbox-row">
+                    <span class="cap-checkbox-label">Testimonial</span>
+                    <input type="checkbox" name="testimonial">
+                    <input type="text" name="justificacion_testimonial" class="cap-input"
+                           placeholder="Justificación testimonial" style="flex:1;">
+                </div>
+                <div class="cap-checkbox-row">
+                    <span class="cap-checkbox-label">Histórico</span>
+                    <input type="checkbox" name="historico">
+                    <input type="text" name="justificacion_historico" class="cap-input"
+                           placeholder="Justificación histórica" style="flex:1;">
+                </div>
+                <div class="cap-checkbox-row">
+                    <span class="cap-checkbox-label">Evidencial</span>
+                    <input type="checkbox" name="evidencial">
+                    <input type="text" name="justificacion_extra" class="cap-input"
+                           placeholder="Justificación evidencial" style="flex:1;">
+                </div>
+            </div>
+
+            <div class="cap-grid-2">
+                <div class="cap-field">
+                    <label class="cap-label">Técnica de Selección (Destino Final)</label>
+                    <select name="tecnica_seleccion" class="cap-select">
+                        <option value="BAJA">BAJA / ELIMINACIÓN</option>
+                        <option value="CONSERVACION PERMANENTE">CONSERVACIÓN PERMANENTE</option>
+                        <option value="MUESTREO">MUESTREO</option>
+                    </select>
+                </div>
+                <div class="cap-field">
+                    <label class="cap-label">Justificación de Disposición Final</label>
+                    <textarea name="justificacion_disposicion" class="cap-textarea"
+                              placeholder="Fundamento legal o técnico..."></textarea>
+                </div>
+            </div>
+
+            <div class="cap-actions">
+                <a href="{{ url_for('main.dashboard') }}" class="cap-btn-cancel">Cancelar</a>
+                <button type="submit" class="cap-btn-save">Guardar Registro CDD</button>
+            </div>
+
+        </form>
+    </div>
+
+    <hr class="cap-separator">
+
+    <h3 class="cap-table-title">Registros CDD Guardados</h3>
+    <div class="cap-table-wrap">
+        <table class="cap-table">
+            <thead>
+                <tr>
+                    <th rowspan="2">Serie</th>
+                    <th colspan="3" style="text-align:center;">Vigencia (años)</th>
+                    <th colspan="3" style="text-align:center;">V. Primarios</th>
+                    <th colspan="3" style="text-align:center;">V. Secundarios</th>
+                    <th rowspan="2">Técnica</th>
+                    <th rowspan="2">Acciones</th>
+                </tr>
+                <tr style="background:#4E1324; font-size:0.65rem;">
+                    <th style="text-align:center;">AT</th>
+                    <th style="text-align:center;">AC</th>
+                    <th style="text-align:center;">Total</th>
+                    <th style="text-align:center;">A</th>
+                    <th style="text-align:center;">L</th>
+                    <th style="text-align:center;">F</th>
+                    <th style="text-align:center;">T</th>
+                    <th style="text-align:center;">H</th>
+                    <th style="text-align:center;">E</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for c in registros_cdd %}
+                <tr>
+                    <td><span class="td-clave">{{ c.maestra.clave_cgca }}</span></td>
+                    <td style="text-align:center;">{{ c.anios_tramite }}</td>
+                    <td style="text-align:center;">{{ c.anios_concentracion }}</td>
+                    <td style="text-align:center; font-weight:700;">{{ c.anio_total }}</td>
+                    <td style="text-align:center;">{{ '●' if c.administrativo else '' }}</td>
+                    <td style="text-align:center;">{{ '●' if c.legal else '' }}</td>
+                    <td style="text-align:center;">{{ '●' if c.fiscal else '' }}</td>
+                    <td style="text-align:center;">{{ '●' if c.testimonial else '' }}</td>
+                    <td style="text-align:center;">{{ '●' if c.historico else '' }}</td>
+                    <td style="text-align:center;">{{ '●' if c.evidencial else '' }}</td>
+                    <td><small>{{ c.tecnica_seleccion }}</small></td>
+                    <td>
+                        <div class="cap-table-actions">
+                            <a href="{{ url_for('main.editar_disposicion', id_dispo=c.id_clavecgca_cdd) }}"
+                               class="btn-tbl-edit">Editar</a>
+                            <a href="{{ url_for('main.eliminar_disposicion', id_dispo=c.id_clavecgca_cdd) }}"
+                               class="btn-tbl-del"
+                               onclick="return confirm('¿Eliminar valoración?')">Eliminar</a>
+                        </div>
+                    </td>
+                </tr>
+                {% else %}
+                <tr>
+                    <td colspan="13" class="td-empty">No hay valoraciones guardadas aún.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+</div>
+
+<script>
+    const tram = document.getElementById('v_tramite');
+    const conc = document.getElementById('v_concentra');
+    const disp = document.getElementById('v_total_display');
+    const hiddenVal = document.getElementById('v_total_val');
+
+    function calcular() {
+        const total = (parseInt(tram.value) || 0) + (parseInt(conc.value) || 0);
+        disp.value = total + ' años';
+        hiddenVal.value = total;
+    }
+    tram.addEventListener('input', calcular);
+    conc.addEventListener('input', calcular);
+</script>
+{% endblock %}

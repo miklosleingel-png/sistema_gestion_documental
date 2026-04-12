@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="cap-container" style="max-width: 700px;">
+
+    <div class="cap-header">
+        <div>
+            <h2 class="cap-title">Editar Unidad Administrativa</h2>
+            <p class="cap-subtitle">{{ registro.siglas_ua }} — {{ registro.nombre_ua }}</p>
+        </div>
+        <a href="{{ url_for('main.cat_unidades', dep_id=registro.id_dependencia) }}" class="cap-btn-menu">← Regresar</a>
+    </div>
+
+    <div class="cap-card">
+        <div class="cap-legend">Modificar Datos</div>
+        <form action="{{ url_for('main.editar_ua', id_ua=registro.id_ua) }}" method="POST">
+
+            <div class="cap-grid-1">
+                <div class="cap-field">
+                    <label class="cap-label">Dependencia Perteneciente</label>
+                    <select name="id_dependencia" class="cap-select" required>
+                        {% for dep in dependencias %}
+                        <option value="{{ dep.id_dependencia }}"
+                            {% if registro.id_dependencia == dep.id_dependencia %}selected{% endif %}>
+                            {{ dep.nombre_dependencia }} ({{ dep.siglas_dependencia }})
+                        </option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+
+            <div class="cap-grid-2">
+                <div class="cap-field">
+                    <label class="cap-label">Nombre de la Unidad Administrativa</label>
+                    <input type="text" name="nombre_ua" class="cap-input"
+                           value="{{ registro.nombre_ua }}" required>
+                </div>
+                <div class="cap-field">
+                    <label class="cap-label">Siglas</label>
+                    <input type="text" name="siglas_ua" class="cap-input"
+                           value="{{ registro.siglas_ua }}" required>
+                </div>
+            </div>
+
+            <div class="cap-actions">
+                <a href="{{ url_for('main.cat_unidades', dep_id=registro.id_dependencia) }}" class="cap-btn-cancel">Cancelar</a>
+                <button type="submit" class="cap-btn-save">Guardar Cambios</button>
+            </div>
+        </form>
+    </div>
+
+</div>
+{% endblock %}

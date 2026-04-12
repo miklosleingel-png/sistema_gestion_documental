@@ -1,0 +1,83 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container-capture">
+    <header class="section-header" style="margin-bottom: 20px;">
+        <h2 class="menu-main-title">Catálogo de Archivos y Depósitos</h2>
+        <p class="user-info">Gestión de sedes físicas y áreas de resguardo documental</p>
+    </header>
+
+    <section class="capture-section">
+        <form action="{{ url_for('main.cat_archivo') }}" method="POST" 
+              style="background:#fdfdfd; padding:25px; border-radius:10px; border: 1px solid #ddd; border-left: 5px solid var(--dorado); margin-bottom:40px; box-shadow: 0 2px 4px rgba(0,0,0,0.05);">
+            
+            <div style="display:grid; grid-template-columns: 1fr 2fr 150px; gap:20px; align-items: end;">
+                <div class="field-group">
+                    <label style="font-weight: bold; color: var(--primario); margin-bottom: 8px; display: block;">Nombre del Depósito:</label>
+                    <input type="text" name="nombre_archivo" class="input-nombre" 
+                           placeholder="Ej. ARCHIVO TRÁMITE" required style="width: 100%; border: 1px solid #ccc;">
+                </div>
+                <div class="field-group">
+                    <label style="font-weight: bold; color: var(--primario); margin-bottom: 8px; display: block;">Ubicación Física:</label>
+                    <input type="text" name="ubicacion" class="input-nombre" 
+                           placeholder="Ej. PLANTA BAJA, EDIFICIO A" style="width: 100%; border: 1px solid #ccc;">
+                </div>
+                <div>
+                    <button type="submit" class="btn-next" style="width: 100%; height: 42px; font-weight: bold;">Guardar</button>
+                </div>
+            </div>
+        </form>
+
+        <h3 style="color: var(--primario); margin-bottom: 15px; font-size: 1.2rem;">Depósitos Registrados</h3>
+        
+        <div style="overflow-x: auto; background: white; border-radius: 8px;">
+            <table class="compact-table" style="width: 100%; border-collapse: collapse; border: 2px solid #dee2e6;">
+                <thead>
+                    <tr style="background-color: #f8f9fa;">
+                        <th style="border: 1px solid #dee2e6; padding: 12px; text-align: left; color: #444; width: 10%;">ID</th>
+                        <th style="border: 1px solid #dee2e6; padding: 12px; text-align: left; color: #444; width: 35%;">Archivo / Depósito</th>
+                        <th style="border: 1px solid #dee2e6; padding: 12px; text-align: left; color: #444;">Ubicación</th>
+                        <th style="border: 1px solid #dee2e6; padding: 12px; text-align: center; color: #444; width: 15%;">Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for a in archivos %}
+                    <tr>
+                        <td style="border: 1px solid #dee2e6; padding: 10px; color: #666; text-align: center;">{{ a.id_archivo }}</td>
+                        <td style="border: 1px solid #dee2e6; padding: 10px; font-weight: bold; color: var(--primario);">{{ a.nombre_archivo }}</td>
+                        <td style="border: 1px solid #dee2e6; padding: 10px; color: #333;">{{ a.ubicacion or 'SIN UBICACIÓN REGISTRADA' }}</td>
+                        <td style="border: 1px solid #dee2e6; padding: 10px; text-align: center;">
+                            <a href="{{ url_for('main.editar_archivo', id_archivo=a.id_archivo) }}" 
+                               style="text-decoration:none; margin-right:12px; font-size: 1.1rem;" title="Editar">✏️</a>
+                            <a href="{{ url_for('main.eliminar_archivo', id_archivo=a.id_archivo) }}" 
+                               onclick="return confirm('¿Confirmar eliminación de este depósito?')" 
+                               style="text-decoration:none; font-size: 1.1rem;" title="Eliminar">🗑️</a>
+                        </td>
+                    </tr>
+                    {% else %}
+                    <tr>
+                        <td colspan="4" style="text-align:center; padding: 30px; color: #999; border: 1px solid #dee2e6;">
+                            No existen depósitos registrados en el catálogo.
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <div style="margin-top: 40px; padding-top: 20px; border-top: 1px solid #eee; display: flex; gap: 15px;">
+            <a href="{{ url_for('main.mostrar_catalogos') }}" class="btn-back" style="display: flex; align-items: center; gap: 8px;">
+                <span style="font-size: 1.2rem;">📂</span> Volver a Catálogos
+            </a>
+            <a href="{{ url_for('main.dashboard') }}" class="btn-back" style="display: flex; align-items: center; gap: 8px; background: #6c757d;">
+                <span style="font-size: 1.2rem;">🏠</span> Menú Principal
+            </a>
+        </div>
+    </section>
+</div>
+
+<style>
+    .compact-table tbody tr:nth-child(even) { background-color: #fdfdfd; }
+    .compact-table tbody tr:hover { background-color: #f1f4f9; transition: 0.2s; }
+</style>
+{% endblock %}

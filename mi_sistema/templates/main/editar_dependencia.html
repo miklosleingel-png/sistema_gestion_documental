@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="cap-container" style="max-width: 600px;">
+
+    <div class="cap-header">
+        <div>
+            <h2 class="cap-title">Editar Dependencia</h2>
+            <p class="cap-subtitle">{{ registro.siglas_dependencia }} — {{ registro.nombre_dependencia }}</p>
+        </div>
+        <a href="{{ url_for('main.cat_dependencia') }}" class="cap-btn-menu">← Regresar</a>
+    </div>
+
+    <div class="cap-card">
+        <div class="cap-legend">Modificar Datos</div>
+        <form action="{{ url_for('main.editar_dependencia', id_dependencia=registro.id_dependencia) }}" method="POST">
+
+            <div class="cap-grid-1">
+                <div class="cap-field">
+                    <label class="cap-label">Nombre de la Dependencia</label>
+                    <input type="text" name="nombre_dependencia" class="cap-input"
+                           value="{{ registro.nombre_dependencia }}" required>
+                </div>
+            </div>
+
+            <div class="cap-grid-1">
+                <div class="cap-field">
+                    <label class="cap-label">Siglas</label>
+                    <input type="text" name="siglas_dependencia" class="cap-input"
+                           value="{{ registro.siglas_dependencia }}" required>
+                </div>
+            </div>
+
+            <div class="cap-actions">
+                <a href="{{ url_for('main.cat_dependencia') }}" class="cap-btn-cancel">Cancelar</a>
+                <button type="submit" class="cap-btn-save">Guardar Cambios</button>
+            </div>
+        </form>
+    </div>
+
+</div>
+{% endblock %}

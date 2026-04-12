@@ -1,0 +1,230 @@
+{% extends "base.html" %}
+{% block content %}
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/choices.js/public/assets/styles/choices.min.css"/>
+<script src="https://cdn.jsdelivr.net/npm/choices.js/public/assets/scripts/choices.min.js"></script>
+
+<div class="cap-container">
+
+    <div class="cap-header">
+        <div>
+            <h2 class="cap-title">Auditoría y Vinculación Normativa</h2>
+            <p class="cap-subtitle">Matriz de vinculación orgánica y fundamentos legales por serie</p>
+        </div>
+        <a href="{{ url_for('main.dashboard') }}" class="cap-btn-menu">← Menú Principal</a>
+    </div>
+
+    <div class="cap-card">
+        <div class="cap-legend">Configuración de Matriz de Vinculación</div>
+
+        <form method="POST" id="form-auditoria">
+
+            <div class="cap-grid-1">
+                <div class="cap-field">
+                    <label class="cap-label">1. Serie Documental (CGCA)</label>
+                    <select name="id_cgca" class="cap-select select-search" required>
+                        <option value="">-- Buscar Serie por clave o nombre --</option>
+                        {% for s in series %}
+                        <option value="{{ s.id_cgca }}">{{ s.clave_cgca }} — {{ s.nombre_cgca }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+
+            <div class="cap-card" style="background:#fdfaf3; border:1px solid var(--dorado-suave); padding:16px;">
+                <div class="cap-legend">2. Adscripción Orgánica</div>
+                <div class="cap-grid-3">
+                    <div class="cap-field">
+                        <label class="cap-label">Dependencia</label>
+                        <select name="id_dependencia" class="cap-select" required>
+                            {% for d in dependencias %}
+                            <option value="{{ d.id_dependencia }}">{{ d.siglas_dependencia }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="cap-field">
+                        <label class="cap-label">Unidad Administrativa</label>
+                        <select name="id_ua" class="cap-select" required>
+                            {% for u in unidades %}
+                            <option value="{{ u.id_ua }}">{{ u.siglas_ua }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="cap-field">
+                        <label class="cap-label">Área Productora</label>
+                        <select name="id_area" class="cap-select" required>
+                            {% for a in areas_prod %}
+                            <option value="{{ a.id_area }}">{{ a.siglas_area }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <div class="cap-grid-1" style="margin-bottom:14px;">
+                <div class="cap-field">
+                    <label class="cap-label">3. Fundamentos Legales</label>
+                    <div style="display:flex; gap:8px; margin-bottom:10px;">
+                        <select id="selector-leyes" style="flex:1;" class="cap-select">
+                            <option value="">Escriba el nombre o siglas de la ley...</option>
+                            {% for l in leyes %}
+                            <option value="{{ l.id_ley }}"
+                                    data-siglas="{{ l.siglas_ley }}"
+                                    data-art="{{ l.articulo }}"
+                                    data-texto="{{ l.texto_ley or '' }}">
+                                [{{ l.siglas_ley }}] Art. {{ l.articulo }} — {{ l.nombre_ley }}
+                            </option>
+                            {% endfor %}
+                        </select>
+                        <button type="button" onclick="agregarLey()"
+                                class="cap-btn-add" style="padding:8px 14px; white-space:nowrap;">
+                            + Agregar
+                        </button>
+                    </div>
+                    <div id="contenedor-badges" style="min-height:50px; border:1.5px dashed var(--gris-borde); border-radius:8px; padding:10px; background:#fdfaf6;">
+                        <span style="color:#aaa; font-size:0.78rem;" id="placeholder-leyes">No hay fundamentos seleccionados...</span>
+                    </div>
+                    <div id="inputs-leyes-ocultos"></div>
+                </div>
+            </div>
+
+            <div class="cap-grid-2">
+                <div class="cap-field">
+                    <label class="cap-label">4. Función Institucional</label>
+                    <select name="id_funcion" class="cap-select" required>
+                        {% for f in funciones %}
+                        <option value="{{ f.id_funcion }}">{{ f.nombre_funcion }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="cap-field">
+                    <label class="cap-label">5. Procedimiento Asociado</label>
+                    <select name="id_procedimiento" class="cap-select" required>
+                        {% for p in procedimientos %}
+                        <option value="{{ p.id_procedimiento }}">{{ p.nombre_procedimiento }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+
+            <div class="cap-actions">
+                <a href="{{ url_for('main.dashboard') }}" class="cap-btn-cancel">Cancelar</a>
+                <button type="submit" class="cap-btn-save">Generar Vinculación Íntegra</button>
+            </div>
+
+        </form>
+    </div>
+
+    <hr class="cap-separator">
+
+    <h3 class="cap-table-title">Registros de Auditoría Existentes</h3>
+    <div class="cap-table-wrap">
+        <table class="cap-table">
+            <thead>
+                <tr>
+                    <th>Serie (CGCA)</th>
+                    <th>Ubicación Orgánica</th>
+                    <th>Fundamento(s) Legal(es)</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for reg in registros %}
+                <tr>
+                    <td><span class="td-clave">{{ reg.clave_cgca }}</span></td>
+                    <td>
+                        {% if reg.areas_productoras %}
+                            <span class="badge-doc">{{ reg.areas_productoras[0].dependencia.siglas_dependencia }}</span>
+                            <span class="td-muted">
+                                {{ reg.areas_productoras[0].area.siglas_area if reg.areas_productoras[0].area
+                                   else reg.areas_productoras[0].unidad.siglas_ua }}
+                            </span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% for f in reg.fundamento %}
+                        <div style="margin-bottom:6px; padding-bottom:6px; border-bottom:1px solid #f4f1ed;">
+                            <span class="badge-doc" style="background:var(--guinda); color:#fff; border-color:var(--guinda);">
+                                {{ f.ley.siglas_ley }}
+                            </span>
+                            <small style="font-weight:700;"> Art. {{ f.ley.articulo }}</small>
+                            <div style="font-size:0.72rem; color:#666; margin-top:2px;">{{ f.ley.texto_ley or '' }}</div>
+                        </div>
+                        {% endfor %}
+                    </td>
+                    <td>
+                        <div class="cap-table-actions">
+                            <a href="{{ url_for('main.editar_auditoria', id_maestro=reg.id_cgca) }}"
+                               class="btn-tbl-edit">Editar</a>
+                            <a href="{{ url_for('main.eliminar_auditoria', id_maestro=reg.id_cgca) }}"
+                               class="btn-tbl-del"
+                               onclick="return confirm('¿Eliminar toda la vinculación de esta serie?')">Eliminar</a>
+                        </div>
+                    </td>
+                </tr>
+                {% else %}
+                <tr>
+                    <td colspan="4" class="td-empty">No se han generado vinculaciones aún.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+</div>
+
+<script>
+    const selectElement = document.getElementById('selector-leyes');
+    const choices = new Choices(selectElement, {
+        searchEnabled: true,
+        placeholderValue: 'Escriba para buscar...',
+        itemSelectText: '',
+    });
+
+    function agregarLey() {
+        const idLey = selectElement.value;
+        if (!idLey) return;
+
+        const opt = selectElement.querySelector(`option[value="${idLey}"]`);
+        const siglas = opt.getAttribute('data-siglas');
+        const articulo = opt.getAttribute('data-art');
+        const texto = opt.getAttribute('data-texto') || '';
+        const etiqueta = `[${siglas}] Art. ${articulo}`;
+
+        if (document.getElementById('badge-ley-' + idLey)) {
+            alert('Esta ley ya está en la lista.');
+            return;
+        }
+
+        document.getElementById('placeholder-leyes').style.display = 'none';
+
+        const contenedor = document.getElementById('contenedor-badges');
+        const badge = document.createElement('div');
+        badge.id = 'badge-ley-' + idLey;
+        badge.style.cssText = 'margin-bottom:8px; padding:10px; background:#fff; border:1px solid #ddd; border-radius:7px;';
+        badge.innerHTML = `
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:4px;">
+                <strong style="color:var(--guinda); font-size:0.88rem;">${etiqueta}</strong>
+                <span onclick="removerLey('${idLey}')" style="cursor:pointer; color:#dc3545; font-weight:700; font-size:1.1rem; line-height:1;">×</span>
+            </div>
+            <div style="font-size:0.76rem; color:#666; border-top:1px solid #eee; padding-top:4px;">${texto}</div>
+        `;
+        contenedor.appendChild(badge);
+
+        const input = document.createElement('input');
+        input.type = 'hidden';
+        input.name = 'id_ley';
+        input.value = idLey;
+        input.id = 'input-ley-' + idLey;
+        document.getElementById('inputs-leyes-ocultos').appendChild(input);
+
+        choices.setChoiceByValue('');
+    }
+
+    function removerLey(id) {
+        document.getElementById('badge-ley-' + id)?.remove();
+        document.getElementById('input-ley-' + id)?.remove();
+        const badges = document.getElementById('contenedor-badges').querySelectorAll('div[id^="badge-ley"]');
+        if (badges.length === 0) document.getElementById('placeholder-leyes').style.display = 'block';
+    }
+</script>
+{% endblock %}

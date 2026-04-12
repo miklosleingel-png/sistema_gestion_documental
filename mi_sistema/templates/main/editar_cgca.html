@@ -1,0 +1,133 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="cap-container">
+
+    <div class="cap-header">
+        <div>
+            <h2 class="cap-title">Editar Registro del CGCA</h2>
+            <p class="cap-subtitle">ID: {{ registro.id_cgca }} — Clave: {{ registro.clave_cgca }}</p>
+        </div>
+        <a href="{{ url_for('main.cat_cgca') }}" class="cap-btn-menu">← Regresar</a>
+    </div>
+
+    <div class="cap-card">
+        <div class="cap-legend">Modificar Datos de la Serie Documental</div>
+
+        <form action="{{ url_for('main.editar_cgca', id_cgca=registro.id_cgca) }}" method="POST">
+
+            <div class="cap-grid-2">
+                <div class="cap-field">
+                    <label class="cap-label">Función — Clave y Nombre</label>
+                    <div style="display:flex; gap:8px;">
+                        <input type="text" name="funcion_clave" class="cap-input id-part"
+                               style="flex:0 0 80px; text-align:center;"
+                               value="{{ registro.funcion_clave }}" required>
+                        <input type="text" name="funcion_nombre" class="cap-input"
+                               value="{{ registro.funcion_nombre }}" required>
+                    </div>
+                </div>
+                <div class="cap-field">
+                    <label class="cap-label">Sección — Clave y Nombre</label>
+                    <div style="display:flex; gap:8px;">
+                        <input type="text" name="seccion_clave" class="cap-input id-part"
+                               style="flex:0 0 80px; text-align:center;"
+                               value="{{ registro.seccion_clave }}" required>
+                        <input type="text" name="seccion_nombre" class="cap-input"
+                               value="{{ registro.seccion_nombre }}" required>
+                    </div>
+                </div>
+            </div>
+
+            <div class="cap-grid-2">
+                <div class="cap-field">
+                    <label class="cap-label">Subsección — Clave y Nombre (Opcional)</label>
+                    <div style="display:flex; gap:8px;">
+                        <input type="text" name="subseccion_clave" class="cap-input id-part"
+                               style="flex:0 0 80px; text-align:center;"
+                               value="{{ registro.subseccion_clave or '' }}">
+                        <input type="text" name="subseccion_nombre" class="cap-input"
+                               value="{{ registro.subseccion_nombre or '' }}">
+                    </div>
+                </div>
+                <div class="cap-field">
+                    <label class="cap-label">Serie — Clave y Nombre</label>
+                    <div style="display:flex; gap:8px;">
+                        <input type="text" name="serie_clave" class="cap-input id-part"
+                               style="flex:0 0 80px; text-align:center;"
+                               value="{{ registro.serie_clave }}" required>
+                        <input type="text" name="serie_nombre" class="cap-input"
+                               value="{{ registro.serie_nombre }}" required>
+                    </div>
+                </div>
+            </div>
+
+            <div class="cap-grid-2">
+                <div class="cap-field">
+                    <label class="cap-label">Subserie — Clave y Nombre (Opcional)</label>
+                    <div style="display:flex; gap:8px;">
+                        <input type="text" name="subserie_clave" class="cap-input id-part"
+                               style="flex:0 0 80px; text-align:center;"
+                               value="{{ registro.subserie_clave or '' }}">
+                        <input type="text" name="subserie_nombre" class="cap-input"
+                               value="{{ registro.subserie_nombre or '' }}">
+                    </div>
+                </div>
+                <div class="cap-field">
+                    <label class="cap-label">Descripción Técnica</label>
+                    <textarea name="descripcion" class="cap-textarea"
+                              rows="3">{{ registro.descripcion or '' }}</textarea>
+                </div>
+            </div>
+
+            <div class="cap-grid-1">
+                <div class="cap-field">
+                    <label class="cap-label">Observaciones</label>
+                    <textarea name="observaciones" class="cap-textarea"
+                              rows="2">{{ registro.observaciones or '' }}</textarea>
+                </div>
+            </div>
+
+            <div class="cap-highlight">
+                <label class="cap-label">Clave CGCA Actualizada</label>
+                <input type="text" name="clave_cgca" id="clave_cgca_display"
+                       class="cap-input-clave" value="{{ registro.clave_cgca }}">
+            </div>
+
+            <div class="cap-actions">
+                <a href="{{ url_for('main.cat_cgca') }}" class="cap-btn-cancel">Cancelar</a>
+                <button type="submit" class="cap-btn-save">Guardar Cambios</button>
+            </div>
+
+        </form>
+    </div>
+
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const display = document.getElementById('clave_cgca_display');
+
+        function generarClave() {
+            const f = document.querySelector('input[name="funcion_clave"]').value.trim();
+            const s = document.querySelector('input[name="seccion_clave"]').value.trim();
+            const ss = document.querySelector('input[name="subseccion_clave"]').value.trim();
+            const ser = document.querySelector('input[name="serie_clave"]').value.trim();
+            const subser = document.querySelector('input[name="subserie_clave"]').value.trim();
+
+            let partes = [];
+            if (s || f) partes.push((s + f).replace(/\s+/g, ''));
+            if (ss && ss !== '0') partes.push(ss.replace(/\s+/g, ''));
+            if (ser) partes.push(ser.replace(/\s+/g, ''));
+            if (subser && subser !== '0') partes.push(subser.replace(/\s+/g, ''));
+
+            display.value = partes.join('.');
+        }
+
+        document.querySelectorAll('.id-part').forEach(input => {
+            input.addEventListener('input', generarClave);
+        });
+
+        generarClave();
+    });
+</script>
+{% endblock %}

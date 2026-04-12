@@ -1,0 +1,169 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="cap-container">
+
+    <div class="cap-header">
+        <div>
+            <h2 class="cap-title">Guía de Archivo Documental</h2>
+            <p class="cap-subtitle">Registro de ubicación física y responsables por serie</p>
+        </div>
+        <a href="{{ url_for('main.dashboard') }}" class="cap-btn-menu">← Menú Principal</a>
+    </div>
+
+    <div class="cap-card">
+        <div class="cap-legend">Datos Generales de la Guía</div>
+
+        <form method="POST">
+
+            <div class="cap-grid-1">
+                <div class="cap-field">
+                    <label class="cap-label">Serie Documental (Clave CGCA)</label>
+                    <select name="id_cgca" class="cap-select" required>
+                        <option value="">-- Seleccione una serie documental --</option>
+                        {% for s in series %}
+                        <option value="{{ s.id_cgca }}">{{ s.clave_cgca }} — {{ s.nombre_cgca }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+
+            <div class="cap-grid-1">
+                <div class="cap-field">
+                    <label class="cap-label">Soporte(s) Documental(es)</label>
+                    <div id="soporte-container">
+                        <div style="display:flex; gap:8px; margin-bottom:8px;">
+                            <select name="id_soporte[]" class="cap-select" required style="flex:1;">
+                                <option value="">Seleccione soporte...</option>
+                                {% for sop in soportes %}
+                                <option value="{{ sop.id_soporte }}">{{ sop.soporte }}</option>
+                                {% endfor %}
+                            </select>
+                            <button type="button" onclick="agregarSoporte()"
+                                    class="cap-btn-add" style="white-space:nowrap; padding:8px 14px;">
+                                + Añadir soporte
+                            </button>
+                        </div>
+                    </div>
+                    <small style="color:#888; font-size:0.75rem;">Si la serie se guarda en varios formatos, añada cada uno.</small>
+                </div>
+            </div>
+
+            <div class="cap-grid-1">
+                <div class="cap-field">
+                    <label class="cap-label">Archivo de Trámite y Ubicación</label>
+                    <select name="id_archivo" class="cap-select" required>
+                        <option value="">-- Seleccionar Archivo y Ubicación --</option>
+                        {% for arc in archivos %}
+                        <option value="{{ arc.id_archivo }}">{{ arc.nombre_archivo }} — {{ arc.ubicacion }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+
+            <div class="cap-grid-2">
+                <div class="cap-field">
+                    <label class="cap-label">Funcionario Responsable (Titular)</label>
+                    <select name="id_funcionario" class="cap-select" required>
+                        <option value="">-- Seleccionar Titular --</option>
+                        {% for func in funcionarios %}
+                        <option value="{{ func.id_funcionarios }}">
+                            {{ func.nombre_funcionario }} ({{ func.cargo_funcionario }})
+                        </option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="cap-field">
+                    <label class="cap-label">Responsable de Archivo (Enlace)</label>
+                    <select name="id_enlace" class="cap-select" required>
+                        <option value="">-- Seleccionar Enlace --</option>
+                        {% for en in enlaces %}
+                        <option value="{{ en.id_enlace }}">{{ en.nombre_enlace }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+
+            <div class="cap-actions">
+                <a href="{{ url_for('main.dashboard') }}" class="cap-btn-cancel">Cancelar</a>
+                <button type="submit" class="cap-btn-save">Guardar Guía de Archivo</button>
+            </div>
+
+        </form>
+    </div>
+
+    <hr class="cap-separator">
+
+    <h3 class="cap-table-title">Registros Capturados</h3>
+    <div class="cap-table-wrap">
+        <table class="cap-table">
+            <thead>
+                <tr>
+                    <th>Clave CGCA</th>
+                    <th>Soporte(s)</th>
+                    <th>Archivo / Ubicación</th>
+                    <th>Responsables</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for g in guias %}
+                <tr>
+                    <td>
+                        <span class="td-clave">{{ g.maestra.clave_cgca }}</span>
+                        <span class="td-muted">{{ g.maestra.nombre_cgca }}</span>
+                    </td>
+                    <td>
+                        {% for v in g.soportes_rel %}
+                            <span class="badge-doc">{{ v.soporte.soporte }}</span>
+                        {% else %}
+                            <span style="color:#aaa;">Sin soporte</span>
+                        {% endfor %}
+                    </td>
+                    <td>
+                        <span style="font-weight:600;">{{ g.archivo.nombre_archivo }}</span>
+                        <span class="td-muted">{{ g.archivo.ubicacion }}</span>
+                    </td>
+                    <td style="font-size:0.78rem;">
+                        <strong>Titular:</strong> {{ g.funcionario.nombre_funcionario }}<br>
+                        <strong>Enlace:</strong> {{ g.enlace.nombre_enlace }}
+                    </td>
+                    <td>
+                        <div class="cap-table-actions">
+                            <a href="{{ url_for('main.editar_guia', id=g.id_guia) }}"
+                               class="btn-tbl-edit">Editar</a>
+                            <a href="{{ url_for('main.eliminar_guia', id=g.id_guia) }}"
+                               class="btn-tbl-del"
+                               onclick="return confirm('¿Eliminar este registro?')">Eliminar</a>
+                        </div>
+                    </td>
+                </tr>
+                {% else %}
+                <tr>
+                    <td colspan="5" class="td-empty">No se han capturado guías aún.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+</div>
+
+<script>
+function agregarSoporte() {
+    const container = document.getElementById('soporte-container');
+    const div = document.createElement('div');
+    div.style.cssText = 'display:flex; gap:8px; margin-bottom:8px;';
+    div.innerHTML = `
+        <select name="id_soporte[]" class="cap-select" required style="flex:1;">
+            <option value="">Seleccione soporte...</option>
+            {% for sop in soportes %}
+            <option value="{{ sop.id_soporte }}">{{ sop.soporte }}</option>
+            {% endfor %}
+        </select>
+        <button type="button" onclick="this.parentElement.remove()"
+                class="cap-btn-cancel" style="padding:8px 12px;">— Quitar</button>
+    `;
+    container.appendChild(div);
+}
+</script>
+{% endblock %}

@@ -1,0 +1,105 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container-capture">
+    <header class="section-header" style="margin-bottom: 20px;">
+        <h2 class="menu-main-title">Catálogo de Áreas Productoras</h2>
+        <p class="user-info">Gestión de departamentos y oficinas dependientes de las Unidades Administrativas</p>
+    </header>
+
+    <section class="capture-section">
+        <form action="{{ url_for('main.cat_areas') }}" method="POST" 
+              style="background:#fdfdfd; padding:25px; border-radius:10px; border: 1px solid #ddd; border-left: 5px solid var(--dorado); margin-bottom:30px; box-shadow: 0 2px 4px rgba(0,0,0,0.05);">
+            
+            <div style="display:grid; grid-template-columns: 1.5fr 2fr 1fr 150px; gap:15px; align-items: end;">
+                <div class="field-group">
+                    <label style="font-weight: bold; color: var(--primario); margin-bottom: 8px; display: block;">Unidad Administrativa:</label>
+                    <select name="id_ua" class="input-nombre" required style="width: 100%; border: 1px solid #ccc; height: 42px;">
+                        <option value="">-- Seleccionar UA --</option>
+                        {% for ua in unidades %}
+                        <option value="{{ ua.id_ua }}">{{ ua.siglas_ua }} - {{ ua.dependencia.siglas_dependencia }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="field-group">
+                    <label style="font-weight: bold; color: var(--primario); margin-bottom: 8px; display: block;">Nombre del Área:</label>
+                    <input type="text" name="nombre_area" class="input-nombre" 
+                           placeholder="Ej. Recursos Humanos" required style="width: 100%; border: 1px solid #ccc;">
+                </div>
+                <div class="field-group">
+                    <label style="font-weight: bold; color: var(--primario); margin-bottom: 8px; display: block;">Siglas:</label>
+                    <input type="text" name="siglas_area" class="input-nombre" 
+                           placeholder="Ej. RRHH" required style="width: 100%; border: 1px solid #ccc;">
+                </div>
+                <div>
+                    <button type="submit" class="btn-next" style="width: 100%; height: 42px; font-weight: bold;">Guardar</button>
+                </div>
+            </div>
+        </form>
+
+        <div style="margin-bottom:20px; background:#f8f9fa; padding:15px; border-radius:8px; border: 1px solid #dee2e6; display: flex; align-items: center; gap: 15px;">
+            <label style="color: var(--primario); font-weight: bold;">🔍 Filtrar por Unidad Administrativa:</label>
+            <select onchange="location = this.value;" class="input-nombre" style="width: auto; min-width: 300px; border: 1px solid #ccc; height: 35px;">
+                <option value="{{ url_for('main.cat_areas') }}">--- Mostrar Todas ---</option>
+                {% for ua in unidades %}
+                <option value="{{ url_for('main.cat_areas', ua_id=ua.id_ua) }}" 
+                    {% if ua_id_filter == ua.id_ua %}selected{% endif %}>
+                    {{ ua.nombre_ua }} ({{ ua.siglas_ua }})
+                </option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <h3 style="color: var(--primario); margin-bottom: 15px; font-size: 1.2rem;">Áreas Registradas</h3>
+        
+        <div style="overflow-x: auto; background: white; border-radius: 8px;">
+            <table class="compact-table" style="width: 100%; border-collapse: collapse; border: 2px solid #dee2e6;">
+                <thead>
+                    <tr style="background-color: #f8f9fa;">
+                        <th style="border: 1px solid #dee2e6; padding: 12px; text-align: left; color: #444; width: 20%;">Unidad (UA)</th>
+                        <th style="border: 1px solid #dee2e6; padding: 12px; text-align: left; color: #444; width: 15%;">Siglas Área</th>
+                        <th style="border: 1px solid #dee2e6; padding: 12px; text-align: left; color: #444;">Nombre del Área</th>
+                        <th style="border: 1px solid #dee2e6; padding: 12px; text-align: center; color: #444; width: 12%;">Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for area in areas %}
+                    <tr>
+                        <td style="border: 1px solid #dee2e6; padding: 10px; color: #666;"><small>{{ area.unidad.siglas_ua }} / {{ area.dependencia.siglas_dependencia }}</small></td>
+                        <td style="border: 1px solid #dee2e6; padding: 10px; font-weight: bold; color: var(--primario);">{{ area.siglas_area }}</td>
+                        <td style="border: 1px solid #dee2e6; padding: 10px; color: #333;">{{ area.nombre_area }}</td>
+                        <td style="border: 1px solid #dee2e6; padding: 10px; text-align: center;">
+                            <a href="{{ url_for('main.editar_area', id_area=area.id_area) }}" 
+                               style="text-decoration:none; margin-right:12px; font-size: 1.1rem;" title="Editar">✏️</a>
+                            <a href="{{ url_for('main.eliminar_area', id_area=area.id_area) }}" 
+                               onclick="return confirm('¿Confirmar eliminación de esta área?')" 
+                               style="text-decoration:none; font-size: 1.1rem;" title="Eliminar">🗑️</a>
+                        </td>
+                    </tr>
+                    {% else %}
+                    <tr>
+                        <td colspan="4" style="text-align:center; padding: 30px; color: #999; border: 1px solid #dee2e6;">
+                            No existen áreas registradas para esta selección.
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <div style="margin-top: 40px; padding-top: 20px; border-top: 1px solid #eee; display: flex; gap: 15px;">
+            <a href="{{ url_for('main.mostrar_catalogos') }}" class="btn-back" style="display: flex; align-items: center; gap: 8px;">
+                <span style="font-size: 1.2rem;">📂</span> Volver a Catálogos
+            </a>
+            <a href="{{ url_for('main.dashboard') }}" class="btn-back" style="display: flex; align-items: center; gap: 8px; background: #6c757d;">
+                <span style="font-size: 1.2rem;">🏠</span> Menú Principal
+            </a>
+        </div>
+    </section>
+</div>
+
+<style>
+    .compact-table tbody tr:nth-child(even) { background-color: #fdfdfd; }
+    .compact-table tbody tr:hover { background-color: #f1f4f9; transition: 0.2s; }
+</style>
+{% endblock %}

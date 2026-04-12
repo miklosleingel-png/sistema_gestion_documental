@@ -1,0 +1,83 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container-capture">
+    <header class="section-header" style="margin-bottom: 20px;">
+        <h2 class="menu-main-title">Catálogo de Funciones (Auditoría)</h2>
+        <p class="user-info">Registro de atribuciones institucionales para el Cuadro de Clasificación</p>
+    </header>
+
+    <section class="capture-section">
+        <form action="{{ url_for('main.cat_funciones') }}" method="POST" 
+              style="background:#fdfdfd; padding:25px; border-radius:10px; border: 1px solid #ddd; border-left: 5px solid var(--dorado); margin-bottom:40px; box-shadow: 0 2px 4px rgba(0,0,0,0.05);">
+            
+            <div style="display:grid; grid-template-columns: 1fr 2fr 150px; gap:20px; align-items: end;">
+                <div class="field-group">
+                    <label style="font-weight: bold; color: var(--primario); margin-bottom: 8px; display: block;">Nombre de la Función:</label>
+                    <input type="text" name="nombre_funcion" class="input-nombre" 
+                           placeholder="Ej. FISCALIZACIÓN" required style="width: 100%; border: 1px solid #ccc;">
+                </div>
+                <div class="field-group">
+                    <label style="font-weight: bold; color: var(--primario); margin-bottom: 8px; display: block;">Descripción:</label>
+                    <input type="text" name="descripcion_funcion" class="input-nombre" 
+                           placeholder="Breve detalle de la atribución" style="width: 100%; border: 1px solid #ccc;">
+                </div>
+                <div>
+                    <button type="submit" class="btn-next" style="width: 100%; height: 42px; font-weight: bold;">💾 Guardar</button>
+                </div>
+            </div>
+        </form>
+
+        <h3 style="color: var(--primario); margin-bottom: 15px; font-size: 1.2rem;">Funciones Registradas</h3>
+        
+        <div style="overflow-x: auto; background: white; border-radius: 8px;">
+            <table class="compact-table" style="width: 100%; border-collapse: collapse; border: 2px solid #dee2e6;">
+                <thead>
+                    <tr style="background-color: #f8f9fa;">
+                        <th style="border: 1px solid #dee2e6; padding: 12px; text-align: center; color: #444; width: 8%;">ID</th>
+                        <th style="border: 1px solid #dee2e6; padding: 12px; text-align: left; color: #444; width: 25%;">Función</th>
+                        <th style="border: 1px solid #dee2e6; padding: 12px; text-align: left; color: #444;">Descripción</th>
+                        <th style="border: 1px solid #dee2e6; padding: 12px; text-align: center; color: #444; width: 15%;">Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for f in funciones %}
+                    <tr>
+                        <td style="border: 1px solid #dee2e6; padding: 10px; text-align: center; color: #666;">{{ f.id_funcion }}</td>
+                        <td style="border: 1px solid #dee2e6; padding: 10px; font-weight: bold; color: var(--primario);">{{ f.nombre_funcion }}</td>
+                        <td style="border: 1px solid #dee2e6; padding: 10px; color: #333; font-size: 0.9rem;">{{ f.descripcion_funcion or 'SIN DESCRIPCIÓN' }}</td>
+                        <td style="border: 1px solid #dee2e6; padding: 10px; text-align: center;">
+                            <a href="{{ url_for('main.editar_funcion', id_func=f.id_funcion) }}" 
+                               style="text-decoration:none; margin-right:15px; font-size: 1.2rem;" title="Editar">✏️</a>
+                            <a href="{{ url_for('main.eliminar_funcion', id_func=f.id_funcion) }}" 
+                               onclick="return confirm('¿Eliminar esta función?')" 
+                               style="text-decoration:none; font-size: 1.2rem;" title="Eliminar">🗑️</a>
+                        </td>
+                    </tr>
+                    {% else %}
+                    <tr>
+                        <td colspan="4" style="text-align:center; padding: 30px; color: #999; border: 1px solid #dee2e6;">No hay funciones registradas.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <div style="margin-top: 40px; padding-top: 20px; border-top: 1px solid #eee; display: flex; gap: 15px;">
+            <a href="{{ url_for('main.mostrar_catalogos') }}" class="btn-back" style="display: flex; align-items: center; gap: 8px; text-decoration: none;">
+                <span style="font-size: 1.2rem;">📂</span> Volver a Catálogos
+            </a>
+            <a href="{{ url_for('main.dashboard') }}" class="btn-back" style="display: flex; align-items: center; gap: 8px; background: #6c757d; color: white; text-decoration: none;">
+                <span style="font-size: 1.2rem;">🏠</span> Menú Principal
+            </a>
+        </div>
+    </section>
+</div>
+
+<style>
+    /* Estilos adicionales para mejorar la interacción */
+    .compact-table tbody tr:nth-child(even) { background-color: #fdfdfd; }
+    .compact-table tbody tr:hover { background-color: #f1f4f9; transition: 0.2s; }
+    .btn-back:hover { opacity: 0.8; color: white !important; }
+</style>
+{% endblock %}

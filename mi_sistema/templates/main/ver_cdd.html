@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>CADIDO - SMADSOT</title>
+    <style>
+        /* Estilos base */
+        body { background-color: #f0f0f0; font-family: 'Segoe UI', sans-serif; margin: 0; padding: 20px; }
+        .document-container { 
+            background: white; width: 250mm; margin: 0 auto; padding: 15mm; 
+            box-shadow: 0 0 10px rgba(0,0,0,0.1); 
+        }
+        
+        /* Botones */
+        .botones-flotantes { position: fixed; top: 20px; left: 20px; display: flex; gap: 10px; z-index: 100; }
+        .btn-flotante { 
+            background: #691C32; color: white; padding: 10px 15px; 
+            text-decoration: none; border-radius: 5px; font-size: 14px; border: none; cursor: pointer;
+        }
+
+        /* Encabezado */
+        .header-grid { display: grid; grid-template-columns: 150px 1fr 150px; align-items: center; text-align: center; }
+        .logo-doc { width: 120px; height: auto; }
+        .document-title { color: #691C32; font-size: 1.2rem; margin: 0; }
+        .doc-divider { border: 1px solid #B08B57; margin: 10px 0; }
+
+        /* Tabla */
+        .cadido-table { width: 100%; border-collapse: collapse; font-size: 8pt; table-layout: fixed; }
+        .cadido-table th { 
+            background-color: #691C32 !important; color: white !important; 
+            border: 1px solid #4a0d26; padding: 5px; text-transform: uppercase;
+            -webkit-print-color-adjust: exact; 
+        }
+        .cadido-table td { border: 1px solid #ccc; padding: 4px; text-align: center; word-wrap: break-word; }
+        .text-left { text-align: left !important; padding-left: 5px !important; }
+
+        @media print {
+            .no-print { display: none !important; }
+            body { background: white; padding: 0; }
+            .document-container { width: 100%; box-shadow: none; padding: 0; }
+            @page { size: landscape; margin: 1cm; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="botones-flotantes no-print">
+        <a href="{{ url_for('main.dashboard') }}" class="btn-flotante">← Volver al menú</a>
+        <button onclick="window.print();" class="btn-flotante btn-print">🖨️ Imprimir CADIDO</button>
+    </div>
+
+
+    <div class="document-container">
+        <header>
+            <div class="header-grid">
+                <img src="{{ url_for('static', filename='logo_gobierno.png') }}" class="logo-doc">
+                <h1 class="document-title">Catálogo de Disposición Documental (CADIDO)</h1>
+                <img src="{{ url_for('static', filename='logo_secretaria.png') }}" class="logo-doc">
+            </div>
+            <hr class="doc-divider">
+            <p style="text-align: right; font-size: 9pt;">Emisión: <strong>{{ fecha_actualizacion }}</strong></p>
+        </header>
+
+        <table class="cadido-table">
+            <thead>
+                <tr>
+                    <th rowspan="2" style="width: 10%;">Código</th>
+                    <th rowspan="2" style="width: 25%;">Serie Documental</th>
+                    <th colspan="3">Valores Primarios</th>
+                    <th colspan="3">Valores Secundarios</th>
+                    <th colspan="2">Plazos</th>
+                    <th rowspan="2" style="width: 20%;">Técnica / Destino</th>
+                </tr>
+                <tr>
+                    <th title="Administrativo">A</th>
+                    <th title="Legal">L</th>
+                    <th title="Fiscal">F</th>
+                    <th title="Evidencial">E</th>
+                    <th title="Testimonial">T</th>
+                    <th title="Histórico">H</th>
+                    <th title="Archivo de Trámite">AT</th>
+                    <th title="Archivo de Concentración">AC</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for c, v in catalogo %}
+                <tr>
+                    <td style="font-weight: bold;">{{ c.clave_cgca }}</td>
+                    <td class="text-left">{{ c.nombre_cgca }}</td>
+
+                    <td>{{ 'X' if v and v.administrativo else '' }}</td>
+                    <td>{{ 'X' if v and v.legal else '' }}</td>
+                    <td>{{ 'X' if v and v.fiscal else '' }}</td>
+
+                    <td>{{ 'X' if v and v.evidencial else '' }}</td>
+                    <td>{{ 'X' if v and v.testimonial else '' }}</td>
+                    <td>{{ 'X' if v and v.historico else '' }}</td>
+
+                    <td>{{ v.anios_tramite if v else '-' }}</td>
+                    <td>{{ v.anios_concentracion if v else '-' }}</td>
+
+                    <td class="text-left" style="font-size: 7pt;">
+                        <strong>{{ v.tecnica_seleccion if v else '' }}</strong>
+                        {% if v and v.justificacion_disposicion %}<br><em>{{ v.justificacion_disposicion[:60] }}...</em>{% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+</body>
+</html>

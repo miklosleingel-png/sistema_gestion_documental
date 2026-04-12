@@ -1,0 +1,25 @@
+# Entorno virtual
+venv/
+__pycache__/
+*.pyc
+*.pyo
+
+# Base de datos local
+instance/
+*.db
+
+# Variables de entorno y secretos
+.env
+
+# Archivos de sistema
+.DS_Store
+Thumbs.db
+
+# Cloud SQL Proxy (ejecutable, no va en el repo)
+cloud-sql-proxy
+
+# Migraciones generadas localmente
+migrations/versions/
+
+# Archivos de build
+*.gnumeric

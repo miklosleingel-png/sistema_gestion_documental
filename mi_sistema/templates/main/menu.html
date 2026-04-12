@@ -1,0 +1,115 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="page-container">
+
+    <div class="page-header">
+        <h1 class="page-title">Menú Principal</h1>
+        <a href="{{ url_for('main.logout') }}" class="btn-logout">Cerrar sesión</a>
+    </div>
+
+    <section class="menu-section">
+        <h2 class="menu-subtitle">Gestión de expedientes</h2>
+        <div class="cards-grid">
+
+            <a href="{{ url_for('main.cap_expedientes') }}" class="menu-card">
+                <div class="menu-card-icon">
+                    <img src="{{ url_for('static', filename='01icon_expedientes.png') }}" alt="Expedientes">
+                </div>
+                <h3 class="menu-card-title">Captura de Expedientes</h3>
+            </a>
+
+            <a href="{{ url_for('main.cat_cgca') }}" class="menu-card">
+                <div class="menu-card-icon">
+                    <img src="{{ url_for('static', filename='08icon_cgca.png') }}" alt="Series">
+                </div>
+                <h3 class="menu-card-title">Series Documentales</h3>
+            </a>
+
+            <a href="{{ url_for('main.cat_guia') }}" class="menu-card menu-card-accent-guinda">
+                <div class="menu-card-icon">
+                    <img src="{{ url_for('static', filename='12icon_inventario.png') }}" alt="Guía de Archivo">
+                </div>
+                <h3 class="menu-card-title">Guía de Archivo Documental</h3>
+                <p class="menu-card-desc">Ubicación Física y Responsables</p>
+            </a>
+
+            <a href="{{ url_for('main.cat_disposicion') }}" class="menu-card menu-card-accent-dorado">
+                <div class="menu-card-icon">
+                    <img src="{{ url_for('static', filename='09icon_cdd.png') }}" alt="CDD">
+                </div>
+                <h3 class="menu-card-title">Valoración Documental (CDD)</h3>
+                <p class="menu-card-desc">Configurar Vigencias y Valores</p>
+            </a>
+
+            <a href="{{ url_for('main.condiciones_acceso') }}" class="menu-card">
+                <div class="menu-card-icon">
+                    <img src="{{ url_for('static', filename='12icon_inventario.png') }}" alt="Condiciones de Acceso">
+                </div>
+                <h3 class="menu-card-title">Condiciones de Acceso</h3>
+            </a>
+
+            <a href="{{ url_for('main.auditoria_archivo') }}" class="menu-card">
+                <div class="menu-card-icon">
+                    <img src="{{ url_for('static', filename='08icon_cgca.png') }}" alt="Auditoría">
+                </div>
+                <h3 class="menu-card-title">Auditoría y Vinculación Normativa</h3>
+            </a>
+
+        </div>
+    </section>
+
+    <section class="menu-section">
+        <h2 class="menu-subtitle">Instrumentos de Control y Consulta</h2>
+        <div class="cards-grid">
+
+            <a href="{{ url_for('main.inventario_general') }}" class="menu-card menu-card-accent-dorado-bottom">
+                <div class="menu-card-icon">
+                    <img src="{{ url_for('static', filename='01icon_expedientes.png') }}" alt="Inventario">
+                </div>
+                <h3 class="menu-card-title">Inventario General</h3>
+                <p class="menu-card-desc">Sumatoria y Fechas Extremas</p>
+            </a>
+
+            <a href="{{ url_for('main.ver_cdd') }}" class="menu-card menu-card-accent-guinda-bottom">
+                <div class="menu-card-icon">
+                    <img src="{{ url_for('static', filename='09icon_cdd.png') }}" alt="CADIDO">
+                </div>
+                <h3 class="menu-card-title">Catálogo de Disposición (CADIDO)</h3>
+                <p class="menu-card-desc">Vista de Valoración y Vigencias</p>
+            </a>
+
+            <a href="{{ url_for('main.cgca') }}" class="menu-card">
+                <div class="menu-card-icon">
+                    <img src="{{ url_for('static', filename='08icon_cgca.png') }}" alt="CGCA">
+                </div>
+                <h3 class="menu-card-title">Cuadro General (CGCA)</h3>
+            </a>
+
+            <a href="{{ url_for('main.ficha_valoracion') }}" class="menu-card">
+                <div class="menu-card-icon">
+                    <img src="{{ url_for('static', filename='09icon_cdd.png') }}" alt="Ficha Valoración">
+                </div>
+                <h3 class="menu-card-title">Ficha de Valoración Documental</h3>
+            </a>
+
+        </div>
+    </section>
+
+    <section class="menu-section">
+        <h2 class="menu-subtitle">Configuración del Sistema</h2>
+        <div class="cards-grid">
+
+            <a href="{{ url_for('main.mostrar_catalogos') }}" class="menu-card">
+                <div class="menu-card-icon">
+                    <img src="{{ url_for('static', filename='03icon_areas.png') }}" alt="Catálogos">
+                </div>
+                <h3 class="menu-card-title">Catálogos Institucionales</h3>
+                <p class="menu-card-desc">Áreas, Unidades y Funcionarios</p>
+            </a>
+
+        </div>
+    </section>
+
+</div>
+{% endblock %}

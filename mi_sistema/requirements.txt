@@ -1,0 +1,8 @@
+flask
+flask-sqlalchemy
+flask-login
+flask-migrate
+gunicorn
+psycopg2-binary
+pg8000
+python-dotenv

@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="cap-container" style="max-width: 800px;">
+
+    <div class="cap-header">
+        <div>
+            <h2 class="cap-title">Editar Funcionario Responsable</h2>
+            <p class="cap-subtitle">{{ registro.nombre_funcionario }}</p>
+        </div>
+        <a href="{{ url_for('main.cat_funcionarios') }}" class="cap-btn-menu">← Regresar</a>
+    </div>
+
+    <div class="cap-card">
+        <div class="cap-legend">Modificar Datos del Funcionario</div>
+        <form action="{{ url_for('main.editar_funcionario', id_func=registro.id_funcionarios) }}" method="POST">
+
+            <div class="cap-grid-1">
+                <div class="cap-field">
+                    <label class="cap-label">Nombre Completo</label>
+                    <input type="text" name="nombre_funcionario" class="cap-input"
+                           value="{{ registro.nombre_funcionario }}" required>
+                </div>
+            </div>
+
+            <div class="cap-grid-2">
+                <div class="cap-field">
+                    <label class="cap-label">Cargo / Puesto</label>
+                    <input type="text" name="cargo_funcionario" class="cap-input"
+                           value="{{ registro.cargo_funcionario }}" required>
+                </div>
+                <div class="cap-field">
+                    <label class="cap-label">Área de Adscripción</label>
+                    <select name="id_area" class="cap-select" required>
+                        <option value="">-- Seleccionar Área --</option>
+                        {% for area in areas %}
+                        <option value="{{ area.id_area }}"
+                            {% if area.id_area == registro.id_area %}selected{% endif %}>
+                            {{ area.siglas_area }} — {{ area.unidad.siglas_ua }} ({{ area.nombre_area | truncate(40) }})
+                        </option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+
+            <div class="cap-grid-2">
+                <div class="cap-field">
+                    <label class="cap-label">Fecha de Designación</label>
+                    <input type="date" name="fecha_designacion_func" class="cap-input"
+                           value="{{ registro.fecha_designacion_func.strftime('%Y-%m-%d') if registro.fecha_designacion_func else '' }}">
+                </div>
+                <div class="cap-field">
+                    <label class="cap-label">Fecha de Término / Baja</label>
+                    <input type="date" name="fecha_fin_func" class="cap-input"
+                           value="{{ registro.fecha_fin_func.strftime('%Y-%m-%d') if registro.fecha_fin_func else '' }}">
+                </div>
+            </div>
+
+            <div class="cap-actions">
+                <a href="{{ url_for('main.cat_funcionarios') }}" class="cap-btn-cancel">Cancelar</a>
+                <button type="submit" class="cap-btn-save">Guardar Cambios</button>
+            </div>
+        </form>
+    </div>
+
+</div>
+{% endblock %}

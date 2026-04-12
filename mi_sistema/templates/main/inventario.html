@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inventario General de Archivo</title>
+    
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/estilos.css') }}">
+
+<style>
+    /* --- VISTA EN PANTALLA --- */
+    body {
+        background-color: #f0f0f0;
+        padding: 40px 0;
+        font-family: 'Segoe UI', Arial, sans-serif;
+    }
+
+    .document-container {
+        background-color: white;
+        width: 279mm; /* Ancho oficio horizontal */
+        min-height: 216mm;
+        margin: 0 auto;
+        padding: 40px;
+        box-shadow: 0 0 15px rgba(0,0,0,0.2);
+    }
+
+    /* CONTENEDOR DE BOTONES FLOTANTES */
+    .botones-flotantes {
+        position: fixed;
+        top: 20px;
+        left: 20px;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        z-index: 100;
+    }
+
+    .btn-flotante {
+        background: #691C32;
+        color: white;
+        padding: 10px 18px;
+        text-decoration: none;
+        border-radius: 4px;
+        font-weight: bold;
+        border: none;
+        cursor: pointer;
+        text-align: center;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    }
+
+    .btn-print { background: #B08B57; }
+
+    .header-top-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 5px;
+    }
+
+    .logo-doc {
+        height: 65px;
+        width: auto;
+        object-fit: contain;
+    }
+
+    .document-title {
+        color: #691C32;
+        text-align: center;
+        flex: 1;
+        font-size: 1.5rem;
+        font-weight: bold;
+        text-transform: uppercase;
+        margin: 0 20px;
+    }
+
+    .doc-divider {
+        border: none;
+        border-top: 3px solid #B08B57;
+        margin: 10px 0;
+    }
+
+    .update-line {
+        text-align: right;
+        font-size: 0.9rem;
+        color: #333;
+        margin-bottom: 25px;
+    }
+
+    /* --- ESTILOS DE LA TABLA PUEBLA --- */
+    .table-section {
+        margin-top: 10px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        overflow: hidden;
+    }
+
+    .tabla-puebla {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 0.75rem;
+        background-color: #ffffff;
+        table-layout: fixed;
+    }
+
+    .tabla-puebla thead th {
+        background-color: #691C32;
+        color: #ffffff;
+        font-weight: bold;
+        padding: 8px 5px;
+        text-align: center;
+        text-transform: uppercase;
+        border: 1px solid #4a0d26;
+    }
+
+    .tabla-puebla td {
+        padding: 6px 8px;
+        border: 1px solid #e0e0e0;
+        color: #333;
+        vertical-align: middle;
+        word-wrap: break-word;
+        text-align: center;
+    }
+
+    .text-left { text-align: left !important; padding-left: 6px !important; }
+    .bold { font-weight: bold; }
+
+    /* --- CONFIGURACIÓN DE IMPRESIÓN --- */
+    @media print {
+        @page {
+            size: landscape;
+            margin: 0.8cm;
+        }
+
+        .no-print, .botones-flotantes { 
+            display: none !important; 
+        }
+
+        body { 
+            background-color: white !important; 
+            padding: 0;
+            width: 100%;
+        }
+
+        .document-container { 
+            box-shadow: none; 
+            margin: 0; 
+            width: 100% !important; 
+            max-width: none !important;
+            padding: 0 !important;
+        }
+
+        .tabla-puebla thead th {
+            background-color: #691C32 !important;
+            color: white !important;
+            -webkit-print-color-adjust: exact;
+        }
+
+        tr { page-break-inside: avoid; }
+    }
+</style>
+</head>
+<body>
+
+    <div class="botones-flotantes no-print">
+        <a href="{{ url_for('main.dashboard') }}" class="btn-flotante">← Volver al menú</a>
+        <button onclick="window.print();" class="btn-flotante btn-print">🖨️ Imprimir Inventario</button>
+    </div>
+
+    <div class="document-container">
+        <header class="cgca-header">
+            <div class="header-top-row">
+                <img src="{{ url_for('static', filename='logo_gobierno.png') }}" alt="Gobierno" class="logo-doc">
+                <h1 class="document-title">Inventario General de Archivo</h1>
+                <img src="{{ url_for('static', filename='logo_secretaria.png') }}" alt="Secretaría" class="logo-doc">
+            </div>
+            <p style="text-align: center; font-weight: bold; margin-top: -10px; color: #333; font-size: 0.85rem;">FONDO: SECRETARÍA DE MEDIO AMBIENTE, DESARROLLO SUSTENTABLE Y ORDENAMIENTO TERRITORIAL</p>
+            
+            <hr class="doc-divider">
+            
+            <div class="update-line">
+                Fecha de Reporte: <strong>{{ fecha_actualizacion if fecha_actualizacion else '31 de Marzo de 2026' }}</strong>
+            </div>
+        </header>
+
+        <section class="table-section">
+            <table class="tabla-puebla">
+                <thead>
+                    <tr>
+                        <th rowspan="2" style="width: 12%;">Código de Clasificación</th>
+                        <th rowspan="2" style="width: 25%;">Funciones Sustantivas (Serie/Subserie)</th>
+                        <th colspan="3">Total de Expedientes por Tipo de Archivo</th>
+                        <th rowspan="2" style="width: 12%;">Ubicación Física</th>
+                        <th rowspan="2" style="width: 18%;">Asunto / Descripción</th>
+                        <th rowspan="2" style="width: 13%;">Observaciones</th>
+                    </tr>
+                    <tr>
+                        <th style="width: 6.5%;">Tr</th>
+                        <th style="width: 6.5%;">Co</th>
+                        <th style="width: 6.5%;">Hi</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in inventario %}
+                    {% set cat = item[0] %}
+                    <tr>
+                        <td class="bold">{{ cat.clave_cgca }}</td>
+                        <td class="text-left">{{ cat.serie_nombre }}</td>
+                        
+                        <td class="bold">{{ item.tramite if item.tramite else '0' }}</td>
+                        <td>{{ item.concentracion if item.concentracion else '0' }}</td>
+                        <td>{{ item.historico if item.historico else '0' }}</td>
+                        
+                        <td style="font-size: 7.5pt;">{{ cat.observaciones or '' }}</td>
+                        <td class="text-left" style="font-size: 7.5pt;">{{ cat.descripcion or '' }}</td>
+                        <td class="text-left" style="font-size: 7.5pt;">{{ cat.observaciones or '' }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </section>
+    </div>
+
+</body>
+</html> 

@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="auth-wrapper">
+    <div class="auth-card">
+
+        <div class="auth-card-header auth-header-guinda">
+            <div class="auth-icon">
+                <img src="{{ url_for('static', filename='logo_archivos.png') }}" alt="Archivos Verdes" class="auth-logo">
+            </div>
+            <h4 class="auth-title">Acceso al Sistema</h4>
+            <p class="auth-subtitle">Gestión Documental · SMADSOT</p>
+        </div>
+
+        <div class="auth-card-body">
+            <form action="{{ url_for('main.login_post') }}" method="POST">
+                <div class="auth-field">
+                    <label for="username" class="auth-label">Usuario</label>
+                    <input type="text" name="username" id="username"
+                           class="auth-input"
+                           placeholder="Ingresa tu usuario"
+                           required autocomplete="off">
+                </div>
+
+                <div class="auth-field">
+                    <label for="password" class="auth-label">Contraseña</label>
+                    <input type="password" name="password" id="password"
+                           class="auth-input"
+                           placeholder="••••••••"
+                           required>
+                </div>
+
+                <button type="submit" class="auth-btn auth-btn-guinda">
+                    Ingresar al Sistema
+                </button>
+            </form>
+
+            <hr class="auth-divider">
+
+            <p class="auth-link-text">
+                ¿No tienes acceso?
+                <a href="{{ url_for('main.register') }}" class="auth-link">Solicitar registro</a>
+            </p>
+        </div>
+
+        <div class="auth-card-footer">
+            Sistema de Gestión Documental · Archivos Verdes · SMADSOT
+        </div>
+    </div>
+</div>
+{% endblock %}

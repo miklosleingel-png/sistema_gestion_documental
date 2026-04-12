@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container-capture">
+    <h2>Modificar Registro Externo</h2>
+    <form action="{{ url_for('main.editar_area_ext', id_ext=registro.id_area_ext) }}" method="POST">
+        <label>Nombre de la Institución:</label>
+        <input type="text" name="nombre_institucion" value="{{ registro.nombre_institucion }}" style="width:100%; margin-bottom:15px; padding:10px;">
+        
+        <label>Siglas:</label>
+        <input type="text" name="siglas_institucion" value="{{ registro.siglas_institucion }}" style="width:100%; margin-bottom:15px; padding:10px;">
+        
+        <label>Área Externa:</label>
+        <input type="text" name="nombre_area_externa" value="{{ registro.nombre_area_externa }}" style="width:100%; margin-bottom:15px; padding:10px;">
+        
+        <div style="margin-top:20px;">
+            <button type="submit" class="btn-next">Actualizar Datos</button>
+            <a href="{{ url_for('main.cat_areas_externas') }}" class="btn-back">Cancelar</a>
+        </div>
+    </form>
+</div>
+{% endblock %}

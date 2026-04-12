@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="cap-container" style="max-width: 700px;">
+
+    <div class="cap-header">
+        <div>
+            <h2 class="cap-title">Editar Área Productora</h2>
+            <p class="cap-subtitle">{{ registro.siglas_area }} — {{ registro.nombre_area }}</p>
+        </div>
+        <a href="{{ url_for('main.cat_areas', ua_id=registro.id_ua) }}" class="cap-btn-menu">← Regresar</a>
+    </div>
+
+    <div class="cap-card">
+        <div class="cap-legend">Modificar Datos</div>
+        <form action="{{ url_for('main.editar_area', id_area=registro.id_area) }}" method="POST">
+
+            <div class="cap-grid-1">
+                <div class="cap-field">
+                    <label class="cap-label">Unidad Administrativa Perteneciente</label>
+                    <select name="id_ua" class="cap-select" required>
+                        {% for ua in unidades %}
+                        <option value="{{ ua.id_ua }}"
+                            {% if registro.id_ua == ua.id_ua %}selected{% endif %}>
+                            {{ ua.nombre_ua }} ({{ ua.siglas_ua }})
+                        </option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+
+            <div class="cap-grid-2">
+                <div class="cap-field">
+                    <label class="cap-label">Nombre del Área</label>
+                    <input type="text" name="nombre_area" class="cap-input"
+                           value="{{ registro.nombre_area }}" required>
+                </div>
+                <div class="cap-field">
+                    <label class="cap-label">Siglas</label>
+                    <input type="text" name="siglas_area" class="cap-input"
+                           value="{{ registro.siglas_area }}" required>
+                </div>
+            </div>
+
+            <div class="cap-actions">
+                <a href="{{ url_for('main.cat_areas', ua_id=registro.id_ua) }}" class="cap-btn-cancel">Cancelar</a>
+                <button type="submit" class="cap-btn-save">Guardar Cambios</button>
+            </div>
+        </form>
+    </div>
+
+</div>
+{% endblock %}

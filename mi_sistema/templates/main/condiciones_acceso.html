@@ -1,0 +1,182 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="cap-container">
+
+    <div class="cap-header">
+        <div>
+            <h2 class="cap-title">Condiciones de Acceso</h2>
+            <p class="cap-subtitle">Clasificación legal de series documentales conforme a la normativa vigente</p>
+        </div>
+        <a href="{{ url_for('main.dashboard') }}" class="cap-btn-menu">← Menú Principal</a>
+    </div>
+
+    <div class="cap-card">
+        <div class="cap-legend">Configurar Clasificación</div>
+
+        <form action="{{ url_for('main.guardar_condiciones') }}" method="POST">
+
+            <div class="cap-grid-1">
+                <div class="cap-field">
+                    <label class="cap-label">Serie Documental (Clave CGCA)</label>
+                    <select name="id_cgca" class="cap-select" required>
+                        <option value="" disabled {% if not condicion %}selected{% endif %}>-- Seleccione una serie --</option>
+                        {% for s in series %}
+                        <option value="{{ s.id_cgca }}"
+                            {% if condicion and condicion.id_cgca == s.id_cgca %}selected{% endif %}>
+                            {{ s.clave_cgca }} — {{ s.serie_nombre }}
+                        </option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+
+            <div class="cap-grid-3" style="margin-bottom:14px;">
+                <div style="background:#f0fff4; border:1.5px solid #c3e6cb; border-radius:8px; padding:14px; text-align:center;">
+                    <label style="cursor:pointer; display:flex; align-items:center; justify-content:center; gap:8px;">
+                        <input type="checkbox" name="publica" id="chk_pub"
+                               onchange="toggleAcceso(this)"
+                               style="width:18px; height:18px; accent-color:#198754;"
+                               {% if condicion and condicion.es_publica %}checked{% endif %}>
+                        <span style="color:#155724; font-weight:700; font-size:0.88rem;">PÚBLICA</span>
+                    </label>
+                </div>
+                <div style="background:#fff5f5; border:1.5px solid #f5c6cb; border-radius:8px; padding:14px; text-align:center;">
+                    <label style="cursor:pointer; display:flex; align-items:center; justify-content:center; gap:8px;">
+                        <input type="checkbox" name="reservada" id="chk_res"
+                               onchange="toggleAcceso(this)"
+                               style="width:18px; height:18px; accent-color:#dc3545;"
+                               {% if condicion and condicion.es_reservada %}checked{% endif %}>
+                        <span style="color:#721c24; font-weight:700; font-size:0.88rem;">RESERVADA</span>
+                    </label>
+                </div>
+                <div style="background:#fffcf0; border:1.5px solid #ffeeba; border-radius:8px; padding:14px; text-align:center;">
+                    <label style="cursor:pointer; display:flex; align-items:center; justify-content:center; gap:8px;">
+                        <input type="checkbox" name="confidencial" id="chk_con"
+                               onchange="toggleAcceso(this)"
+                               style="width:18px; height:18px; accent-color:#856404;"
+                               {% if condicion and condicion.es_confidencial %}checked{% endif %}>
+                        <span style="color:#856404; font-weight:700; font-size:0.88rem;">CONFIDENCIAL</span>
+                    </label>
+                </div>
+            </div>
+
+            <div id="div_reserva" style="display:none; margin-bottom:14px;">
+                <div style="border-left:4px solid #dc3545; background:#fff5f5; border-radius:0 8px 8px 0; padding:16px;">
+                    <div class="cap-legend" style="color:#721c24;">Detalles — Información Reservada</div>
+                    <div class="cap-grid-2">
+                        <div class="cap-field">
+                            <label class="cap-label">Años de Reserva (máx. 12)</label>
+                            <input type="number" name="anios_reserva" class="cap-input"
+                                   min="1" max="12"
+                                   value="{{ condicion.anios_reserva if condicion and condicion.anios_reserva else '' }}">
+                        </div>
+                        <div class="cap-field">
+                            <label class="cap-label">Justificación Legal (Reserva)</label>
+                            <textarea name="justificacion_reservada" class="cap-textarea"
+                                      rows="2">{{ condicion.justificacion_reservada if condicion and condicion.justificacion_reservada else '' }}</textarea>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="div_confidencial" style="display:none; margin-bottom:14px;">
+                <div style="border-left:4px solid #856404; background:#fffcf0; border-radius:0 8px 8px 0; padding:16px;">
+                    <div class="cap-legend" style="color:#856404;">Detalles — Información Confidencial</div>
+                    <div class="cap-grid-1">
+                        <div class="cap-field">
+                            <label class="cap-label">Justificación de Confidencialidad</label>
+                            <textarea name="justificacion_confidencial" class="cap-textarea"
+                                      rows="2">{{ condicion.justificacion_confidencial if condicion and condicion.justificacion_confidencial else '' }}</textarea>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="cap-actions">
+                {% if condicion %}
+                <a href="{{ url_for('main.condiciones_acceso') }}" class="cap-btn-cancel">Cancelar</a>
+                {% endif %}
+                <a href="{{ url_for('main.dashboard') }}" class="cap-btn-cancel">← Menú</a>
+                <button type="submit" class="cap-btn-save">
+                    {{ 'Actualizar Registro' if condicion else 'Guardar Clasificación' }}
+                </button>
+            </div>
+
+        </form>
+    </div>
+
+    <hr class="cap-separator">
+
+    <h3 class="cap-table-title">Clasificaciones Guardadas</h3>
+    <div class="cap-table-wrap">
+        <table class="cap-table">
+            <thead>
+                <tr>
+                    <th>Clave CGCA</th>
+                    <th>Clasificación Legal</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for r in registros %}
+                <tr>
+                    <td><span class="td-clave">{{ r.maestra_entidad.clave_cgca if r.maestra_entidad else r.id_cgca }}</span></td>
+                    <td>
+                        {% if r.es_publica %}
+                            <span style="color:#155724; font-weight:700;">● Pública</span>
+                        {% endif %}
+                        {% if r.es_reservada %}
+                            <span style="color:#721c24; font-weight:700;">● Reservada</span>
+                            {% if r.anios_reserva %}
+                                <span class="td-muted">{{ r.anios_reserva }} años</span>
+                            {% endif %}
+                        {% endif %}
+                        {% if r.es_confidencial %}
+                            <span style="color:#856404; font-weight:700;">● Confidencial</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        <div class="cap-table-actions">
+                            <a href="{{ url_for('main.condiciones_acceso', id_maestro=r.id_cgca) }}"
+                               class="btn-tbl-edit">Editar</a>
+                            <a href="{{ url_for('main.borrar_condiciones', id_condicion=r.id_condicion) }}"
+                               class="btn-tbl-del"
+                               onclick="return confirm('¿Eliminar esta clasificación?')">Eliminar</a>
+                        </div>
+                    </td>
+                </tr>
+                {% else %}
+                <tr>
+                    <td colspan="3" class="td-empty">No hay clasificaciones registradas aún.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+</div>
+
+<script>
+function toggleAcceso(elem) {
+    const pub = document.getElementById('chk_pub');
+    const res = document.getElementById('chk_res');
+    const con = document.getElementById('chk_con');
+
+    if (elem) {
+        if (elem.id === 'chk_pub' && pub.checked) {
+            res.checked = false;
+            con.checked = false;
+        } else if ((elem.id === 'chk_res' || elem.id === 'chk_con') && elem.checked) {
+            pub.checked = false;
+        }
+    }
+
+    document.getElementById('div_reserva').style.display = res.checked ? 'block' : 'none';
+    document.getElementById('div_confidencial').style.display = con.checked ? 'block' : 'none';
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+    toggleAcceso(null);
+});
+</script>
+{% endblock %}

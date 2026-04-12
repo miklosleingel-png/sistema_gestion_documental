@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container-capture">
+    <h2>Editar Sede de Archivo</h2>
+    <form action="{{ url_for('main.editar_archivo', id_archivo=registro.id_archivo) }}" method="POST">
+        <label>Nombre del Archivo:</label>
+        <input type="text" name="nombre_archivo" value="{{ registro.nombre_archivo }}" style="width:100%; margin-bottom:15px; padding:10px;">
+        
+        <label>Ubicación:</label>
+        <textarea name="ubicacion" rows="3" style="width:100%; margin-bottom:15px; padding:10px;">{{ registro.ubicacion }}</textarea>
+        
+        <div style="margin-top:20px;">
+            <button type="submit" class="btn-next">Actualizar Datos</button>
+            <a href="{{ url_for('main.cat_archivo') }}" class="btn-back">Cancelar</a>
+        </div>
+    </form>
+</div>
+{% endblock %}

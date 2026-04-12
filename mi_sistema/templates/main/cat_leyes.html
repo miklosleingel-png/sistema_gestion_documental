@@ -1,0 +1,127 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="botones-flotantes no-print">
+    <a href="{{ url_for('main.mostrar_catalogos') }}" class="btn-flotante">
+        <span>📂</span> Volver a Catálogos
+    </a>
+    <a href="{{ url_for('main.dashboard') }}" class="btn-flotante" style="background-color: #6c757d !important;">
+        <span>🏠</span> Menú Principal
+    </a>
+</div>
+
+<div class="container-capture">
+    <header class="section-header">
+        <h2 class="menu-main-title">Catálogo de Marco Jurídico / Leyes</h2>
+        <p class="user-info">Registro de fundamentos legales para la valoración y disposición documental</p>
+    </header>
+
+    <section class="capture-section">
+        <form action="{{ url_for('main.cat_leyes') }}" method="POST">
+            <div class="grid-form-optimized" style="border-left: 5px solid var(--dorado);">
+                
+                <div class="field-group" style="grid-column: span 2;">
+                    <label>Nombre de la Norma:</label>
+                    <input type="text" name="nombre_ley" placeholder="Ej. Ley General de Archivos" required>
+                </div>
+
+                <div class="field-group">
+                    <label>Siglas:</label>
+                    <input type="text" name="siglas_ley" placeholder="Ej. LGA" required>
+                </div>
+
+                <div class="field-group">
+                    <label>Ámbito:</label>
+                    <select name="ambito" required style="height: 42px; border: 1px solid #ccc; border-radius: 4px; font-family: var(--fuente-principal);">
+                        <option value="ESTATAL">ESTATAL</option>
+                        <option value="FEDERAL">FEDERAL</option>
+                        <option value="MUNICIPAL">MUNICIPAL</option>
+                    </select>
+                </div>
+
+                <div class="field-group">
+                    <label>Artículo:</label>
+                    <input type="text" name="articulo" placeholder="Ej. 4">
+                </div>
+
+                <div class="field-group">
+                    <label>Fracción:</label>
+                    <input type="text" name="fraccion" placeholder="Ej. VII">
+                </div>
+
+                <div class="field-group">
+                    <label>Inciso:</label>
+                    <input type="text" name="inciso" placeholder="Ej. a)">
+                </div>
+
+                <div class="full-width-field">
+                    <label>Descripción o Texto del Fragmento:</label>
+                    <textarea name="texto_ley" class="textarea-capture" placeholder="Escriba aquí el contenido legal relevante..." rows="3"></textarea>
+                </div>
+            </div>
+            
+            <div class="form-actions">
+                <button type="submit" class="btn-next-alt" style="width: 250px;">💾 Guardar Fundamento</button>
+            </div>
+        </form>
+
+        <hr class="header-divider" style="margin: 30px 0;">
+
+        <div style="margin-bottom:20px; background:#f8f9fa; padding:15px; border-radius:8px; border: 1px solid var(--gris-bordes); display: flex; align-items: center; gap: 15px;">
+            <label style="color: var(--guinda); font-weight: bold;">🔍 Filtrar por Norma (Siglas):</label>
+            <select onchange="location = this.value;" style="padding: 5px; border-radius: 4px; border: 1px solid #ccc; font-family: var(--fuente-principal);">
+                <option value="{{ url_for('main.cat_leyes') }}">--- Todas las Normas ---</option>
+                {% for s in todas_siglas %}
+                <option value="{{ url_for('main.cat_leyes', siglas=s[0]) }}" {% if siglas_filter == s[0] %}selected{% endif %}>{{ s[0] }}</option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <h3 style="color: var(--guinda); margin-bottom: 15px; font-size: 1.1rem; text-transform: uppercase;">Fundamentos Registrados</h3>
+        
+        <div style="overflow-x: auto;">
+            <table>
+                <thead>
+                    <tr>
+                        <th style="width: 15%;">Norma</th>
+                        <th style="width: 15%;">Referencia</th>
+                        <th>Texto / Descripción</th>
+                        <th style="width: 12%;">Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for ley in leyes %}
+                    <tr>
+                        <td>
+                            <strong style="color: var(--guinda);">{{ ley.siglas_ley }}</strong><br>
+                            <small style="color: #777;">{{ ley.ambito }}</small>
+                        </td>
+                        <td class="code-cell">
+                            Art. {{ ley.articulo or '-' }}<br>
+                            Fr. {{ ley.fraccion or '-' }}<br>
+                            Inc. {{ ley.inciso or '-' }}
+                        </td>
+                        <td style="font-size: 0.85rem; color: #555;">
+                            {{ ley.texto_ley[:180] }}{% if ley.texto_ley|length > 180 %}...{% endif %}
+                        </td>
+                        <td class="actions-cell">
+                            <a href="{{ url_for('main.editar_ley', id_ley=ley.id_ley) }}" style="text-decoration:none;" title="Editar">✏️</a>
+                            <a href="{{ url_for('main.eliminar_ley', id_ley=ley.id_ley) }}" 
+                               onclick="return confirm('¿Eliminar fundamento legal?')" 
+                               style="text-decoration:none;" title="Eliminar">🗑️</a>
+                        </td>
+                    </tr>
+                    {% else %}
+                    <tr>
+                        <td colspan="4" style="text-align:center; padding: 30px; color: #999;">
+                            No existen fundamentos legales registrados.
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </section>
+</div>
+
+{% endblock %}

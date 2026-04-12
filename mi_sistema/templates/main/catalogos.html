@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="page-container">
+
+    <div class="page-header">
+        <h1 class="page-title">Catálogos Institucionales</h1>
+        <a href="{{ url_for('main.dashboard') }}" class="btn-back-menu">← Menú Principal</a>
+    </div>
+
+    <p class="page-desc">Seleccione el catálogo que desea alimentar o modificar.</p>
+
+    <div class="cards-grid cards-grid-3">
+
+        <div class="catalogo-card">
+            <h3 class="catalogo-card-title">Estructura Orgánica</h3>
+            <ul class="catalogo-list">
+                <li><a href="{{ url_for('main.cat_dependencia') }}" class="catalogo-link">Dependencias</a></li>
+                <li><a href="{{ url_for('main.cat_unidades') }}" class="catalogo-link">Unidades Administrativas</a></li>
+                <li><a href="{{ url_for('main.cat_areas') }}" class="catalogo-link">Áreas Productoras</a></li>
+                <li><a href="{{ url_for('main.cat_funcionarios') }}" class="catalogo-link">Funcionarios Responsables</a></li>
+                <li><a href="{{ url_for('main.enlaces_archivo') }}" class="catalogo-link">Enlaces de Archivo</a></li>
+            </ul>
+        </div>
+
+        <div class="catalogo-card">
+            <h3 class="catalogo-card-title">Normatividad y Valoración</h3>
+            <ul class="catalogo-list">
+                <li><a href="{{ url_for('main.cat_leyes') }}" class="catalogo-link">Marco Jurídico (Leyes)</a></li>
+                <li><a href="{{ url_for('main.cat_funciones') }}" class="catalogo-link">Funciones Institucionales</a></li>
+                <li><a href="{{ url_for('main.cat_procedimientos') }}" class="catalogo-link">Procedimientos Administrativos</a></li>
+            </ul>
+        </div>
+
+        <div class="catalogo-card">
+            <h3 class="catalogo-card-title">Control y Soporte</h3>
+            <ul class="catalogo-list">
+                <li><a href="{{ url_for('main.cat_archivo') }}" class="catalogo-link">Archivos y Ubicaciones</a></li>
+                <li><a href="{{ url_for('main.cat_soporte') }}" class="catalogo-link">Soportes Documentales</a></li>
+                <li><a href="{{ url_for('main.cat_areas_externas') }}" class="catalogo-link">Áreas Externas e Instituciones</a></li>
+            </ul>
+        </div>
+
+    </div>
+
+</div>
+{% endblock %}

@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cuadro General de Clasificación Archivística (CGCA)</title>
+    
+    <link rel="stylesheet" href="{{ url_for('static', filename='estilos.css') }}">
+
+<style>
+    /* --- VISTA EN PANTALLA --- */
+    body {
+        background-color: #f0f0f0;
+        padding: 40px 0;
+        font-family: 'Segoe UI', Arial, sans-serif;
+    }
+
+    .document-container {
+        background-color: white;
+        width: 279mm; /* Ancho oficio horizontal */
+        min-height: 216mm;
+        margin: 0 auto;
+        padding: 40px;
+        box-shadow: 0 0 15px rgba(0,0,0,0.2);
+    }
+
+    /* CONTENEDOR DE BOTONES FLOTANTES */
+    .botones-flotantes {
+        position: fixed;
+        top: 20px;
+        left: 20px;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        z-index: 100;
+    }
+
+    .btn-flotante {
+        background: #691C32;
+        color: white;
+        padding: 10px 18px;
+        text-decoration: none;
+        border-radius: 4px;
+        font-weight: bold;
+        border: none;
+        cursor: pointer;
+        text-align: center;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    }
+
+    .btn-print { background: #B08B57; }
+
+    .header-top-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 5px;
+    }
+
+    .logo-doc {
+        height: 65px;
+        width: auto;
+        object-fit: contain;
+    }
+
+    .document-title {
+        color: #691C32;
+        text-align: center;
+        flex: 1;
+        font-size: 1.4rem;
+        font-weight: bold;
+        text-transform: uppercase;
+        margin: 0 20px;
+    }
+
+    .doc-divider {
+        border: none;
+        border-top: 3px solid #B08B57;
+        margin: 10px 0;
+    }
+
+    .update-line {
+        text-align: right;
+        font-size: 0.9rem;
+        color: #333;
+        margin-bottom: 20px;
+    }
+
+    /* --- ESTILOS DE LA TABLA CGCA --- */
+    .table-section {
+        margin-top: 10px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        overflow: hidden;
+    }
+
+    .cgca-table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 0.75rem; 
+        background-color: #ffffff;
+        table-layout: fixed;
+    }
+
+    .cgca-table thead th {
+        background-color: #691C32;
+        color: #ffffff;
+        font-weight: bold;
+        padding: 10px 5px;
+        text-align: center;
+        text-transform: uppercase;
+        border: 1px solid #4a0d26;
+    }
+
+    .cgca-table td {
+        padding: 8px 6px;
+        border: 1px solid #e0e0e0;
+        color: #333;
+        vertical-align: middle;
+        word-wrap: break-word;
+        text-align: center;
+    }
+
+    .text-left { text-align: left !important; padding-left: 10px !important; }
+    .bold { font-weight: bold; }
+
+    /* --- CONFIGURACIÓN DE IMPRESIÓN --- */
+    @media print {
+        @page {
+            size: landscape;
+            margin: 0.8cm;
+        }
+
+        .no-print, .botones-flotantes { 
+            display: none !important; 
+        }
+
+        body { 
+            background-color: white !important; 
+            padding: 0;
+            width: 100%;
+        }
+
+        .document-container { 
+            box-shadow: none; 
+            margin: 0; 
+            width: 100% !important; 
+            max-width: none !important;
+            padding: 0 !important;
+        }
+
+        .cgca-table thead th {
+            background-color: #691C32 !important;
+            color: white !important;
+            -webkit-print-color-adjust: exact;
+        }
+
+        tr { page-break-inside: avoid; }
+    }
+</style>
+</head>
+<body>
+
+    <div class="botones-flotantes no-print">
+        <a href="{{ url_for('main.dashboard') }}" class="btn-flotante">← Volver al menú</a>
+        <button onclick="window.print();" class="btn-flotante btn-print">🖨️ Imprimir Cuadro</button>
+    </div>
+
+    <div class="document-container">
+        <header class="cgca-header">
+            <div class="header-top-row">
+                <img src="{{ url_for('static', filename='logo_gobierno.png') }}" alt="Gobierno" class="logo-doc">
+                <h1 class="document-title">Cuadro General de Clasificación Archivística</h1>
+                <img src="{{ url_for('static', filename='logo_secretaria.png') }}" alt="Secretaría" class="logo-doc">
+            </div>
+            
+            <hr class="doc-divider">
+            
+            <div class="update-line">
+                Última Actualización: <strong>{{ fecha_actualizacion if fecha_actualizacion else '31 de Marzo de 2026' }}</strong>
+            </div>
+        </header>
+
+        <section class="table-section">
+            <table class="cgca-table">
+                <thead>
+                    <tr>
+                        <th style="width: 8%;">Sección (Clave)</th>
+                        <th style="width: 17%;">Sección (Nombre)</th>
+                        <th style="width: 10%;">Subsección (Clave)</th>
+                        <th style="width: 17%;">Subsección (Nombre)</th>
+                        <th style="width: 10%;">Serie (Clave)</th>
+                        <th style="width: 18%;">Serie (Nombre)</th>
+                        <th style="width: 10%;">Subserie (Clave)</th>
+                        <th style="width: 10%;">Subserie (Nombre)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in catalogo %}
+                    <tr>
+                        <td class="bold">{{ item.seccion_clave }}{{ item.funcion_clave }}</td>
+                        <td class="text-left">{{ item.seccion_nombre }}</td>
+
+                        <td>
+                            {% if item.subseccion_clave and item.subseccion_clave != '0' %}
+                                {{ item.seccion_clave }}{{ item.funcion_clave }}.{{ item.subseccion_clave }}
+                            {% else %}
+                                -
+                            {% endif %}
+                        </td>
+                        <td class="text-left">{{ item.subseccion_nombre if (item.subseccion_nombre and item.subseccion_nombre != 'N/A') else '' }}</td>
+
+                        <td class="bold">
+                            {{ item.seccion_clave }}{{ item.funcion_clave }}
+                            {% if item.subseccion_clave and item.subseccion_clave != '0' %}.{{ item.subseccion_clave }}{% endif %}
+                            {% if item.serie_clave and item.serie_clave != '0' %}.{{ item.serie_clave }}{% endif %}
+                        </td>
+                        <td class="text-left">{{ item.serie_nombre }}</td>
+
+                        <td>
+                            {% if item.subserie_clave and item.subserie_clave != '0' %}
+                                {{ item.seccion_clave }}{{ item.funcion_clave }}
+                                {% if item.subseccion_clave and item.subseccion_clave != '0' %}.{{ item.subseccion_clave }}{% endif %}
+                                .{{ item.serie_clave }}.{{ item.subserie_clave }}
+                            {% else %}
+                                -
+                            {% endif %}
+                        </td>
+                        <td class="text-left">{{ item.subserie_nombre if (item.subserie_nombre and item.subserie_nombre != 'N/A') else '' }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </section>
+    </div>
+
+</body>
+</html>

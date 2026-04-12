@@ -1,0 +1,177 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="cap-container">
+
+    <div class="cap-header">
+        <div>
+            <h2 class="cap-title">Series Documentales — Cuadro General (CGCA)</h2>
+            <p class="cap-subtitle">Registro y administración de la estructura documental</p>
+        </div>
+        <a href="{{ url_for('main.dashboard') }}" class="cap-btn-menu">← Menú Principal</a>
+    </div>
+
+    <div class="cap-card">
+        <div class="cap-legend">Nuevo Registro en el Cuadro General</div>
+
+        <form action="{{ url_for('main.guardar_cgca') }}" method="POST">
+
+            <div class="cap-grid-2">
+                <div class="cap-field">
+                    <label class="cap-label">Sección — Clave y Nombre</label>
+                    <div style="display:flex; gap:8px;">
+                        <input type="text" id="js_seccion" name="seccion_clave"
+                               class="cap-input" style="flex: 0 0 80px; text-align:center;"
+                               placeholder="Ej. 1" required>
+                        <input type="text" name="seccion_nombre" class="cap-input"
+                               placeholder="Nombre de la sección" required>
+                    </div>
+                </div>
+                <div class="cap-field">
+                    <label class="cap-label">Función (C = Común / S = Sustantiva)</label>
+                    <div style="display:flex; gap:8px;">
+                        <input type="text" id="js_funcion" name="funcion_clave"
+                               class="cap-input" style="flex: 0 0 80px; text-align:center;"
+                               placeholder="C / S" maxlength="1" required>
+                        <input type="hidden" name="funcion_nombre" value="N/A">
+                        <input type="text" class="cap-input cap-input-readonly"
+                               value="Común (C) o Sustantiva (S)" readonly>
+                    </div>
+                </div>
+            </div>
+
+            <div class="cap-grid-2">
+                <div class="cap-field">
+                    <label class="cap-label">Subsección — Clave y Nombre (Opcional)</label>
+                    <div style="display:flex; gap:8px;">
+                        <input type="text" name="subseccion_clave" class="cap-input"
+                               style="flex: 0 0 80px; text-align:center;" placeholder="0">
+                        <input type="text" name="subseccion_nombre" class="cap-input"
+                               placeholder="Nombre de la subsección">
+                    </div>
+                </div>
+                <div class="cap-field">
+                    <label class="cap-label">Serie — Clave y Nombre</label>
+                    <div style="display:flex; gap:8px;">
+                        <input type="text" id="js_serie" name="serie_clave"
+                               class="cap-input" style="flex: 0 0 80px; text-align:center;"
+                               placeholder="1" required>
+                        <input type="text" name="serie_nombre" class="cap-input"
+                               placeholder="Nombre de la serie" required>
+                    </div>
+                </div>
+            </div>
+
+            <div class="cap-grid-2">
+                <div class="cap-field">
+                    <label class="cap-label">Subserie — Clave y Nombre (Opcional)</label>
+                    <div style="display:flex; gap:8px;">
+                        <input type="text" id="js_subserie" name="subserie_clave"
+                               class="cap-input" style="flex: 0 0 80px; text-align:center;"
+                               placeholder="0">
+                        <input type="text" name="subserie_nombre" class="cap-input"
+                               placeholder="Nombre de la subserie">
+                    </div>
+                </div>
+                <div class="cap-field">
+                    <label class="cap-label">Descripción Técnica</label>
+                    <textarea name="descripcion" class="cap-textarea"
+                              placeholder="Describa el contenido de la serie..."></textarea>
+                </div>
+            </div>
+
+            <div class="cap-highlight">
+                <label class="cap-label">Clave CGCA Completa (Generada Automáticamente)</label>
+                <input type="text" id="js_clave_final" name="clave_cgca"
+                       class="cap-input-clave" placeholder="Ej. 1S.1.2" required>
+            </div>
+
+            <div class="cap-actions">
+                <a href="{{ url_for('main.dashboard') }}" class="cap-btn-cancel">Cancelar</a>
+                <button type="submit" class="cap-btn-save">Guardar en Cuadro General</button>
+            </div>
+
+        </form>
+    </div>
+
+    <hr class="cap-separator">
+
+    <h3 class="cap-table-title">Registros en el Cuadro General</h3>
+    <div class="cap-table-wrap">
+        <table class="cap-table">
+            <thead>
+                <tr>
+                    <th colspan="2">Sección / Función</th>
+                    <th colspan="2">Subsección</th>
+                    <th colspan="2">Serie</th>
+                    <th colspan="2">Subserie</th>
+                    <th>Clave Final</th>
+                    <th>Acciones</th>
+                </tr>
+                <tr style="background: #4E1324; font-size:0.68rem;">
+                    <th>Cód.</th><th>Nombre</th>
+                    <th>Cód.</th><th>Nombre</th>
+                    <th>Cód.</th><th>Nombre</th>
+                    <th>Cód.</th><th>Nombre</th>
+                    <th>—</th><th>—</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in catalogos %}
+                <tr>
+                    <td style="text-align:center; font-weight:700;">
+                        {{ item.seccion_clave or '' }}{{ item.funcion_clave or '' }}
+                    </td>
+                    <td>{{ item.seccion_nombre or '' }}</td>
+                    <td style="text-align:center;">{{ item.subseccion_clave or '' }}</td>
+                    <td>{{ item.subseccion_nombre or '' }}</td>
+                    <td style="text-align:center;">{{ item.serie_clave or '' }}</td>
+                    <td>{{ item.serie_nombre or '' }}</td>
+                    <td style="text-align:center;">{{ item.subserie_clave or '' }}</td>
+                    <td>{{ item.subserie_nombre or '' }}</td>
+                    <td>
+                        <span class="td-clave">{{ item.clave_cgca }}</span>
+                    </td>
+                    <td>
+                        <div class="cap-table-actions">
+                            <a href="{{ url_for('main.editar_cgca', id_cgca=item.id_cgca) }}"
+                               class="btn-tbl-edit">Editar</a>
+                            <form action="{{ url_for('main.eliminar_cgca', id_cgca=item.id_cgca) }}"
+                                  method="POST" style="display:inline;"
+                                  onsubmit="return confirm('¿Eliminar este registro del CGCA?');">
+                                <button type="submit" class="btn-tbl-del">Eliminar</button>
+                            </form>
+                        </div>
+                    </td>
+                </tr>
+                {% else %}
+                <tr>
+                    <td colspan="10" class="td-empty">No hay registros en el Cuadro General.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+</div>
+
+<script>
+    const inputs = ['js_seccion', 'js_funcion', 'js_serie', 'js_subserie'];
+    inputs.forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.addEventListener('input', generarClave);
+    });
+
+    function generarClave() {
+        const sec = document.getElementById('js_seccion').value.trim();
+        const fun = document.getElementById('js_funcion').value.trim().toUpperCase();
+        const ser = document.getElementById('js_serie').value.trim();
+        const sub = document.getElementById('js_subserie').value.trim();
+
+        let clave = sec + fun;
+        if (ser) clave += '.' + ser;
+        if (sub && sub !== '0') clave += '.' + sub;
+
+        document.getElementById('js_clave_final').value = clave;
+    }
+</script>
+{% endblock %}

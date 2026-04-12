@@ -1,0 +1,174 @@
+{% extends "base.html" %}
+{% block content %}
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/choices.js/public/assets/styles/choices.min.css"/>
+<script src="https://cdn.jsdelivr.net/npm/choices.js/public/assets/scripts/choices.min.js"></script>
+
+<div class="cap-container">
+
+    <div class="cap-header">
+        <div>
+            <h2 class="cap-title">Editar Auditoría y Vinculación Normativa</h2>
+            <p class="cap-subtitle">Serie: {{ maestra.clave_cgca }}</p>
+        </div>
+        <a href="{{ url_for('main.auditoria_archivo') }}" class="cap-btn-menu">← Regresar</a>
+    </div>
+
+    <div class="cap-card">
+        <div class="cap-legend">Modificar Matriz de Vinculación</div>
+
+        <form method="POST" id="form-editar">
+
+            <div class="cap-card" style="background:#fdfaf3; border:1px solid var(--dorado-suave); padding:16px;">
+                <div class="cap-legend">Adscripción Orgánica</div>
+                <div class="cap-grid-3">
+                    <div class="cap-field">
+                        <label class="cap-label">Dependencia</label>
+                        <select name="id_dependencia" class="cap-select" required>
+                            {% for d in dependencias %}
+                            <option value="{{ d.id_dependencia }}"
+                                {% if area_prod and d.id_dependencia == area_prod.id_dependencia %}selected{% endif %}>
+                                {{ d.siglas_dependencia }} — {{ d.nombre_dependencia | truncate(40) }}
+                            </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="cap-field">
+                        <label class="cap-label">Unidad Administrativa</label>
+                        <select name="id_ua" class="cap-select" required>
+                            {% for u in unidades %}
+                            <option value="{{ u.id_ua }}"
+                                {% if area_prod and u.id_ua == area_prod.id_ua %}selected{% endif %}>
+                                {{ u.siglas_ua }} — {{ u.nombre_ua | truncate(40) }}
+                            </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="cap-field">
+                        <label class="cap-label">Área Productora</label>
+                        <select name="id_area" class="cap-select" required>
+                            {% for a in areas_prod %}
+                            <option value="{{ a.id_area }}"
+                                {% if area_prod and a.id_area == area_prod.id_area %}selected{% endif %}>
+                                {{ a.siglas_area }} — {{ a.nombre_area | truncate(40) }}
+                            </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <div class="cap-grid-1" style="margin-bottom:14px;">
+                <div class="cap-field">
+                    <label class="cap-label">Actualizar Fundamentos Legales</label>
+                    <div style="display:flex; gap:8px; margin-bottom:10px;">
+                        <select id="selector-leyes" style="flex:1;" class="cap-select">
+                            <option value="">Buscar leyes para agregar...</option>
+                            {% for l in leyes %}
+                            <option value="{{ l.id_ley }}"
+                                    data-siglas="{{ l.siglas_ley }}"
+                                    data-art="{{ l.articulo }}">
+                                [{{ l.siglas_ley }}] Art. {{ l.articulo }} — {{ l.nombre_ley | truncate(120) }}
+                            </option>
+                            {% endfor %}
+                        </select>
+                        <button type="button" onclick="agregarLey()"
+                                class="cap-btn-add" style="padding:8px 14px; white-space:nowrap;">
+                            + Agregar
+                        </button>
+                    </div>
+                    <div id="contenedor-badges" style="min-height:50px; border:1.5px dashed var(--gris-borde); border-radius:8px; padding:10px; background:#fdfaf6; display:flex; flex-wrap:wrap; gap:6px;">
+                    </div>
+                    <div id="inputs-leyes-ocultos"></div>
+                </div>
+            </div>
+
+            <div class="cap-grid-2">
+                <div class="cap-field">
+                    <label class="cap-label">Función Institucional</label>
+                    <select name="id_funcion" class="cap-select" required>
+                        {% for f in funciones %}
+                        <option value="{{ f.id_funcion }}"
+                            {% if funcion_vinc and f.id_funcion == funcion_vinc.id_funcion %}selected{% endif %}>
+                            {{ f.nombre_funcion }}
+                        </option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="cap-field">
+                    <label class="cap-label">Procedimiento Asociado</label>
+                    <select name="id_procedimiento" class="cap-select" required>
+                        {% for p in procedimientos %}
+                        <option value="{{ p.id_procedimiento }}"
+                            {% if proc_vinc and p.id_procedimiento == proc_vinc.id_procedimiento %}selected{% endif %}>
+                            {{ p.nombre_procedimiento }}
+                        </option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+
+            <div class="cap-actions">
+                <a href="{{ url_for('main.auditoria_archivo') }}" class="cap-btn-cancel">Cancelar</a>
+                <button type="submit" class="cap-btn-save">Guardar Cambios Actualizados</button>
+            </div>
+
+        </form>
+    </div>
+
+</div>
+
+<script>
+    const selectElement = document.getElementById('selector-leyes');
+    const choices = new Choices(selectElement, {
+        searchEnabled: true,
+        placeholderValue: 'Escriba para buscar...',
+        itemSelectText: 'Seleccionar'
+    });
+
+    function crearElementoLey(id, texto) {
+        const badge = document.createElement('div');
+        badge.id = 'badge-ley-' + id;
+        badge.style.cssText = 'display:inline-flex; align-items:center; gap:6px; background:var(--guinda); color:#fff; padding:5px 10px; border-radius:999px; font-size:0.78rem; font-weight:700;';
+        badge.innerHTML = `
+            <span>${texto}</span>
+            <span onclick="removerLey('${id}')" style="cursor:pointer; font-size:1rem; line-height:1; opacity:0.8;">×</span>
+        `;
+        document.getElementById('contenedor-badges').appendChild(badge);
+
+        const input = document.createElement('input');
+        input.type = 'hidden';
+        input.name = 'id_ley';
+        input.value = id;
+        input.id = 'input-ley-' + id;
+        document.getElementById('inputs-leyes-ocultos').appendChild(input);
+    }
+
+    function agregarLey() {
+        const idLey = selectElement.value;
+        if (!idLey) return;
+
+        const opt = selectElement.options[selectElement.selectedIndex];
+        const siglas = opt.getAttribute('data-siglas');
+        const art = opt.getAttribute('data-art');
+        const etiqueta = `[${siglas}] Art. ${art}`;
+
+        if (document.getElementById('badge-ley-' + idLey)) {
+            alert('Esta ley ya está incluida.');
+            return;
+        }
+        crearElementoLey(idLey, etiqueta);
+        choices.setChoiceByValue('');
+    }
+
+    function removerLey(id) {
+        document.getElementById('badge-ley-' + id)?.remove();
+        document.getElementById('input-ley-' + id)?.remove();
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+        {% for f in maestra.fundamento %}
+        crearElementoLey("{{ f.id_ley }}", "[{{ f.ley.siglas_ley }}] Art. {{ f.ley.articulo }}");
+        {% endfor %}
+    });
+</script>
+{% endblock %}

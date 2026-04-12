@@ -1,0 +1,142 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="cap-container">
+
+    <div class="cap-header">
+        <div>
+            <h2 class="cap-title">Editar Valoración Documental</h2>
+            <p class="cap-subtitle">Serie: {{ registro.maestra.clave_cgca }} — {{ nombre_serie }}</p>
+        </div>
+        <a href="{{ url_for('main.cat_disposicion') }}" class="cap-btn-menu">← Regresar</a>
+    </div>
+
+    <div class="cap-card">
+        <div class="cap-legend">Modificar Valores y Vigencias</div>
+
+        <form action="{{ url_for('main.editar_disposicion', id_dispo=registro.id_clavecgca_cdd) }}" method="POST">
+
+            <div class="cap-grid-1">
+                <div class="cap-field">
+                    <label class="cap-label">Serie Documental</label>
+                    <input type="text" class="cap-input cap-input-readonly"
+                           value="{{ registro.maestra.clave_cgca }} — {{ nombre_serie }}" readonly>
+                    <input type="hidden" name="id_cgca" value="{{ registro.id_cgca }}">
+                </div>
+            </div>
+
+            <div class="cap-grid-3">
+                <div class="cap-field">
+                    <label class="cap-label">Años en Archivo de Trámite (AT)</label>
+                    <input type="number" name="anios_tramite" id="v_tramite"
+                           class="cap-input" value="{{ registro.anios_tramite }}"
+                           min="0" style="text-align:center;">
+                </div>
+                <div class="cap-field">
+                    <label class="cap-label">Años en Archivo de Concentración (AC)</label>
+                    <input type="number" name="anios_concentracion" id="v_concentra"
+                           class="cap-input" value="{{ registro.anios_concentracion }}"
+                           min="0" style="text-align:center;">
+                </div>
+                <div class="cap-field">
+                    <label class="cap-label">Vigencia Total</label>
+                    <input type="text" id="v_total_display" class="cap-input cap-input-readonly"
+                           value="{{ registro.anio_total }} años" readonly style="text-align:center; font-size:1.1rem;">
+                    <input type="hidden" name="anio_total" id="v_total_val" value="{{ registro.anio_total }}">
+                </div>
+            </div>
+
+            <div class="cap-values-block cap-values-primarios">
+                <div class="cap-values-title">Valores Primarios</div>
+                <div class="cap-checkbox-row">
+                    <span class="cap-checkbox-label">Administrativo</span>
+                    <input type="checkbox" name="administrativo" {% if registro.administrativo %}checked{% endif %}>
+                    <input type="text" name="justificacion_admvo" class="cap-input"
+                           value="{{ registro.justificacion_admvo or '' }}"
+                           placeholder="Justificación administrativa" style="flex:1;">
+                </div>
+                <div class="cap-checkbox-row">
+                    <span class="cap-checkbox-label">Legal</span>
+                    <input type="checkbox" name="legal" {% if registro.legal %}checked{% endif %}>
+                    <input type="text" name="justificacion_legal" class="cap-input"
+                           value="{{ registro.justificacion_legal or '' }}"
+                           placeholder="Justificación legal" style="flex:1;">
+                </div>
+                <div class="cap-checkbox-row">
+                    <span class="cap-checkbox-label">Fiscal</span>
+                    <input type="checkbox" name="fiscal" {% if registro.fiscal %}checked{% endif %}>
+                    <input type="text" name="justificacion_fiscal" class="cap-input"
+                           value="{{ registro.justificacion_fiscal or '' }}"
+                           placeholder="Justificación fiscal" style="flex:1;">
+                </div>
+            </div>
+
+            <div class="cap-values-block cap-values-secundarios">
+                <div class="cap-values-title">Valores Secundarios</div>
+                <div class="cap-checkbox-row">
+                    <span class="cap-checkbox-label">Testimonial</span>
+                    <input type="checkbox" name="testimonial" {% if registro.testimonial %}checked{% endif %}>
+                    <input type="text" name="justificacion_testimonial" class="cap-input"
+                           value="{{ registro.justificacion_testimonial or '' }}"
+                           placeholder="Justificación testimonial" style="flex:1;">
+                </div>
+                <div class="cap-checkbox-row">
+                    <span class="cap-checkbox-label">Histórico</span>
+                    <input type="checkbox" name="historico" {% if registro.historico %}checked{% endif %}>
+                    <input type="text" name="justificacion_historico" class="cap-input"
+                           value="{{ registro.justificacion_historico or '' }}"
+                           placeholder="Justificación histórica" style="flex:1;">
+                </div>
+                <div class="cap-checkbox-row">
+                    <span class="cap-checkbox-label">Evidencial</span>
+                    <input type="checkbox" name="evidencial" {% if registro.evidencial %}checked{% endif %}>
+                    <input type="text" name="justificacion_extra" class="cap-input"
+                           value="{{ registro.justificacion_evidencial or '' }}"
+                           placeholder="Justificación evidencial" style="flex:1;">
+                </div>
+            </div>
+
+            <div class="cap-grid-2">
+                <div class="cap-field">
+                    <label class="cap-label">Técnica de Selección</label>
+                    <select name="tecnica_seleccion" class="cap-select">
+                        <option value="BAJA" {% if registro.tecnica_seleccion == 'BAJA' %}selected{% endif %}>
+                            BAJA / ELIMINACIÓN</option>
+                        <option value="CONSERVACION PERMANENTE" {% if registro.tecnica_seleccion == 'CONSERVACION PERMANENTE' %}selected{% endif %}>
+                            CONSERVACIÓN PERMANENTE</option>
+                        <option value="MUESTREO" {% if registro.tecnica_seleccion == 'MUESTREO' %}selected{% endif %}>
+                            MUESTREO</option>
+                    </select>
+                </div>
+                <div class="cap-field">
+                    <label class="cap-label">Justificación de Disposición Final</label>
+                    <textarea name="justificacion_disposicion" class="cap-textarea"
+                              rows="3">{{ registro.justificacion_disposicion or '' }}</textarea>
+                </div>
+            </div>
+
+            <div class="cap-actions">
+                <a href="{{ url_for('main.cat_disposicion') }}" class="cap-btn-cancel">Cancelar</a>
+                <button type="submit" class="cap-btn-save">Actualizar Valoración</button>
+            </div>
+
+        </form>
+    </div>
+
+</div>
+
+<script>
+    const tram = document.getElementById('v_tramite');
+    const conc = document.getElementById('v_concentra');
+    const disp = document.getElementById('v_total_display');
+    const hiddenVal = document.getElementById('v_total_val');
+
+    function calcular() {
+        const total = (parseInt(tram.value) || 0) + (parseInt(conc.value) || 0);
+        disp.value = total + ' años';
+        hiddenVal.value = total;
+    }
+    tram.addEventListener('input', calcular);
+    conc.addEventListener('input', calcular);
+    window.addEventListener('load', calcular);
+</script>
+{% endblock %}

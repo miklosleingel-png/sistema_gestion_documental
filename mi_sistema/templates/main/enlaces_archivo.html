@@ -1,0 +1,128 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="cap-container">
+
+    <div class="cap-header">
+        <div>
+            <h2 class="cap-title">Enlaces de Archivo</h2>
+            <p class="cap-subtitle">Personal designado como responsable de cada área de archivo</p>
+        </div>
+        <a href="{{ url_for('main.mostrar_catalogos') }}" class="cap-btn-menu">← Catálogos</a>
+    </div>
+
+    <div class="cap-card">
+        <div class="cap-legend">
+            {{ 'Editar Enlace' if enlace else 'Registrar Nuevo Enlace' }}
+        </div>
+
+        <form action="{{ url_for('main.guardar_enlace') }}" method="POST">
+            <input type="hidden" name="id_enlace" value="{{ enlace.id_enlace if enlace else '' }}">
+
+            <div class="cap-grid-2">
+                <div class="cap-field">
+                    <label class="cap-label">Nombre del Enlace</label>
+                    <input type="text" name="nombre" class="cap-input"
+                           value="{{ enlace.nombre_enlace if enlace else '' }}"
+                           placeholder="Nombre completo" required>
+                </div>
+                <div class="cap-field">
+                    <label class="cap-label">Archivo Asignado</label>
+                    <select name="id_archivo" class="cap-select" required>
+                        <option value="" disabled {% if not enlace %}selected{% endif %}>-- Seleccione Archivo --</option>
+                        {% for a in archivos %}
+                        <option value="{{ a.id_archivo }}"
+                            {% if enlace and enlace.id_archivo == a.id_archivo %}selected{% endif %}>
+                            {{ a.nombre_archivo }}
+                        </option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+
+            <div class="cap-grid-2">
+                <div class="cap-field">
+                    <label class="cap-label">Fecha de Designación</label>
+                    <input type="date" name="fecha" class="cap-input" required
+                           value="{{ enlace.fecha_designacion.strftime('%Y-%m-%d') if enlace and enlace.fecha_designacion else '' }}">
+                </div>
+                <div class="cap-field">
+                    <label class="cap-label">Cargo</label>
+                    <input type="text" name="cargo" class="cap-input"
+                           placeholder="Puesto administrativo"
+                           value="{{ enlace.cargo if enlace else '' }}">
+                </div>
+            </div>
+
+            <div class="cap-grid-2">
+                <div class="cap-field">
+                    <label class="cap-label">Correo Electrónico</label>
+                    <input type="email" name="correo" class="cap-input"
+                           placeholder="ejemplo@puebla.gob.mx"
+                           value="{{ enlace.correo_electronico if enlace else '' }}">
+                </div>
+                <div class="cap-field">
+                    <label class="cap-label">Teléfono del Archivo</label>
+                    <input type="text" name="telefono" class="cap-input"
+                           placeholder="Extensión o número directo"
+                           value="{{ enlace.telefono_archivo if enlace else '' }}">
+                </div>
+            </div>
+
+            <div class="cap-actions">
+                {% if enlace %}
+                <a href="{{ url_for('main.enlaces_archivo') }}" class="cap-btn-cancel">Cancelar</a>
+                {% endif %}
+                <a href="{{ url_for('main.mostrar_catalogos') }}" class="cap-btn-cancel">← Catálogos</a>
+                <button type="submit" class="cap-btn-save">
+                    {{ 'Actualizar Enlace' if enlace else 'Registrar Enlace' }}
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <hr class="cap-separator">
+
+    <h3 class="cap-table-title">Personal de Archivo Registrado</h3>
+    <div class="cap-table-wrap">
+        <table class="cap-table">
+            <thead>
+                <tr>
+                    <th>Nombre</th>
+                    <th>Archivo</th>
+                    <th>Fecha Desig.</th>
+                    <th>Cargo</th>
+                    <th>Correo</th>
+                    <th>Teléfono</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for e in enlaces %}
+                <tr>
+                    <td style="font-weight:600;">{{ e.nombre_enlace }}</td>
+                    <td>{{ e.archivo.nombre_archivo }}</td>
+                    <td>{{ e.fecha_designacion.strftime('%d/%m/%Y') if e.fecha_designacion else '—' }}</td>
+                    <td>{{ e.cargo or '—' }}</td>
+                    <td style="font-size:0.78rem;">{{ e.correo_electronico or '—' }}</td>
+                    <td>{{ e.telefono_archivo or '—' }}</td>
+                    <td>
+                        <div class="cap-table-actions">
+                            <a href="{{ url_for('main.enlaces_archivo', id_enlace=e.id_enlace) }}"
+                               class="btn-tbl-edit">Editar</a>
+                            <a href="{{ url_for('main.borrar_enlace', id_enlace=e.id_enlace) }}"
+                               class="btn-tbl-del"
+                               onclick="return confirm('¿Eliminar este enlace de archivo?')">Eliminar</a>
+                        </div>
+                    </td>
+                </tr>
+                {% else %}
+                <tr>
+                    <td colspan="7" class="td-empty">No hay enlaces registrados actualmente.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+</div>
+{% endblock %}

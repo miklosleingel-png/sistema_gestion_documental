@@ -1,0 +1,88 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container-capture">
+    <header class="section-header" style="margin-bottom: 20px;">
+        <h2 class="menu-main-title">Catálogo de Instituciones y Áreas Externas</h2>
+        <p class="user-info">Registro de organismos externos para el control de correspondencia y gestión documental</p>
+    </header>
+
+    <section class="capture-section">
+        <form action="{{ url_for('main.cat_areas_externas') }}" method="POST" 
+              style="background:#fdfdfd; padding:25px; border-radius:10px; border: 1px solid #ddd; border-left: 5px solid var(--dorado); margin-bottom:40px; box-shadow: 0 2px 4px rgba(0,0,0,0.05);">
+            
+            <div style="display:grid; grid-template-columns: 2fr 1fr 2fr 150px; gap:15px; align-items: end;">
+                <div class="field-group">
+                    <label style="font-weight: bold; color: var(--primario); margin-bottom: 8px; display: block;">Nombre de la Institución:</label>
+                    <input type="text" name="nombre_institucion" class="input-nombre" 
+                           placeholder="Ej. INEGI" required style="width: 100%; border: 1px solid #ccc;">
+                </div>
+                <div class="field-group">
+                    <label style="font-weight: bold; color: var(--primario); margin-bottom: 8px; display: block;">Siglas:</label>
+                    <input type="text" name="siglas_institucion" class="input-nombre" 
+                           placeholder="Ej. INEGI" style="width: 100%; border: 1px solid #ccc;">
+                </div>
+                <div class="field-group">
+                    <label style="font-weight: bold; color: var(--primario); margin-bottom: 8px; display: block;">Área Específica:</label>
+                    <input type="text" name="nombre_area_externa" class="input-nombre" 
+                           placeholder="Ej. Dirección de Estadística" required style="width: 100%; border: 1px solid #ccc;">
+                </div>
+                <div>
+                    <button type="submit" class="btn-next" style="width: 100%; height: 42px; font-weight: bold;">Guardar</button>
+                </div>
+            </div>
+        </form>
+
+        <h3 style="color: var(--primario); margin-bottom: 15px; font-size: 1.2rem;">Registros Externos</h3>
+        
+        <div style="overflow-x: auto; background: white; border-radius: 8px;">
+            <table class="compact-table" style="width: 100%; border-collapse: collapse; border: 2px solid #dee2e6;">
+                <thead>
+                    <tr style="background-color: #f8f9fa;">
+                        <th style="border: 1px solid #dee2e6; padding: 12px; text-align: left; color: #444; width: 15%;">Siglas</th>
+                        <th style="border: 1px solid #dee2e6; padding: 12px; text-align: left; color: #444;">Institución / Organismo</th>
+                        <th style="border: 1px solid #dee2e6; padding: 12px; text-align: left; color: #444;">Área de Contacto</th>
+                        <th style="border: 1px solid #dee2e6; padding: 12px; text-align: center; color: #444; width: 15%;">Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for ext in externas %}
+                    <tr>
+                        <td style="border: 1px solid #dee2e6; padding: 10px; font-weight: bold; color: var(--primario);">{{ ext.siglas_institucion or 'N/A' }}</td>
+                        <td style="border: 1px solid #dee2e6; padding: 10px; color: #333;">{{ ext.nombre_institucion }}</td>
+                        <td style="border: 1px solid #dee2e6; padding: 10px; color: #555;">{{ ext.nombre_area_externa }}</td>
+                        <td style="border: 1px solid #dee2e6; padding: 10px; text-align: center;">
+                            <a href="{{ url_for('main.editar_area_ext', id_ext=ext.id_area_ext) }}" 
+                               style="text-decoration:none; margin-right:12px; font-size: 1.1rem;" title="Editar">✏️</a>
+                            <a href="{{ url_for('main.eliminar_area_ext', id_ext=ext.id_area_ext) }}" 
+                               onclick="return confirm('¿Confirmar eliminación de este registro externo?')" 
+                               style="text-decoration:none; font-size: 1.1rem;" title="Eliminar">🗑️</a>
+                        </td>
+                    </tr>
+                    {% else %}
+                    <tr>
+                        <td colspan="4" style="text-align:center; padding: 30px; color: #999; border: 1px solid #dee2e6;">
+                            No existen instituciones externas registradas.
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <div style="margin-top: 40px; padding-top: 20px; border-top: 1px solid #eee; display: flex; gap: 15px;">
+            <a href="{{ url_for('main.mostrar_catalogos') }}" class="btn-back" style="display: flex; align-items: center; gap: 8px;">
+                <span style="font-size: 1.2rem;">📂</span> Volver a Catálogos
+            </a>
+            <a href="{{ url_for('main.dashboard') }}" class="btn-back" style="display: flex; align-items: center; gap: 8px; background: #6c757d;">
+                <span style="font-size: 1.2rem;">🏠</span> Menú Principal
+            </a>
+        </div>
+    </section>
+</div>
+
+<style>
+    .compact-table tbody tr:nth-child(even) { background-color: #fdfdfd; }
+    .compact-table tbody tr:hover { background-color: #f1f4f9; transition: 0.2s; }
+</style>
+{% endblock %}
