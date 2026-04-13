@@ -1,127 +1,130 @@
 {% extends "base.html" %}
-
 {% block content %}
-<div class="botones-flotantes no-print">
-    <a href="{{ url_for('main.mostrar_catalogos') }}" class="btn-flotante">
-        <span>📂</span> Volver a Catálogos
-    </a>
-    <a href="{{ url_for('main.dashboard') }}" class="btn-flotante" style="background-color: #6c757d !important;">
-        <span>🏠</span> Menú Principal
-    </a>
-</div>
+<div class="cap-container">
 
-<div class="container-capture">
-    <header class="section-header">
-        <h2 class="menu-main-title">Catálogo de Marco Jurídico / Leyes</h2>
-        <p class="user-info">Registro de fundamentos legales para la valoración y disposición documental</p>
-    </header>
+    <div class="cap-header">
+        <div>
+            <h2 class="cap-title">Catálogo de Marco Jurídico</h2>
+            <p class="cap-subtitle">Fundamentos legales para valoración y disposición documental</p>
+        </div>
+        <div style="display:flex; gap:8px;">
+            <a href="{{ url_for('main.mostrar_catalogos') }}" class="cap-btn-cancel">← Catálogos</a>
+            <a href="{{ url_for('main.dashboard') }}" class="cap-btn-menu">← Menú Principal</a>
+        </div>
+    </div>
 
-    <section class="capture-section">
+    <div class="cap-card">
+        <div class="cap-legend">Nuevo Fundamento Legal</div>
         <form action="{{ url_for('main.cat_leyes') }}" method="POST">
-            <div class="grid-form-optimized" style="border-left: 5px solid var(--dorado);">
-                
-                <div class="field-group" style="grid-column: span 2;">
-                    <label>Nombre de la Norma:</label>
-                    <input type="text" name="nombre_ley" placeholder="Ej. Ley General de Archivos" required>
+            <div class="cap-grid-2">
+                <div class="cap-field">
+                    <label class="cap-label">Nombre de la Norma</label>
+                    <input type="text" name="nombre_ley" class="cap-input"
+                           placeholder="Ej. Ley General de Archivos" required>
                 </div>
-
-                <div class="field-group">
-                    <label>Siglas:</label>
-                    <input type="text" name="siglas_ley" placeholder="Ej. LGA" required>
-                </div>
-
-                <div class="field-group">
-                    <label>Ámbito:</label>
-                    <select name="ambito" required style="height: 42px; border: 1px solid #ccc; border-radius: 4px; font-family: var(--fuente-principal);">
-                        <option value="ESTATAL">ESTATAL</option>
-                        <option value="FEDERAL">FEDERAL</option>
-                        <option value="MUNICIPAL">MUNICIPAL</option>
-                    </select>
-                </div>
-
-                <div class="field-group">
-                    <label>Artículo:</label>
-                    <input type="text" name="articulo" placeholder="Ej. 4">
-                </div>
-
-                <div class="field-group">
-                    <label>Fracción:</label>
-                    <input type="text" name="fraccion" placeholder="Ej. VII">
-                </div>
-
-                <div class="field-group">
-                    <label>Inciso:</label>
-                    <input type="text" name="inciso" placeholder="Ej. a)">
-                </div>
-
-                <div class="full-width-field">
-                    <label>Descripción o Texto del Fragmento:</label>
-                    <textarea name="texto_ley" class="textarea-capture" placeholder="Escriba aquí el contenido legal relevante..." rows="3"></textarea>
+                <div class="cap-grid-2" style="margin:0;">
+                    <div class="cap-field">
+                        <label class="cap-label">Siglas</label>
+                        <input type="text" name="siglas_ley" class="cap-input"
+                               placeholder="Ej. LGA" required>
+                    </div>
+                    <div class="cap-field">
+                        <label class="cap-label">Ámbito</label>
+                        <select name="ambito" class="cap-select" required>
+                            <option value="FEDERAL">FEDERAL</option>
+                            <option value="ESTATAL">ESTATAL</option>
+                            <option value="MUNICIPAL">MUNICIPAL</option>
+                        </select>
+                    </div>
                 </div>
             </div>
-            
-            <div class="form-actions">
-                <button type="submit" class="btn-next-alt" style="width: 250px;">💾 Guardar Fundamento</button>
+            <div class="cap-grid-3">
+                <div class="cap-field">
+                    <label class="cap-label">Artículo</label>
+                    <input type="text" name="articulo" class="cap-input" placeholder="Ej. 4">
+                </div>
+                <div class="cap-field">
+                    <label class="cap-label">Fracción</label>
+                    <input type="text" name="fraccion" class="cap-input" placeholder="Ej. VII">
+                </div>
+                <div class="cap-field">
+                    <label class="cap-label">Inciso</label>
+                    <input type="text" name="inciso" class="cap-input" placeholder="Ej. a)">
+                </div>
+            </div>
+            <div class="cap-grid-1">
+                <div class="cap-field">
+                    <label class="cap-label">Texto del Fragmento Legal</label>
+                    <textarea name="texto_ley" class="cap-textarea" rows="3"
+                              placeholder="Escriba aquí el contenido legal relevante..."></textarea>
+                </div>
+            </div>
+            <div class="cap-actions">
+                <button type="submit" class="cap-btn-save">Guardar Fundamento</button>
             </div>
         </form>
+    </div>
 
-        <hr class="header-divider" style="margin: 30px 0;">
-
-        <div style="margin-bottom:20px; background:#f8f9fa; padding:15px; border-radius:8px; border: 1px solid var(--gris-bordes); display: flex; align-items: center; gap: 15px;">
-            <label style="color: var(--guinda); font-weight: bold;">🔍 Filtrar por Norma (Siglas):</label>
-            <select onchange="location = this.value;" style="padding: 5px; border-radius: 4px; border: 1px solid #ccc; font-family: var(--fuente-principal);">
-                <option value="{{ url_for('main.cat_leyes') }}">--- Todas las Normas ---</option>
+    <div class="cap-card" style="padding:14px 20px;">
+        <div style="display:flex; align-items:center; gap:12px;">
+            <label class="cap-label" style="margin:0; white-space:nowrap;">Filtrar por Norma:</label>
+            <select onchange="location = this.value;" class="cap-select" style="max-width:300px;">
+                <option value="{{ url_for('main.cat_leyes') }}">--- Todas ---</option>
                 {% for s in todas_siglas %}
-                <option value="{{ url_for('main.cat_leyes', siglas=s[0]) }}" {% if siglas_filter == s[0] %}selected{% endif %}>{{ s[0] }}</option>
+                <option value="{{ url_for('main.cat_leyes', siglas=s[0]) }}"
+                    {% if siglas_filter == s[0] %}selected{% endif %}>{{ s[0] }}</option>
                 {% endfor %}
             </select>
         </div>
+    </div>
 
-        <h3 style="color: var(--guinda); margin-bottom: 15px; font-size: 1.1rem; text-transform: uppercase;">Fundamentos Registrados</h3>
-        
-        <div style="overflow-x: auto;">
-            <table>
-                <thead>
-                    <tr>
-                        <th style="width: 15%;">Norma</th>
-                        <th style="width: 15%;">Referencia</th>
-                        <th>Texto / Descripción</th>
-                        <th style="width: 12%;">Acciones</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for ley in leyes %}
-                    <tr>
-                        <td>
-                            <strong style="color: var(--guinda);">{{ ley.siglas_ley }}</strong><br>
-                            <small style="color: #777;">{{ ley.ambito }}</small>
-                        </td>
-                        <td class="code-cell">
-                            Art. {{ ley.articulo or '-' }}<br>
-                            Fr. {{ ley.fraccion or '-' }}<br>
-                            Inc. {{ ley.inciso or '-' }}
-                        </td>
-                        <td style="font-size: 0.85rem; color: #555;">
-                            {{ ley.texto_ley[:180] }}{% if ley.texto_ley|length > 180 %}...{% endif %}
-                        </td>
-                        <td class="actions-cell">
-                            <a href="{{ url_for('main.editar_ley', id_ley=ley.id_ley) }}" style="text-decoration:none;" title="Editar">✏️</a>
-                            <a href="{{ url_for('main.eliminar_ley', id_ley=ley.id_ley) }}" 
-                               onclick="return confirm('¿Eliminar fundamento legal?')" 
-                               style="text-decoration:none;" title="Eliminar">🗑️</a>
-                        </td>
-                    </tr>
-                    {% else %}
-                    <tr>
-                        <td colspan="4" style="text-align:center; padding: 30px; color: #999;">
-                            No existen fundamentos legales registrados.
-                        </td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-        </div>
-    </section>
+    <hr class="cap-separator">
+
+    <h3 class="cap-table-title">Fundamentos Registrados</h3>
+    <div class="cap-table-wrap">
+        <table class="cap-table">
+            <thead>
+                <tr>
+                    <th style="width:12%;">Norma</th>
+                    <th style="width:15%;">Referencia</th>
+                    <th>Texto / Descripción</th>
+                    <th style="width:12%;">Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for ley in leyes %}
+                <tr>
+                    <td>
+                        <span class="td-clave">{{ ley.siglas_ley }}</span>
+                        <span class="td-muted">{{ ley.ambito }}</span>
+                    </td>
+                    <td style="font-size:0.78rem; text-align:center;">
+                        Art. {{ ley.articulo or '—' }}<br>
+                        Fr. {{ ley.fraccion or '—' }}<br>
+                        Inc. {{ ley.inciso or '—' }}
+                    </td>
+                    <td style="font-size:0.8rem;">
+                        {{ ley.texto_ley[:180] if ley.texto_ley else '—' }}
+                        {% if ley.texto_ley and ley.texto_ley|length > 180 %}...{% endif %}
+                    </td>
+                    <td>
+                        <div class="cap-table-actions">
+                            <a href="{{ url_for('main.editar_ley', id_ley=ley.id_ley) }}"
+                               class="btn-tbl-edit">Editar</a>
+                            <a href="{{ url_for('main.eliminar_ley', id_ley=ley.id_ley) }}"
+                               class="btn-tbl-del"
+                               onclick="return confirm('¿Eliminar este fundamento?')">Eliminar</a>
+                        </div>
+                    </td>
+                </tr>
+                {% else %}
+                <tr>
+                    <td colspan="4" class="td-empty">No hay fundamentos legales registrados.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
 </div>
-
 {% endblock %}

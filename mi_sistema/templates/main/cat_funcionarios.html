@@ -1,114 +1,112 @@
 {% extends "base.html" %}
-
 {% block content %}
-<div class="container-capture">
-    <header class="section-header" style="margin-bottom: 20px;">
-        <h2 class="menu-main-title">Catálogo de Funcionarios Responsables</h2>
-        <p class="user-info">Registro de titulares y personal responsable de los archivos y áreas productoras</p>
-    </header>
+<div class="cap-container">
 
-    <section class="capture-section">
-        <form action="{{ url_for('main.cat_funcionarios') }}" method="POST" 
-              style="background:#fdfdfd; padding:25px; border-radius:10px; border: 1px solid #ddd; border-left: 5px solid var(--dorado); margin-bottom:30px; box-shadow: 0 2px 4px rgba(0,0,0,0.05);">
-            
-            <div style="display:grid; grid-template-columns: 1fr 1fr; gap:20px;">
-                <div class="field-group">
-                    <label style="font-weight: bold; color: var(--primario); margin-bottom: 8px; display: block;">Nombre Completo:</label>
-                    <input type="text" name="nombre_funcionario" class="input-nombre" 
-                           placeholder="Ej. Lic. Juan Pérez García" required style="width: 100%; border: 1px solid #ccc;">
+    <div class="cap-header">
+        <div>
+            <h2 class="cap-title">Catálogo de Funcionarios Responsables</h2>
+            <p class="cap-subtitle">Titulares y personal responsable de archivos y áreas productoras</p>
+        </div>
+        <div style="display:flex; gap:8px;">
+            <a href="{{ url_for('main.mostrar_catalogos') }}" class="cap-btn-cancel">← Catálogos</a>
+            <a href="{{ url_for('main.dashboard') }}" class="cap-btn-menu">← Menú Principal</a>
+        </div>
+    </div>
+
+    <div class="cap-card">
+        <div class="cap-legend">Nuevo Funcionario</div>
+        <form action="{{ url_for('main.cat_funcionarios') }}" method="POST">
+            <div class="cap-grid-2">
+                <div class="cap-field">
+                    <label class="cap-label">Nombre Completo</label>
+                    <input type="text" name="nombre_funcionario" class="cap-input"
+                           placeholder="Ej. Lic. Juan Pérez García" required>
                 </div>
-                <div class="field-group">
-                    <label style="font-weight: bold; color: var(--primario); margin-bottom: 8px; display: block;">Cargo / Puesto:</label>
-                    <input type="text" name="cargo_funcionario" class="input-nombre" 
-                           placeholder="Ej. Director de Área" required style="width: 100%; border: 1px solid #ccc;">
+                <div class="cap-field">
+                    <label class="cap-label">Cargo / Puesto</label>
+                    <input type="text" name="cargo_funcionario" class="cap-input"
+                           placeholder="Ej. Director de Área" required>
                 </div>
-                <div class="field-group">
-                    <label style="font-weight: bold; color: var(--primario); margin-bottom: 8px; display: block;">Área de Adscripción:</label>
-                    <select name="id_area" class="input-nombre" required style="width: 100%; border: 1px solid #ccc; height: 42px;">
+            </div>
+            <div class="cap-grid-2">
+                <div class="cap-field">
+                    <label class="cap-label">Área de Adscripción</label>
+                    <select name="id_area" class="cap-select" required>
                         <option value="">-- Seleccionar Área --</option>
                         {% for area in areas %}
-                        <option value="{{ area.id_area }}">{{ area.siglas_area }} - {{ area.unidad.siglas_ua }} ({{ area.dependencia.siglas_dependencia }})</option>
+                        <option value="{{ area.id_area }}">
+                            {{ area.siglas_area }} — {{ area.unidad.siglas_ua }} ({{ area.dependencia.siglas_dependencia }})
+                        </option>
                         {% endfor %}
                     </select>
                 </div>
-                <div class="field-group">
-                    <label style="font-weight: bold; color: var(--primario); margin-bottom: 8px; display: block;">Fecha de Designación:</label>
-                    <input type="date" name="fecha_designacion_func" class="input-nombre" style="width: 100%; border: 1px solid #ccc; height: 42px;">
+                <div class="cap-field">
+                    <label class="cap-label">Fecha de Designación</label>
+                    <input type="date" name="fecha_designacion_func" class="cap-input">
                 </div>
             </div>
-
-            <div style="margin-top: 20px; text-align: right;">
-                <button type="submit" class="btn-next" style="width: 250px; height: 42px; font-weight: bold;">💾 Guardar Funcionario</button>
+            <div class="cap-actions">
+                <button type="submit" class="cap-btn-save">Guardar Funcionario</button>
             </div>
         </form>
+    </div>
 
-        <div style="margin-bottom:20px; background:#f8f9fa; padding:15px; border-radius:8px; border: 1px solid #dee2e6; display: flex; align-items: center; gap: 15px;">
-            <label style="color: var(--primario); font-weight: bold;">🔍 Filtrar por Área:</label>
-            <select onchange="location = this.value;" class="input-nombre" style="width: auto; min-width: 350px; border: 1px solid #ccc; height: 35px;">
-                <option value="{{ url_for('main.cat_funcionarios') }}">--- Todos los Funcionarios ---</option>
+    <div class="cap-card" style="padding:14px 20px;">
+        <div style="display:flex; align-items:center; gap:12px;">
+            <label class="cap-label" style="margin:0; white-space:nowrap;">Filtrar por Área:</label>
+            <select onchange="location = this.value;" class="cap-select" style="max-width:400px;">
+                <option value="{{ url_for('main.cat_funcionarios') }}">--- Todos ---</option>
                 {% for area in areas %}
-                <option value="{{ url_for('main.cat_funcionarios', area_id=area.id_area) }}" 
+                <option value="{{ url_for('main.cat_funcionarios', area_id=area.id_area) }}"
                     {% if area_id_filter == area.id_area %}selected{% endif %}>
                     {{ area.nombre_area }} ({{ area.siglas_area }})
                 </option>
                 {% endfor %}
             </select>
         </div>
+    </div>
 
-        <h3 style="color: var(--primario); margin-bottom: 15px; font-size: 1.2rem;">Funcionarios Registrados</h3>
-        
-        <div style="overflow-x: auto; background: white; border-radius: 8px;">
-            <table class="compact-table" style="width: 100%; border-collapse: collapse; border: 2px solid #dee2e6;">
-                <thead>
-                    <tr style="background-color: #f8f9fa;">
-                        <th style="border: 1px solid #dee2e6; padding: 12px; text-align: left; color: #444;">Funcionario</th>
-                        <th style="border: 1px solid #dee2e6; padding: 12px; text-align: left; color: #444;">Cargo</th>
-                        <th style="border: 1px solid #dee2e6; padding: 12px; text-align: left; color: #444;">Adscripción</th>
-                        <th style="border: 1px solid #dee2e6; padding: 12px; text-align: center; color: #444;">Designación</th>
-                        <th style="border: 1px solid #dee2e6; padding: 12px; text-align: center; color: #444; width: 12%;">Acciones</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for f in funcionarios %}
-                    <tr>
-                        <td style="border: 1px solid #dee2e6; padding: 10px; font-weight: bold; color: var(--primario);">{{ f.nombre_funcionario }}</td>
-                        <td style="border: 1px solid #dee2e6; padding: 10px; color: #333;">{{ f.cargo_funcionario }}</td>
-                        <td style="border: 1px solid #dee2e6; padding: 10px; color: #666;"><small>{{ f.area.siglas_area }} / {{ f.area.unidad.siglas_ua }}</small></td>
-                        <td style="border: 1px solid #dee2e6; padding: 10px; text-align: center; color: #555;">
-                            {{ f.fecha_designacion_func.strftime('%d/%m/%Y') if f.fecha_designacion_func else 'N/D' }}
-                        </td>
-                        <td style="border: 1px solid #dee2e6; padding: 10px; text-align: center;">
-                            <a href="{{ url_for('main.editar_funcionario', id_func=f.id_funcionarios) }}" 
-                               style="text-decoration:none; margin-right:12px; font-size: 1.1rem;" title="Editar">✏️</a>
-                            <a href="{{ url_for('main.eliminar_funcionario', id_func=f.id_funcionarios) }}" 
-                               onclick="return confirm('¿Eliminar registro de funcionario?')" 
-                               style="text-decoration:none; font-size: 1.1rem;" title="Eliminar">🗑️</a>
-                        </td>
-                    </tr>
-                    {% else %}
-                    <tr>
-                        <td colspan="5" style="text-align:center; padding: 30px; color: #999; border: 1px solid #dee2e6;">
-                            No existen funcionarios registrados para esta selección.
-                        </td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-        </div>
+    <hr class="cap-separator">
 
-        <div style="margin-top: 40px; padding-top: 20px; border-top: 1px solid #eee; display: flex; gap: 15px;">
-            <a href="{{ url_for('main.mostrar_catalogos') }}" class="btn-back" style="display: flex; align-items: center; gap: 8px;">
-                <span style="font-size: 1.2rem;">📂</span> Volver a Catálogos
-            </a>
-            <a href="{{ url_for('main.dashboard') }}" class="btn-back" style="display: flex; align-items: center; gap: 8px; background: #6c757d;">
-                <span style="font-size: 1.2rem;">🏠</span> Menú Principal
-            </a>
-        </div>
-    </section>
+    <h3 class="cap-table-title">Funcionarios Registrados</h3>
+    <div class="cap-table-wrap">
+        <table class="cap-table">
+            <thead>
+                <tr>
+                    <th>Funcionario</th>
+                    <th>Cargo</th>
+                    <th style="width:20%;">Adscripción</th>
+                    <th style="width:12%;">Designación</th>
+                    <th style="width:12%;">Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for f in funcionarios %}
+                <tr>
+                    <td style="font-weight:600; color:var(--guinda);">{{ f.nombre_funcionario }}</td>
+                    <td>{{ f.cargo_funcionario }}</td>
+                    <td><span class="td-muted">{{ f.area.siglas_area }} / {{ f.area.unidad.siglas_ua }}</span></td>
+                    <td style="text-align:center;">
+                        {{ f.fecha_designacion_func.strftime('%d/%m/%Y') if f.fecha_designacion_func else '—' }}
+                    </td>
+                    <td>
+                        <div class="cap-table-actions">
+                            <a href="{{ url_for('main.editar_funcionario', id_func=f.id_funcionarios) }}"
+                               class="btn-tbl-edit">Editar</a>
+                            <a href="{{ url_for('main.eliminar_funcionario', id_func=f.id_funcionarios) }}"
+                               class="btn-tbl-del"
+                               onclick="return confirm('¿Eliminar este funcionario?')">Eliminar</a>
+                        </div>
+                    </td>
+                </tr>
+                {% else %}
+                <tr>
+                    <td colspan="5" class="td-empty">No hay funcionarios registrados.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
 </div>
-
-<style>
-    .compact-table tbody tr:nth-child(even) { background-color: #fdfdfd; }
-    .compact-table tbody tr:hover { background-color: #f1f4f9; transition: 0.2s; }
-</style>
 {% endblock %}

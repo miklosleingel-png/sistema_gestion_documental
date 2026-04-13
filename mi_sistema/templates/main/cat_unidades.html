@@ -1,105 +1,100 @@
 {% extends "base.html" %}
-
 {% block content %}
-<div class="container-capture">
-    <header class="section-header" style="margin-bottom: 20px;">
-        <h2 class="menu-main-title">Catálogo de Unidades Administrativas</h2>
-        <p class="user-info">Gestión de las unidades jerárquicas que integran las dependencias u organismos</p>
-    </header>
+<div class="cap-container">
 
-    <section class="capture-section">
-        <form action="{{ url_for('main.cat_unidades') }}" method="POST" 
-              style="background:#fdfdfd; padding:25px; border-radius:10px; border: 1px solid #ddd; border-left: 5px solid var(--dorado); margin-bottom:30px; box-shadow: 0 2px 4px rgba(0,0,0,0.05);">
-            
-            <div style="display:grid; grid-template-columns: 1.2fr 2fr 1fr 150px; gap:15px; align-items: end;">
-                <div class="field-group">
-                    <label style="font-weight: bold; color: var(--primario); margin-bottom: 8px; display: block;">Dependencia:</label>
-                    <select name="id_dependencia" class="input-nombre" required style="width: 100%; border: 1px solid #ccc; height: 42px;">
+    <div class="cap-header">
+        <div>
+            <h2 class="cap-title">Catálogo de Unidades Administrativas</h2>
+            <p class="cap-subtitle">Unidades jerárquicas que integran las dependencias</p>
+        </div>
+        <div style="display:flex; gap:8px;">
+            <a href="{{ url_for('main.mostrar_catalogos') }}" class="cap-btn-cancel">← Catálogos</a>
+            <a href="{{ url_for('main.dashboard') }}" class="cap-btn-menu">← Menú Principal</a>
+        </div>
+    </div>
+
+    <div class="cap-card">
+        <div class="cap-legend">Nueva Unidad Administrativa</div>
+        <form action="{{ url_for('main.cat_unidades') }}" method="POST">
+            <div class="cap-grid-3">
+                <div class="cap-field">
+                    <label class="cap-label">Dependencia</label>
+                    <select name="id_dependencia" class="cap-select" required>
                         <option value="">-- Seleccionar --</option>
                         {% for dep in dependencias %}
                         <option value="{{ dep.id_dependencia }}">{{ dep.siglas_dependencia }}</option>
                         {% endfor %}
                     </select>
                 </div>
-                <div class="field-group">
-                    <label style="font-weight: bold; color: var(--primario); margin-bottom: 8px; display: block;">Nombre de la Unidad:</label>
-                    <input type="text" name="nombre_ua" class="input-nombre" 
-                           placeholder="Ej. Dirección General de Administración" required style="width: 100%; border: 1px solid #ccc;">
+                <div class="cap-field">
+                    <label class="cap-label">Nombre de la Unidad</label>
+                    <input type="text" name="nombre_ua" class="cap-input"
+                           placeholder="Ej. Dirección General de Administración" required>
                 </div>
-                <div class="field-group">
-                    <label style="font-weight: bold; color: var(--primario); margin-bottom: 8px; display: block;">Siglas UA:</label>
-                    <input type="text" name="siglas_ua" class="input-nombre" 
-                           placeholder="Ej. DGA" required style="width: 100%; border: 1px solid #ccc;">
-                </div>
-                <div>
-                    <button type="submit" class="btn-next" style="width: 100%; height: 42px; font-weight: bold;">Guardar</button>
+                <div class="cap-field">
+                    <label class="cap-label">Siglas</label>
+                    <input type="text" name="siglas_ua" class="cap-input"
+                           placeholder="Ej. DGA" required>
                 </div>
             </div>
+            <div class="cap-actions">
+                <button type="submit" class="cap-btn-save">Guardar Unidad</button>
+            </div>
         </form>
+    </div>
 
-        <div style="margin-bottom:25px; background:#f8f9fa; padding:15px; border-radius:8px; border: 1px solid #dee2e6; display: flex; align-items: center; gap: 15px;">
-            <label style="color: var(--primario); font-weight: bold;">🔍 Filtrar por Dependencia:</label>
-            <select onchange="location = this.value;" class="input-nombre" style="width: auto; min-width: 300px; border: 1px solid #ccc; height: 35px;">
-                <option value="{{ url_for('main.cat_unidades') }}">--- Todas las Dependencias ---</option>
+    <div class="cap-card" style="padding:14px 20px;">
+        <div style="display:flex; align-items:center; gap:12px;">
+            <label class="cap-label" style="margin:0; white-space:nowrap;">Filtrar por Dependencia:</label>
+            <select onchange="location = this.value;" class="cap-select" style="max-width:350px;">
+                <option value="{{ url_for('main.cat_unidades') }}">--- Todas ---</option>
                 {% for dep in dependencias %}
-                <option value="{{ url_for('main.cat_unidades', dep_id=dep.id_dependencia) }}" 
+                <option value="{{ url_for('main.cat_unidades', dep_id=dep.id_dependencia) }}"
                     {% if dep_id_filter == dep.id_dependencia %}selected{% endif %}>
                     {{ dep.nombre_dependencia }} ({{ dep.siglas_dependencia }})
                 </option>
                 {% endfor %}
             </select>
         </div>
+    </div>
 
-        <h3 style="color: var(--primario); margin-bottom: 15px; font-size: 1.2rem;">Unidades Registradas</h3>
-        
-        <div style="overflow-x: auto; background: white; border-radius: 8px;">
-            <table class="compact-table" style="width: 100%; border-collapse: collapse; border: 2px solid #dee2e6;">
-                <thead>
-                    <tr style="background-color: #f8f9fa;">
-                        <th style="border: 1px solid #dee2e6; padding: 12px; text-align: left; color: #444; width: 15%;">Dependencia</th>
-                        <th style="border: 1px solid #dee2e6; padding: 12px; text-align: left; color: #444; width: 15%;">Siglas UA</th>
-                        <th style="border: 1px solid #dee2e6; padding: 12px; text-align: left; color: #444;">Nombre Unidad Administrativa</th>
-                        <th style="border: 1px solid #dee2e6; padding: 12px; text-align: center; color: #444; width: 12%;">Acciones</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for ua in unidades %}
-                    <tr>
-                        <td style="border: 1px solid #dee2e6; padding: 10px; color: #666;"><small>{{ ua.dependencia.siglas_dependencia }}</small></td>
-                        <td style="border: 1px solid #dee2e6; padding: 10px; font-weight: bold; color: var(--primario);">{{ ua.siglas_ua }}</td>
-                        <td style="border: 1px solid #dee2e6; padding: 10px; color: #333;">{{ ua.nombre_ua }}</td>
-                        <td style="border: 1px solid #dee2e6; padding: 10px; text-align: center;">
-                            <a href="{{ url_for('main.editar_ua', id_ua=ua.id_ua) }}" 
-                               style="text-decoration:none; margin-right:12px; font-size: 1.1rem;" title="Editar">✏️</a>
-                            <a href="{{ url_for('main.eliminar_ua', id_ua=ua.id_ua) }}" 
-                               onclick="return confirm('¿Confirmar eliminación de esta Unidad Administrativa?')" 
-                               style="text-decoration:none; font-size: 1.1rem;" title="Eliminar">🗑️</a>
-                        </td>
-                    </tr>
-                    {% else %}
-                    <tr>
-                        <td colspan="4" style="text-align:center; padding: 30px; color: #999; border: 1px solid #dee2e6;">
-                            No se encontraron unidades para esta selección.
-                        </td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-        </div>
+    <hr class="cap-separator">
 
-        <div style="margin-top: 40px; padding-top: 20px; border-top: 1px solid #eee; display: flex; gap: 15px;">
-            <a href="{{ url_for('main.mostrar_catalogos') }}" class="btn-back" style="display: flex; align-items: center; gap: 8px;">
-                <span style="font-size: 1.2rem;">📂</span> Volver a Catálogos
-            </a>
-            <a href="{{ url_for('main.dashboard') }}" class="btn-back" style="display: flex; align-items: center; gap: 8px; background: #6c757d;">
-                <span style="font-size: 1.2rem;">🏠</span> Menú Principal
-            </a>
-        </div>
-    </section>
+    <h3 class="cap-table-title">Unidades Registradas</h3>
+    <div class="cap-table-wrap">
+        <table class="cap-table">
+            <thead>
+                <tr>
+                    <th style="width:15%;">Dependencia</th>
+                    <th style="width:15%;">Siglas UA</th>
+                    <th>Nombre</th>
+                    <th style="width:15%;">Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for ua in unidades %}
+                <tr>
+                    <td><span class="td-muted">{{ ua.dependencia.siglas_dependencia }}</span></td>
+                    <td><span class="td-clave">{{ ua.siglas_ua }}</span></td>
+                    <td>{{ ua.nombre_ua }}</td>
+                    <td>
+                        <div class="cap-table-actions">
+                            <a href="{{ url_for('main.editar_ua', id_ua=ua.id_ua) }}"
+                               class="btn-tbl-edit">Editar</a>
+                            <a href="{{ url_for('main.eliminar_ua', id_ua=ua.id_ua) }}"
+                               class="btn-tbl-del"
+                               onclick="return confirm('¿Eliminar esta unidad?')">Eliminar</a>
+                        </div>
+                    </td>
+                </tr>
+                {% else %}
+                <tr>
+                    <td colspan="4" class="td-empty">No hay unidades registradas.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
 </div>
-
-<style>
-    .compact-table tbody tr:nth-child(even) { background-color: #fdfdfd; }
-    .compact-table tbody tr:hover { background-color: #f1f4f9; transition: 0.2s; }
-</style>
 {% endblock %}
