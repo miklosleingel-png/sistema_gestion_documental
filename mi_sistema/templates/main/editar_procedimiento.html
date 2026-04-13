@@ -1,79 +1,84 @@
 {% extends "base.html" %}
-
 {% block content %}
-<div class="container-capture">
-    <header class="section-header">
-        <h2 style="color: #691C32;">Editar Procedimiento Administrativo</h2>
-        <p>Modifique los datos generales y la vinculación institucional del registro.</p>
-    </header>
+<div class="cap-container">
 
-    <form action="{{ url_for('main.editar_procedimiento', id=procedimiento.id_procedimiento) }}" method="POST">
-        
-        <div style="background:#f8f1f4; padding:20px; border-radius:8px; margin-bottom:20px; border-left: 5px solid #691C32;">
-            <label style="font-weight: bold; color: #691C32;">Nombre del Procedimiento:</label>
-            <input type="text" name="nombre_procedimiento" value="{{ procedimiento.nombre_procedimiento }}" 
-                   style="width: 100%; margin-top:10px; padding:12px; border:1px solid #ccc; border-radius:4px;" required>
+    <div class="cap-header">
+        <div>
+            <h2 class="cap-title">Editar Procedimiento</h2>
+            <p class="cap-subtitle">{{ procedimiento.nombre_procedimiento }}</p>
         </div>
+        <a href="{{ url_for('main.cat_procedimientos') }}" class="cap-btn-menu">← Regresar</a>
+    </div>
 
-        <h3 style="color: #B08B57; border-bottom: 1px solid #eee; padding-bottom: 10px; margin-top:30px;">Detalles de la Actividad</h3>
-        
-        <div style="display:grid; grid-template-columns: 1fr 1fr; gap:20px; margin-top:15px;">
-            <div>
-                <label style="font-weight: bold; font-size: 0.9rem;">Responsable (Cargo):</label>
-                <input type="text" name="responsable" value="{{ procedimiento.responsable_ejecucion }}" 
-                       style="width:100%; padding:10px; border:1px solid #ccc; border-radius:4px;">
+    <div class="cap-card">
+        <div class="cap-legend">Nombre del Procedimiento</div>
+        <form action="{{ url_for('main.editar_procedimiento', id=procedimiento.id_procedimiento) }}" method="POST">
+            <div class="cap-grid-1">
+                <div class="cap-field">
+                    <label class="cap-label">Nombre del Procedimiento</label>
+                    <input type="text" name="nombre_procedimiento" class="cap-input"
+                           value="{{ procedimiento.nombre_procedimiento }}" required>
+                </div>
             </div>
-            <div>
-                <label style="font-weight: bold; font-size: 0.9rem;">Producto (Tipo Documental):</label>
-                <input type="text" name="producto" value="{{ procedimiento.tipo_documental_producido }}" 
-                       style="width:100%; padding:10px; border:1px solid #ccc; border-radius:4px;">
+            <div class="cap-actions">
+                <a href="{{ url_for('main.cat_procedimientos') }}" class="cap-btn-cancel">Cancelar</a>
+                <button type="submit" class="cap-btn-save">Guardar Nombre</button>
             </div>
-        </div>
+        </form>
+    </div>
 
-        <div style="display: grid; grid-template-columns: 1fr 2fr; gap: 15px; margin-top: 20px; background: #fdfaf3; padding: 15px; border-radius: 8px; border: 1px solid #f0e6d2;">
-            <div>
-                <label style="font-weight: bold; font-size: 0.9rem;">Tipo de Vinculación:</label>
-                <select name="tipo_coord" class="form-control" style="width: 100%; height: 40px; border:1px solid #ccc;">
-                    <option value="INT" {% if procedimiento.id_ua %}selected{% endif %}>INTERNA (SMADSOT)</option>
-                    <option value="EXT" {% if procedimiento.id_area_ext %}selected{% endif %}>EXTERNA</option>
-                </select>
-            </div>
-            <div>
-                <label style="font-weight: bold; font-size: 0.9rem;">Área / Institución Vinculada:</label>
-                <select name="id_coord" class="form-control" style="width: 100%; height: 40px; border:1px solid #ccc;">
-                    <optgroup label="UNIDADES ADMINISTRATIVAS">
-                        {% for u in unidades %}
-                        <option value="{{ u.id_ua }}" {% if procedimiento.id_ua == u.id_ua %}selected{% endif %}>
-                            {{ u.siglas_ua }} - {{ u.nombre_ua }}
-                        </option>
-                        {% endfor %}
-                    </optgroup>
-                    <optgroup label="ÁREAS EXTERNAS">
-                        {% for e in externas %}
-                        <option value="{{ e.id_area_ext }}" {% if procedimiento.id_area_ext == e.id_area_ext %}selected{% endif %}>
-                            {{ e.nombre_institucion }} - {{ e.nombre_area_externa }}
-                        </option>
-                        {% endfor %}
-                    </optgroup>
-                </select>
-            </div>
-        </div>
+    <hr class="cap-separator">
 
-        <div style="margin-top:20px;">
-            <label style="font-weight: bold; font-size: 0.9rem; display:block; margin-bottom:8px;">Descripción de la Actividad:</label>
-            <textarea name="descripcion_actividad" rows="4" 
-                      style="width:100%; padding:10px; border:1px solid #ccc; border-radius:4px;">{{ procedimiento.descripcion_actividad }}</textarea>
-        </div>
-        
-        <div style="display: flex; gap: 15px; border-top: 1px solid #eee; padding-top: 25px; margin-top: 30px;">
-            <button type="submit" class="btn-next" style="background: #691C32; color: white; border: none; padding: 12px 30px; border-radius: 6px; cursor: pointer; font-weight: bold;">
-                💾 Actualizar Registro
-            </button>
-            <a href="{{ url_for('main.cat_procedimientos') }}" class="btn-back" 
-               style="background: #eee; color: #333; padding: 12px 30px; border-radius: 6px; text-decoration: none; text-align: center;">
-                Cancelar
-            </a>
-        </div>
-    </form>
+    <h3 class="cap-table-title">Actividades Registradas</h3>
+
+    {% if procedimiento.actividades %}
+    <div class="cap-table-wrap">
+        <table class="cap-table">
+            <thead>
+                <tr>
+                    <th>Descripción de la Actividad</th>
+                    <th style="width:18%;">Responsable</th>
+                    <th style="width:18%;">Vinculación</th>
+                    <th style="width:18%;">Producto</th>
+                    <th style="width:12%;">Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for act in procedimiento.actividades %}
+                <tr>
+                    <td style="font-size:0.82rem;">{{ act.descripcion_actividad }}</td>
+                    <td style="font-size:0.78rem; color:#666;">{{ act.responsable_ejecucion }}</td>
+                    <td>
+                        {% if act.unidad_interna %}
+                            <span class="badge-doc" style="background:var(--guinda); color:#fff; border-color:var(--guinda);">INT</span>
+                            <span class="td-muted">{{ act.unidad_interna.siglas_ua }}</span>
+                        {% elif act.area_externa %}
+                            <span class="badge-doc" style="background:var(--dorado); color:#2d1a00; border-color:var(--dorado);">EXT</span>
+                            <span class="td-muted">{{ act.area_externa.siglas_institucion }}</span>
+                        {% else %}
+                            <span style="color:#aaa;">—</span>
+                        {% endif %}
+                    </td>
+                    <td style="font-size:0.78rem;">{{ act.tipo_documental_producido }}</td>
+                    <td>
+                        <div class="cap-table-actions">
+                            <a href="{{ url_for('main.editar_actividad', id=act.id_actividad) }}"
+                               class="btn-tbl-edit">Editar</a>
+                            <a href="{{ url_for('main.eliminar_actividad', id=act.id_actividad) }}"
+                               class="btn-tbl-del"
+                               onclick="return confirm('¿Eliminar esta actividad?')">Eliminar</a>
+                        </div>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% else %}
+    <div style="text-align:center; padding:20px; color:#aaa; font-style:italic; border:1px dashed var(--gris-borde); border-radius:10px;">
+        Este procedimiento no tiene actividades registradas aún.
+    </div>
+    {% endif %}
+
 </div>
 {% endblock %}

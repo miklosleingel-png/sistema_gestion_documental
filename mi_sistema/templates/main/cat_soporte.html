@@ -1,79 +1,69 @@
 {% extends "base.html" %}
-
 {% block content %}
-<div class="container-capture">
-    <header class="section-header" style="margin-bottom: 20px;">
-        <h2 class="menu-main-title">Catálogo de Soporte Documental</h2>
-        <p class="user-info">Definición de medios físicos o electrónicos en los que se registra la información</p>
-    </header>
+<div class="cap-container">
 
-    <section class="capture-section">
-        <form action="{{ url_for('main.cat_soporte') }}" method="POST" 
-              style="background:#fdfdfd; padding:25px; border-radius:10px; border: 1px solid #ddd; border-left: 5px solid var(--dorado); margin-bottom:40px; box-shadow: 0 2px 4px rgba(0,0,0,0.05);">
-            
-            <div style="display:grid; grid-template-columns: 1fr 150px; gap:20px; align-items: end;">
-                <div class="field-group">
-                    <label style="font-weight: bold; color: var(--primario); margin-bottom: 8px; display: block;">Descripción del Soporte:</label>
-                    <input type="text" name="soporte" class="input-nombre" 
-                           placeholder="Ej. PAPEL / ELECTRÓNICO / MICROFILM" required 
-                           style="width: 100%; border: 1px solid #ccc;">
-                </div>
-                <div>
-                    <button type="submit" class="btn-next" style="width: 100%; height: 42px; font-weight: bold;">Guardar</button>
+    <div class="cap-header">
+        <div>
+            <h2 class="cap-title">Catálogo de Soporte Documental</h2>
+            <p class="cap-subtitle">Medios físicos o electrónicos en los que se registra la información</p>
+        </div>
+        <div style="display:flex; gap:8px;">
+            <a href="{{ url_for('main.mostrar_catalogos') }}" class="cap-btn-cancel">← Catálogos</a>
+            <a href="{{ url_for('main.dashboard') }}" class="cap-btn-menu">← Menú Principal</a>
+        </div>
+    </div>
+
+    <div class="cap-card">
+        <div class="cap-legend">Nuevo Soporte</div>
+        <form action="{{ url_for('main.cat_soporte') }}" method="POST">
+            <div class="cap-grid-1">
+                <div class="cap-field">
+                    <label class="cap-label">Descripción del Soporte</label>
+                    <input type="text" name="soporte" class="cap-input"
+                           placeholder="Ej. PAPEL / ELECTRÓNICO / MICROFILM" required>
                 </div>
             </div>
+            <div class="cap-actions">
+                <button type="submit" class="cap-btn-save">Guardar Soporte</button>
+            </div>
         </form>
+    </div>
 
-        <h3 style="color: var(--primario); margin-bottom: 15px; font-size: 1.2rem;">Tipos de Soporte Registrados</h3>
-        
-        <div style="overflow-x: auto; background: white; border-radius: 8px;">
-            <table class="compact-table" style="width: 100%; border-collapse: collapse; border: 2px solid #dee2e6;">
-                <thead>
-                    <tr style="background-color: #f8f9fa;">
-                        <th style="border: 1px solid #dee2e6; padding: 12px; text-align: center; color: #444; width: 10%;">ID</th>
-                        <th style="border: 1px solid #dee2e6; padding: 12px; text-align: left; color: #444;">Tipo de Soporte</th>
-                        <th style="border: 1px solid #dee2e6; padding: 12px; text-align: center; color: #444; width: 15%;">Acciones</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for s in soportes %}
-                    <tr>
-                        <td style="border: 1px solid #dee2e6; padding: 10px; text-align: center; color: #666;">{{ s.id_soporte }}</td>
-                        <td style="border: 1px solid #dee2e6; padding: 10px; font-weight: bold; color: var(--primario); text-transform: uppercase;">
-                            {{ s.soporte }}
-                        </td>
-                        <td style="border: 1px solid #dee2e6; padding: 10px; text-align: center;">
-                            <a href="{{ url_for('main.editar_soporte', id_soporte=s.id_soporte) }}" 
-                               style="text-decoration:none; margin-right:12px; font-size: 1.1rem;" title="Editar">✏️</a>
-                            <a href="{{ url_for('main.eliminar_soporte', id_soporte=s.id_soporte) }}" 
-                               onclick="return confirm('¿Confirmar eliminación de este tipo de soporte?')" 
-                               style="text-decoration:none; font-size: 1.1rem;" title="Eliminar">🗑️</a>
-                        </td>
-                    </tr>
-                    {% else %}
-                    <tr>
-                        <td colspan="3" style="text-align:center; padding: 30px; color: #999; border: 1px solid #dee2e6;">
-                            No existen soportes registrados en el catálogo.
-                        </td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-        </div>
+    <hr class="cap-separator">
 
-        <div style="margin-top: 40px; padding-top: 20px; border-top: 1px solid #eee; display: flex; gap: 15px;">
-            <a href="{{ url_for('main.mostrar_catalogos') }}" class="btn-back" style="display: flex; align-items: center; gap: 8px;">
-                <span style="font-size: 1.2rem;">📂</span> Volver a Catálogos
-            </a>
-            <a href="{{ url_for('main.dashboard') }}" class="btn-back" style="display: flex; align-items: center; gap: 8px; background: #6c757d;">
-                <span style="font-size: 1.2rem;">🏠</span> Menú Principal
-            </a>
-        </div>
-    </section>
+    <h3 class="cap-table-title">Tipos de Soporte Registrados</h3>
+    <div class="cap-table-wrap">
+        <table class="cap-table">
+            <thead>
+                <tr>
+                    <th style="width:10%; text-align:center;">ID</th>
+                    <th>Tipo de Soporte</th>
+                    <th style="width:15%;">Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for s in soportes %}
+                <tr>
+                    <td style="text-align:center; color:#888;">{{ s.id_soporte }}</td>
+                    <td><span class="td-clave">{{ s.soporte }}</span></td>
+                    <td>
+                        <div class="cap-table-actions">
+                            <a href="{{ url_for('main.editar_soporte', id_soporte=s.id_soporte) }}"
+                               class="btn-tbl-edit">Editar</a>
+                            <a href="{{ url_for('main.eliminar_soporte', id_soporte=s.id_soporte) }}"
+                               class="btn-tbl-del"
+                               onclick="return confirm('¿Eliminar este soporte?')">Eliminar</a>
+                        </div>
+                    </td>
+                </tr>
+                {% else %}
+                <tr>
+                    <td colspan="3" class="td-empty">No hay soportes registrados.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
 </div>
-
-<style>
-    .compact-table tbody tr:nth-child(even) { background-color: #fdfdfd; }
-    .compact-table tbody tr:hover { background-color: #f1f4f9; transition: 0.2s; }
-</style>
 {% endblock %}

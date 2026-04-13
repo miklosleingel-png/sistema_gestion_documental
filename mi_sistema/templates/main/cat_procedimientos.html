@@ -1,174 +1,202 @@
 {% extends "base.html" %}
-
 {% block content %}
-<div class="container-capture">
-    <header class="section-header">
-        <h2 style="color: #691C32;">Registro de Procedimientos Administrativos</h2>
-        <p>Defina el nombre del procedimiento y desglose sus actividades vinculadas.</p>
-    </header>
+<div class="cap-container">
 
-    <form action="{{ url_for('main.cat_procedimientos') }}" method="POST" id="form-procedimiento">
-        <div style="background:#f8f1f4; padding:20px; border-radius:8px; margin-bottom:20px; border-left: 5px solid #691C32;">
-            <label style="font-weight: bold; color: #691C32;">Nombre del Procedimiento:</label>
-            <input type="text" name="nombre_procedimiento" class="input-nombre" placeholder="Ej. ADQUISICIÓN DE BIENES" required style="width: 100%; margin-top:10px;">
+    <div class="cap-header">
+        <div>
+            <h2 class="cap-title">Procedimientos Administrativos</h2>
+            <p class="cap-subtitle">Registro de procedimientos y sus actividades vinculadas</p>
         </div>
-
-        <h3 style="color: #B08B57; border-bottom: 1px solid #eee; padding-bottom: 10px;">Actividades del Procedimiento</h3>
-        
-        <div id="contenedor-actividades">
-            <div class="actividad-item" style="background: #fff; border: 1px solid #ddd; padding: 20px; border-radius: 8px; margin-bottom: 15px; position: relative;">
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 15px;">
-                    <div>
-                        <label style="font-size: 0.85rem; font-weight: bold;">Responsable (Cargo):</label>
-                        <input type="text" name="responsable[]" class="input-nombre" required style="width:100%">
-                    </div>
-                    <div>
-                        <label style="font-size: 0.85rem; font-weight: bold;">Producto (Tipo Documental):</label>
-                        <input type="text" name="producto[]" class="input-nombre" required style="width:100%">
-                    </div>
-                </div>
-
-                <div style="display: grid; grid-template-columns: 1fr 2fr; gap: 15px; margin-bottom: 15px; background: #fdfaf3; padding: 10px; border-radius: 6px; border: 1px solid #f0e6d2;">
-                    <div>
-                        <label style="font-size: 0.85rem; font-weight: bold;">Tipo de Vinculación:</label>
-                        <select name="tipo_coord[]" class="input-nombre" style="width: 100%; height: 38px;">
-                            <option value="INT">INTERNA (SMADSOT)</option>
-                            <option value="EXT">EXTERNA</option>
-                        </select>
-                    </div>
-                    <div>
-                        <label style="font-size: 0.85rem; font-weight: bold;">Área / Institución Específica:</label>
-                        <select name="id_coord[]" class="input-nombre" style="width: 100%; height: 38px;">
-                            <optgroup label="UNIDADES ADMINISTRATIVAS (SMADSOT)">
-                                {% for u in unidades %}
-                                <option value="{{ u.id_ua }}">{{ u.siglas_ua }} - {{ u.nombre_ua }}</option>
-                                {% endfor %}
-                            </optgroup>
-                            <optgroup label="ÁREAS EXTERNAS">
-                                {% for e in externas %}
-                                <option value="{{ e.id_area_ext }}">{{ e.nombre_institucion }} - {{ e.nombre_area_externa }}</option>
-                                {% endfor %}
-                            </optgroup>
-                        </select>
-                    </div>
-                </div>
-
-                <div>
-                    <label style="font-size: 0.85rem; font-weight: bold;">Descripción de la Actividad:</label>
-                    <textarea name="descripcion_actividad[]" rows="2" style="width:100%; border: 1px solid #ccc; border-radius:4px; padding:8px;" required></textarea>
-                </div>
-            </div>
+        <div style="display:flex; gap:8px;">
+            <a href="{{ url_for('main.mostrar_catalogos') }}" class="cap-btn-cancel">← Catálogos</a>
+            <a href="{{ url_for('main.dashboard') }}" class="cap-btn-menu">← Menú Principal</a>
         </div>
+    </div>
 
-        <div style="text-align: center; margin-bottom: 30px;">
-            <button type="button" id="btn-agregar-actividad" style="background: #B08B57; color: white; border: none; padding: 10px 20px; border-radius: 50px; cursor: pointer; font-weight: bold;">
-                ➕ Agregar otra actividad
-            </button>
-        </div>
+    <div class="cap-card">
+        <div class="cap-legend">Nuevo Procedimiento</div>
+        <form action="{{ url_for('main.cat_procedimientos') }}" method="POST" id="form-procedimiento">
 
-        <div style="display: flex; gap: 15px; border-top: 1px solid #eee; padding-top: 20px; margin-bottom: 50px;">
-            <button type="submit" class="btn-next" style="background: #691C32; color: white; border: none; padding: 12px 25px; border-radius: 6px; cursor: pointer;">💾 Guardar Procedimiento Completo</button>
-            <a href="{{ url_for('main.mostrar_catalogos') }}" class="btn-back">Regresar al menú</a>
-        </div>
-    </form>
-
-    <hr style="border: 1px solid #eee; margin: 40px 0;">
-
-    <header class="section-header" style="margin-bottom: 20px;">
-        <h3 style="color: #691C32;">Procedimientos Registrados</h3>
-    </header>
-
-    <div class="acordeon-contenedor">
-        {% for proc in procedimientos %}
-        <div class="item-procedimiento" style="margin-bottom: 12px; border: 1px solid #ddd; border-radius: 8px; overflow: hidden;">
-            
-            <div class="header-acordeon" 
-                 style="padding: 15px 20px; background: #fdfdfd; display: flex; justify-content: space-between; align-items: center; border-left: 6px solid #691C32;">
-                <div onclick="toggleDetalle('{{ proc.id_procedimiento }}')" style="flex: 1; cursor: pointer; font-weight: bold; color: #691C32;">
-                    📂 {{ proc.nombre_procedimiento }} 
-                    <span style="font-weight: normal; color: #777; font-size: 0.8rem; margin-left: 10px;">({{ proc.actividades|length }} Actividades)</span>
-                </div>
-                
-                <div style="display: flex; gap: 15px; align-items: center;">
-                    <a href="{{ url_for('main.editar_procedimiento', id=proc.id_procedimiento) }}" title="Editar Nombre" style="text-decoration:none;">✏️</a>
-                    <a href="{{ url_for('main.eliminar_procedimiento', id=proc.id_procedimiento) }}" 
-                       onclick="return confirm('¿Eliminar TODO el procedimiento y sus actividades?')" title="Eliminar Todo" style="text-decoration:none;">🗑️</a>
-                    <span id="flecha-{{ proc.id_procedimiento }}" onclick="toggleDetalle('{{ proc.id_procedimiento }}')" style="cursor:pointer; padding-left: 10px;">▼</span>
+            <div class="cap-grid-1">
+                <div class="cap-field">
+                    <label class="cap-label">Nombre del Procedimiento</label>
+                    <input type="text" name="nombre_procedimiento" class="cap-input"
+                           placeholder="Ej. ADQUISICIÓN DE BIENES" required>
                 </div>
             </div>
 
-            <div id="detalle-{{ proc.id_procedimiento }}" style="display: none; padding: 0; background: #fff; border-top: 1px solid #eee;">
-                <table style="width: 100%; border-collapse: collapse; font-size: 0.85rem;">
+            <div class="cap-legend" style="margin-top:16px;">Actividades del Procedimiento</div>
+
+            <div id="contenedor-actividades">
+                <div class="actividad-item cap-card" style="margin-bottom:12px; position:relative;">
+                    <div class="cap-grid-2">
+                        <div class="cap-field">
+                            <label class="cap-label">Responsable (Cargo)</label>
+                            <input type="text" name="responsable[]" class="cap-input" required>
+                        </div>
+                        <div class="cap-field">
+                            <label class="cap-label">Producto (Tipo Documental)</label>
+                            <input type="text" name="producto[]" class="cap-input" required>
+                        </div>
+                    </div>
+                    <div class="cap-grid-2" style="background:#fdfaf3; border:1px solid var(--dorado-suave); border-radius:8px; padding:12px; margin-bottom:12px;">
+                        <div class="cap-field">
+                            <label class="cap-label">Tipo de Vinculación</label>
+                            <select name="tipo_coord[]" class="cap-select">
+                                <option value="INT">INTERNA (SMADSOT)</option>
+                                <option value="EXT">EXTERNA</option>
+                            </select>
+                        </div>
+                        <div class="cap-field">
+                            <label class="cap-label">Área / Institución</label>
+                            <select name="id_coord[]" class="cap-select">
+                                <optgroup label="UNIDADES ADMINISTRATIVAS">
+                                    {% for u in unidades %}
+                                    <option value="{{ u.id_ua }}">{{ u.siglas_ua }} — {{ u.nombre_ua }}</option>
+                                    {% endfor %}
+                                </optgroup>
+                                <optgroup label="ÁREAS EXTERNAS">
+                                    {% for e in externas %}
+                                    <option value="{{ e.id_area_ext }}">{{ e.nombre_institucion }} — {{ e.nombre_area_externa }}</option>
+                                    {% endfor %}
+                                </optgroup>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="cap-field">
+                        <label class="cap-label">Descripción de la Actividad</label>
+                        <textarea name="descripcion_actividad[]" class="cap-textarea" rows="2" required></textarea>
+                    </div>
+                </div>
+            </div>
+
+            <div style="text-align:center; margin-bottom:16px;">
+                <button type="button" id="btn-agregar" class="cap-btn-add" style="padding:10px 24px;">
+                    + Agregar otra actividad
+                </button>
+            </div>
+
+            <div class="cap-actions">
+                <a href="{{ url_for('main.mostrar_catalogos') }}" class="cap-btn-cancel">Cancelar</a>
+                <button type="submit" class="cap-btn-save">Guardar Procedimiento Completo</button>
+            </div>
+
+        </form>
+    </div>
+
+    <hr class="cap-separator">
+
+    <h3 class="cap-table-title">Procedimientos Registrados</h3>
+
+    {% for proc in procedimientos %}
+    <div style="margin-bottom:10px; border:1px solid var(--gris-borde); border-radius:10px; overflow:hidden;">
+
+        <div style="padding:14px 20px; background:var(--blanco); display:flex; justify-content:space-between; align-items:center; border-left:5px solid var(--guinda); cursor:pointer;"
+             onclick="toggleDetalle('{{ proc.id_procedimiento }}')">
+            <div>
+                <span style="font-weight:700; color:var(--guinda);">{{ proc.nombre_procedimiento }}</span>
+                <span style="color:#888; font-size:0.78rem; margin-left:10px;">
+                    ({{ proc.actividades|length }} actividades)
+                </span>
+            </div>
+            <div style="display:flex; gap:12px; align-items:center;">
+                <a href="{{ url_for('main.editar_procedimiento', id=proc.id_procedimiento) }}"
+                   class="btn-tbl-edit" onclick="event.stopPropagation()">Editar</a>
+                <a href="{{ url_for('main.eliminar_procedimiento', id=proc.id_procedimiento) }}"
+                   class="btn-tbl-del"
+                   onclick="event.stopPropagation(); return confirm('¿Eliminar procedimiento y todas sus actividades?')">Eliminar</a>
+                <span id="flecha-{{ proc.id_procedimiento }}" style="color:var(--guinda); font-size:0.8rem;">▼</span>
+            </div>
+        </div>
+
+        <div id="detalle-{{ proc.id_procedimiento }}" style="display:none;">
+            <div class="cap-table-wrap" style="border-radius:0; border:none; border-top:1px solid var(--gris-suave);">
+                <table class="cap-table" style="min-width:700px;">
                     <thead>
-                        <tr style="background: #fcf8f9; color: #691C32; text-align: left;">
-                            <th style="padding: 10px; border-bottom: 1px solid #eee;">Descripción Actividad</th>
-                            <th style="padding: 10px; border-bottom: 1px solid #eee;">Responsable</th>
-                            <th style="padding: 10px; border-bottom: 1px solid #eee;">Vinculación</th>
-                            <th style="padding: 10px; border-bottom: 1px solid #eee;">Producto</th>
-                            <th style="padding: 10px; border-bottom: 1px solid #eee; text-align: center;">Acciones</th>
+                        <tr>
+                            <th>Descripción</th>
+                            <th style="width:18%;">Responsable</th>
+                            <th style="width:15%;">Vinculación</th>
+                            <th style="width:18%;">Producto</th>
+                            <th style="width:10%;">Acciones</th>
                         </tr>
                     </thead>
                     <tbody>
                         {% for act in proc.actividades %}
-                        <tr style="border-bottom: 1px solid #f9f9f9;">
-                            <td style="padding: 10px;">{{ act.descripcion_actividad }}</td>
-                            <td style="padding: 10px; color: #666;">{{ act.responsable_ejecucion }}</td>
-                            <td style="padding: 10px;">
+                        <tr>
+                            <td style="font-size:0.82rem;">{{ act.descripcion_actividad }}</td>
+                            <td style="font-size:0.78rem; color:#666;">{{ act.responsable_ejecucion }}</td>
+                            <td>
                                 {% if act.unidad_interna %}
-                                    <span style="color: #691C32; font-weight: bold;">[INT]</span> {{ act.unidad_interna.siglas_ua }}
+                                    <span class="badge-doc" style="background:var(--guinda); color:#fff; border-color:var(--guinda);">INT</span>
+                                    <span class="td-muted">{{ act.unidad_interna.siglas_ua }}</span>
                                 {% elif act.area_externa %}
-                                    <span style="color: #B08B57; font-weight: bold;">[EXT]</span> {{ act.area_externa.nombre_institucion }}
+                                    <span class="badge-doc" style="background:var(--dorado); color:#2d1a00; border-color:var(--dorado);">EXT</span>
+                                    <span class="td-muted">{{ act.area_externa.siglas_institucion }}</span>
                                 {% else %}
-                                    <span style="color: #999;">N/A</span>
+                                    <span style="color:#aaa;">—</span>
                                 {% endif %}
                             </td>
-                            <td style="padding: 10px;">{{ act.tipo_documental_producido }}</td>
-                            <td style="padding: 10px; text-align: center; white-space: nowrap;">
-                                <a href="{{ url_for('main.editar_actividad', id=act.id_actividad) }}" title="Editar detalle" style="text-decoration:none; margin-right:8px;">📝</a>
-                                <a href="{{ url_for('main.eliminar_actividad', id=act.id_actividad) }}" 
-                                   onclick="return confirm('¿Eliminar solo esta actividad?')" title="Eliminar actividad" style="text-decoration:none;">❌</a>
+                            <td style="font-size:0.78rem;">{{ act.tipo_documental_producido }}</td>
+                            <td>
+                                <div class="cap-table-actions">
+                                    <a href="{{ url_for('main.editar_actividad', id=act.id_actividad) }}"
+                                       class="btn-tbl-edit">Editar</a>
+                                    <a href="{{ url_for('main.eliminar_actividad', id=act.id_actividad) }}"
+                                       class="btn-tbl-del"
+                                       onclick="return confirm('¿Eliminar esta actividad?')">Eliminar</a>
+                                </div>
                             </td>
+                        </tr>
+                        {% else %}
+                        <tr>
+                            <td colspan="5" class="td-empty">Sin actividades registradas.</td>
                         </tr>
                         {% endfor %}
                     </tbody>
                 </table>
             </div>
         </div>
-        {% else %}
-        <div style="text-align: center; padding: 30px; color: #999;">No hay procedimientos registrados.</div>
-        {% endfor %}
+
     </div>
+    {% else %}
+    <div style="text-align:center; padding:30px; color:#aaa; font-style:italic;">
+        No hay procedimientos registrados.
+    </div>
+    {% endfor %}
+
 </div>
 
 <script>
-    function toggleDetalle(id) {
-        const div = document.getElementById('detalle-' + id);
-        const flecha = document.getElementById('flecha-' + id);
-        if (div.style.display === "none") {
-            div.style.display = "block";
-            flecha.innerHTML = "▲";
-        } else {
-            div.style.display = "none";
-            flecha.innerHTML = "▼";
-        }
+function toggleDetalle(id) {
+    const div = document.getElementById('detalle-' + id);
+    const flecha = document.getElementById('flecha-' + id);
+    if (div.style.display === 'none') {
+        div.style.display = 'block';
+        flecha.innerHTML = '▲';
+    } else {
+        div.style.display = 'none';
+        flecha.innerHTML = '▼';
     }
+}
 
-    document.getElementById('btn-agregar-actividad').addEventListener('click', function() {
-        const contenedor = document.getElementById('contenedor-actividades');
-        const nuevaActividad = document.querySelector('.actividad-item').cloneNode(true);
-        
-        // Limpiar valores de los inputs clonados
-        nuevaActividad.querySelectorAll('input, textarea').forEach(input => input.value = '');
-        
-        // El botón eliminar para las nuevas filas
-        const btnEliminar = document.createElement('button');
-        btnEliminar.innerHTML = '✕';
-        btnEliminar.type = 'button';
-        btnEliminar.style = "position: absolute; top: 10px; right: 10px; background: #eee; border: none; border-radius: 50%; width: 25px; height: 25px; cursor: pointer; color: #666;";
-        btnEliminar.onclick = function() { this.parentElement.remove(); };
-        
-        nuevaActividad.appendChild(btnEliminar);
-        contenedor.appendChild(nuevaActividad);
-    });
+document.getElementById('btn-agregar').addEventListener('click', function() {
+    const contenedor = document.getElementById('contenedor-actividades');
+    const plantilla = document.querySelector('.actividad-item');
+    const nueva = plantilla.cloneNode(true);
+
+    nueva.querySelectorAll('input, textarea').forEach(el => el.value = '');
+    nueva.querySelectorAll('select').forEach(el => el.selectedIndex = 0);
+
+    const btnQuitar = document.createElement('button');
+    btnQuitar.type = 'button';
+    btnQuitar.textContent = '✕ Quitar';
+    btnQuitar.className = 'cap-btn-cancel';
+    btnQuitar.style.cssText = 'position:absolute; top:12px; right:12px; padding:4px 10px; font-size:0.72rem;';
+    btnQuitar.onclick = function() { this.parentElement.remove(); };
+    nueva.appendChild(btnQuitar);
+
+    contenedor.appendChild(nueva);
+});
 </script>
 {% endblock %}
