@@ -1,15 +1,15 @@
 from mi_sistema import create_app, db
+from mi_sistema.config import config
+import os
 
-# Creamos la instancia de la aplicación
 app = create_app()
 
 if __name__ == '__main__':
-    # Este bloque asegura que las tablas se creen si no existen 
-    # (Útil para pruebas locales rápidas)
     with app.app_context():
-        # db.create_all() # Descomenta esta línea solo la primera vez para crear las tablas localmente
+        # db.create_all() # Descomenta solo la primera vez para crear las tablas
         pass
-
-    # Ejecución en modo depuración para ver errores en tiempo real
-    # El puerto 8080 es el estándar que espera Google Cloud Run
-    app.run(host='0.0.0.0', port=8080, debug=False)
+    
+    # En desarrollo local, usa debug=True
+    # En Railway (producción), usa debug=False automáticamente
+    port = int(os.getenv('PORT', 8080))
+    app.run(host='0.0.0.0', port=port, debug=config.DEBUG)
