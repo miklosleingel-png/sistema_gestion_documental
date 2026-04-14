@@ -4,59 +4,68 @@
 
     <div class="cap-header">
         <div>
-            <h2 class="cap-title">Editar Funcionario Responsable</h2>
-            <p class="cap-subtitle">{{ registro.nombre_funcionario }}</p>
+            <h2 class="cap-title">Editar Fundamento Legal</h2>
+            <p class="cap-subtitle">{{ registro.siglas_ley }} — Art. {{ registro.articulo }}</p>
         </div>
-        <a href="{{ url_for('main.cat_funcionarios') }}" class="cap-btn-menu">← Regresar</a>
+        <a href="{{ url_for('main.cat_leyes') }}" class="cap-btn-menu">← Regresar</a>
     </div>
 
     <div class="cap-card">
-        <div class="cap-legend">Modificar Datos del Funcionario</div>
-        <form action="{{ url_for('main.editar_funcionario', id_func=registro.id_funcionarios) }}" method="POST">
+        <div class="cap-legend">Modificar Datos del Fundamento Legal</div>
+        <form action="{{ url_for('main.editar_ley', id_ley=registro.id_ley) }}" method="POST">
 
             <div class="cap-grid-1">
                 <div class="cap-field">
-                    <label class="cap-label">Nombre Completo</label>
-                    <input type="text" name="nombre_funcionario" class="cap-input"
-                           value="{{ registro.nombre_funcionario }}" required>
+                    <label class="cap-label">Nombre de la Ley / Norma</label>
+                    <input type="text" name="nombre_ley" class="cap-input"
+                           value="{{ registro.nombre_ley }}" required>
                 </div>
             </div>
 
             <div class="cap-grid-2">
                 <div class="cap-field">
-                    <label class="cap-label">Cargo / Puesto</label>
-                    <input type="text" name="cargo_funcionario" class="cap-input"
-                           value="{{ registro.cargo_funcionario }}" required>
+                    <label class="cap-label">Siglas</label>
+                    <input type="text" name="siglas_ley" class="cap-input"
+                           value="{{ registro.siglas_ley }}" required>
                 </div>
                 <div class="cap-field">
-                    <label class="cap-label">Área de Adscripción</label>
-                    <select name="id_area" class="cap-select" required>
-                        <option value="">-- Seleccionar Área --</option>
-                        {% for area in areas %}
-                        <option value="{{ area.id_area }}"
-                            {% if area.id_area == registro.id_area %}selected{% endif %}>
-                            {{ area.siglas_area }} — {{ area.unidad.siglas_ua }} ({{ area.nombre_area | truncate(40) }})
-                        </option>
-                        {% endfor %}
+                    <label class="cap-label">Ámbito</label>
+                    <select name="ambito" class="cap-select">
+                        <option value="FEDERAL" {% if registro.ambito == 'FEDERAL' %}selected{% endif %}>FEDERAL</option>
+                        <option value="ESTATAL" {% if registro.ambito == 'ESTATAL' %}selected{% endif %}>ESTATAL</option>
+                        <option value="MUNICIPAL" {% if registro.ambito == 'MUNICIPAL' %}selected{% endif %}>MUNICIPAL</option>
                     </select>
                 </div>
             </div>
 
-            <div class="cap-grid-2">
+            <div class="cap-grid-3">
                 <div class="cap-field">
-                    <label class="cap-label">Fecha de Designación</label>
-                    <input type="date" name="fecha_designacion_func" class="cap-input"
-                           value="{{ registro.fecha_designacion_func.strftime('%Y-%m-%d') if registro.fecha_designacion_func else '' }}">
+                    <label class="cap-label">Artículo</label>
+                    <input type="text" name="articulo" class="cap-input"
+                           value="{{ registro.articulo or '' }}" placeholder="Ej. 4">
                 </div>
                 <div class="cap-field">
-                    <label class="cap-label">Fecha de Término / Baja</label>
-                    <input type="date" name="fecha_fin_func" class="cap-input"
-                           value="{{ registro.fecha_fin_func.strftime('%Y-%m-%d') if registro.fecha_fin_func else '' }}">
+                    <label class="cap-label">Fracción</label>
+                    <input type="text" name="fraccion" class="cap-input"
+                           value="{{ registro.fraccion or '' }}" placeholder="Ej. VII">
+                </div>
+                <div class="cap-field">
+                    <label class="cap-label">Inciso</label>
+                    <input type="text" name="inciso" class="cap-input"
+                           value="{{ registro.inciso or '' }}" placeholder="Ej. a)">
+                </div>
+            </div>
+
+            <div class="cap-grid-1">
+                <div class="cap-field">
+                    <label class="cap-label">Texto de la Ley</label>
+                    <textarea name="texto_ley" class="cap-textarea"
+                              rows="5">{{ registro.texto_ley or '' }}</textarea>
                 </div>
             </div>
 
             <div class="cap-actions">
-                <a href="{{ url_for('main.cat_funcionarios') }}" class="cap-btn-cancel">Cancelar</a>
+                <a href="{{ url_for('main.cat_leyes') }}" class="cap-btn-cancel">Cancelar</a>
                 <button type="submit" class="cap-btn-save">Guardar Cambios</button>
             </div>
         </form>
