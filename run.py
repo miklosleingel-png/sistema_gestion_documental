@@ -12,4 +12,4 @@ if __name__ == '__main__':
 
     # Ejecución en modo depuración para ver errores en tiempo real
     # El puerto 8080 es el estándar que espera Google Cloud Run
-    app.run(host='0.0.0.0', port=8080, debug=True)
+    app.run(host='0.0.0.0', port=8080, debug=False)
