@@ -1024,7 +1024,10 @@ def editar_procedimiento(id):
             except Exception:
                 db.session.rollback()
                 flash('Error: El nombre ya existe.', 'danger')
-    return render_template('main/editar_procedimiento.html', procedimiento=procedimiento)
+    return render_template('main/editar_procedimiento.html',
+                           procedimiento=procedimiento,
+                           unidades=CatUnidadesAdministrativas.query.order_by(CatUnidadesAdministrativas.nombre_ua).all(),
+                           externas=CatAreasExternas.query.order_by(CatAreasExternas.nombre_institucion).all())
 
 @main.route('/editar_actividad/<int:id>', methods=['GET', 'POST'])
 @login_required

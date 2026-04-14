@@ -1,5 +1,20 @@
 {% extends "base.html" %}
 {% block content %}
+
+{# Arrays de datos para filtrado dinámico #}
+<script>
+const UNIDADES = [
+    {% for u in unidades %}
+    { id: "{{ u.id_ua }}", texto: "{{ u.siglas_ua }} \u2014 {{ u.nombre_ua }}" }{% if not loop.last %},{% endif %}
+    {% endfor %}
+];
+const EXTERNAS = [
+    {% for e in externas %}
+    { id: "{{ e.id_area_ext }}", texto: "{{ e.nombre_institucion }} \u2014 {{ e.nombre_area_externa }}" }{% if not loop.last %},{% endif %}
+    {% endfor %}
+];
+</script>
+
 <div class="cap-container">
 
     <div class="cap-header">
@@ -10,7 +25,7 @@
         <a href="{{ url_for('main.cat_procedimientos') }}" class="cap-btn-menu">← Regresar</a>
     </div>
 
-    <!-- Nombre del procedimiento -->
+    <!-- Nombre -->
     <div class="cap-card">
         <div class="cap-legend">Nombre del Procedimiento</div>
         <form action="{{ url_for('main.editar_procedimiento', id=procedimiento.id_procedimiento) }}" method="POST">
@@ -30,11 +45,9 @@
 
     <hr class="cap-separator">
 
-    <!-- Actividades existentes -->
     <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px;">
         <h3 class="cap-table-title" style="margin:0;">Actividades Registradas</h3>
-        <button type="button" onclick="mostrarFormNuevaActividad()"
-                class="cap-btn-add" style="padding:8px 16px;">
+        <button type="button" onclick="mostrarFormNuevaActividad()" class="cap-btn-add" style="padding:8px 16px;">
             + Agregar Actividad
         </button>
     </div>
@@ -47,7 +60,6 @@
              ondragstart="dragStart(event, {{ act.id_actividad }})"
              ondragover="dragOver(event)"
              ondrop="dragDrop(event, {{ act.id_actividad }})">
-
             <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:12px;">
                 <div style="cursor:grab; color:#ccc; font-size:1.2rem; padding-top:4px;" title="Arrastrar para reordenar">⠿</div>
                 <div style="flex:1;">
@@ -59,22 +71,18 @@
                         <span><strong>Producto:</strong> {{ act.tipo_documental_producido }}</span>
                         <span>
                             {% if act.unidad_interna %}
-                                <span class="badge-doc" style="background:var(--guinda); color:#fff; border-color:var(--guinda);">INT</span>
+                                <span class="badge-doc" style="background:var(--guinda);color:#fff;border-color:var(--guinda);">INT</span>
                                 {{ act.unidad_interna.siglas_ua }}
                             {% elif act.area_externa %}
-                                <span class="badge-doc" style="background:var(--dorado); color:#2d1a00; border-color:var(--dorado);">EXT</span>
+                                <span class="badge-doc" style="background:var(--dorado);color:#2d1a00;border-color:var(--dorado);">EXT</span>
                                 {{ act.area_externa.siglas_institucion }}
-                            {% else %}
-                                Sin área vinculada
-                            {% endif %}
+                            {% else %}Sin área vinculada{% endif %}
                         </span>
                     </div>
                 </div>
                 <div class="cap-table-actions" style="flex-shrink:0;">
-                    <a href="{{ url_for('main.editar_actividad', id=act.id_actividad) }}"
-                       class="btn-tbl-edit">Editar</a>
-                    <a href="{{ url_for('main.eliminar_actividad', id=act.id_actividad) }}"
-                       class="btn-tbl-del"
+                    <a href="{{ url_for('main.editar_actividad', id=act.id_actividad) }}" class="btn-tbl-edit">Editar</a>
+                    <a href="{{ url_for('main.eliminar_actividad', id=act.id_actividad) }}" class="btn-tbl-del"
                        onclick="return confirm('¿Eliminar esta actividad?')">Eliminar</a>
                 </div>
             </div>
@@ -88,13 +96,12 @@
     </div>
     {% endif %}
 
-    <!-- Formulario para nueva actividad (oculto inicialmente) -->
+    <!-- Formulario nueva actividad -->
     <div id="form-nueva-actividad" style="display:none;">
         <div class="cap-card" style="border-left:4px solid #2C5F2D; margin-top:16px;">
             <div class="cap-legend" style="color:#2C5F2D;">Nueva Actividad</div>
-            <form action="{{ url_for('main.cat_procedimientos') }}" method="POST" id="form-add-act">
+            <form action="{{ url_for('main.cat_procedimientos') }}" method="POST">
                 <input type="hidden" name="nombre_procedimiento" value="{{ procedimiento.nombre_procedimiento }}">
-
                 <div class="cap-grid-2">
                     <div class="cap-field">
                         <label class="cap-label">Responsable (Cargo)</label>
@@ -105,41 +112,28 @@
                         <input type="text" name="producto[]" class="cap-input">
                     </div>
                 </div>
-
-                <div class="cap-grid-2" style="background:#fdfaf3; border:1px solid var(--dorado-suave);
-                            border-radius:8px; padding:12px; margin-bottom:12px;">
+                <div class="cap-grid-2" style="background:#fdfaf3; border:1px solid var(--dorado-suave); border-radius:8px; padding:12px; margin-bottom:12px;">
                     <div class="cap-field">
                         <label class="cap-label">Tipo de Vinculación</label>
-                        <select name="tipo_coord[]" class="cap-select">
+                        <select name="tipo_coord[]" class="cap-select" onchange="filtrarAreas(this)">
+                            <option value="">-- Seleccionar --</option>
                             <option value="INT">INTERNA (SMADSOT)</option>
                             <option value="EXT">EXTERNA</option>
                         </select>
                     </div>
                     <div class="cap-field">
                         <label class="cap-label">Área / Institución</label>
-                        <select name="id_coord[]" class="cap-select">
-                            <optgroup label="UNIDADES ADMINISTRATIVAS">
-                                {% for u in unidades %}
-                                <option value="{{ u.id_ua }}">{{ u.siglas_ua }} — {{ u.nombre_ua }}</option>
-                                {% endfor %}
-                            </optgroup>
-                            <optgroup label="ÁREAS EXTERNAS">
-                                {% for e in externas %}
-                                <option value="{{ e.id_area_ext }}">{{ e.nombre_institucion }} — {{ e.nombre_area_externa }}</option>
-                                {% endfor %}
-                            </optgroup>
+                        <select name="id_coord[]" class="cap-select select-area">
+                            <option value="">-- Primero seleccione tipo --</option>
                         </select>
                     </div>
                 </div>
-
                 <div class="cap-field" style="margin-bottom:14px;">
                     <label class="cap-label">Descripción de la Actividad</label>
                     <textarea name="descripcion_actividad[]" class="cap-textarea" rows="2" required></textarea>
                 </div>
-
                 <div class="cap-actions">
-                    <button type="button" onclick="ocultarFormNuevaActividad()"
-                            class="cap-btn-cancel">Cancelar</button>
+                    <button type="button" onclick="ocultarFormNuevaActividad()" class="cap-btn-cancel">Cancelar</button>
                     <button type="submit" class="cap-btn-add">+ Guardar Actividad</button>
                 </div>
             </form>
@@ -153,6 +147,22 @@
 </style>
 
 <script>
+function filtrarAreas(selectTipo) {
+    const contenedor = selectTipo.closest('.cap-grid-2');
+    const selectArea = contenedor.querySelector('.select-area');
+    const tipo = selectTipo.value;
+
+    selectArea.innerHTML = '<option value="">-- Seleccionar área --</option>';
+
+    const datos = tipo === 'INT' ? UNIDADES : tipo === 'EXT' ? EXTERNAS : [];
+    datos.forEach(item => {
+        const opt = document.createElement('option');
+        opt.value = item.id;
+        opt.textContent = item.texto;
+        selectArea.appendChild(opt);
+    });
+}
+
 function mostrarFormNuevaActividad() {
     document.getElementById('form-nueva-actividad').style.display = 'block';
     document.getElementById('form-nueva-actividad').scrollIntoView({ behavior: 'smooth' });
@@ -162,7 +172,6 @@ function ocultarFormNuevaActividad() {
     document.getElementById('form-nueva-actividad').style.display = 'none';
 }
 
-// Drag and drop para reordenar
 let draggedId = null;
 
 function dragStart(event, id) {
@@ -178,24 +187,15 @@ function dragOver(event) {
 function dragDrop(event, targetId) {
     event.preventDefault();
     event.currentTarget.classList.remove('drag-over');
-
     if (draggedId === targetId) return;
-
     const lista = document.getElementById('lista-actividades');
-    const draggedEl = document.getElementById('act-' + draggedId);
-    const targetEl = document.getElementById('act-' + targetId);
-
-    // Insertar el arrastrado antes del objetivo
-    lista.insertBefore(draggedEl, targetEl);
-
+    lista.insertBefore(document.getElementById('act-' + draggedId),
+                       document.getElementById('act-' + targetId));
     draggedId = null;
 }
 
-// Quitar clase drag-over cuando sale
 document.querySelectorAll('[draggable]').forEach(el => {
-    el.addEventListener('dragleave', function() {
-        this.classList.remove('drag-over');
-    });
+    el.addEventListener('dragleave', function() { this.classList.remove('drag-over'); });
 });
 </script>
 {% endblock %}

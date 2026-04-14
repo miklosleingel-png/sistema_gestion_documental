@@ -1,5 +1,36 @@
 {% extends "base.html" %}
 {% block content %}
+
+{# Arrays para filtrado dinámico #}
+<script>
+const UNIDADES = [
+    {% for u in unidades %}
+    { id: "{{ u.id_ua }}", texto: "{{ u.siglas_ua }} \u2014 {{ u.nombre_ua }}" }{% if not loop.last %},{% endif %}
+    {% endfor %}
+];
+const EXTERNAS = [
+    {% for e in externas %}
+    { id: "{{ e.id_area_ext }}", texto: "{{ e.nombre_institucion }} \u2014 {{ e.nombre_area_externa }}" }{% if not loop.last %},{% endif %}
+    {% endfor %}
+];
+
+function filtrarAreas(selectTipo) {
+    const contenedor = selectTipo.closest('.vinculacion-wrap');
+    const selectArea = contenedor.querySelector('.select-area');
+    const tipo = selectTipo.value;
+
+    selectArea.innerHTML = '<option value="">-- Seleccionar área --</option>';
+
+    const datos = tipo === 'INT' ? UNIDADES : tipo === 'EXT' ? EXTERNAS : [];
+    datos.forEach(item => {
+        const opt = document.createElement('option');
+        opt.value = item.id;
+        opt.textContent = item.texto;
+        selectArea.appendChild(opt);
+    });
+}
+</script>
+
 <div class="cap-container">
 
     <div class="cap-header">
@@ -39,27 +70,19 @@
                             <input type="text" name="producto[]" class="cap-input" required>
                         </div>
                     </div>
-                    <div class="cap-grid-2" style="background:#fdfaf3; border:1px solid var(--dorado-suave); border-radius:8px; padding:12px; margin-bottom:12px;">
+                    <div class="cap-grid-2 vinculacion-wrap" style="background:#fdfaf3; border:1px solid var(--dorado-suave); border-radius:8px; padding:12px; margin-bottom:12px;">
                         <div class="cap-field">
                             <label class="cap-label">Tipo de Vinculación</label>
-                            <select name="tipo_coord[]" class="cap-select">
+                            <select name="tipo_coord[]" class="cap-select" onchange="filtrarAreas(this)">
+                                <option value="">-- Seleccionar --</option>
                                 <option value="INT">INTERNA (SMADSOT)</option>
                                 <option value="EXT">EXTERNA</option>
                             </select>
                         </div>
                         <div class="cap-field">
                             <label class="cap-label">Área / Institución</label>
-                            <select name="id_coord[]" class="cap-select">
-                                <optgroup label="UNIDADES ADMINISTRATIVAS">
-                                    {% for u in unidades %}
-                                    <option value="{{ u.id_ua }}">{{ u.siglas_ua }} — {{ u.nombre_ua }}</option>
-                                    {% endfor %}
-                                </optgroup>
-                                <optgroup label="ÁREAS EXTERNAS">
-                                    {% for e in externas %}
-                                    <option value="{{ e.id_area_ext }}">{{ e.nombre_institucion }} — {{ e.nombre_area_externa }}</option>
-                                    {% endfor %}
-                                </optgroup>
+                            <select name="id_coord[]" class="cap-select select-area">
+                                <option value="">-- Primero seleccione tipo --</option>
                             </select>
                         </div>
                     </div>
@@ -80,7 +103,6 @@
                 <a href="{{ url_for('main.mostrar_catalogos') }}" class="cap-btn-cancel">Cancelar</a>
                 <button type="submit" class="cap-btn-save">Guardar Procedimiento Completo</button>
             </div>
-
         </form>
     </div>
 
@@ -90,14 +112,11 @@
 
     {% for proc in procedimientos %}
     <div style="margin-bottom:10px; border:1px solid var(--gris-borde); border-radius:10px; overflow:hidden;">
-
         <div style="padding:14px 20px; background:var(--blanco); display:flex; justify-content:space-between; align-items:center; border-left:5px solid var(--guinda); cursor:pointer;"
              onclick="toggleDetalle('{{ proc.id_procedimiento }}')">
             <div>
                 <span style="font-weight:700; color:var(--guinda);">{{ proc.nombre_procedimiento }}</span>
-                <span style="color:#888; font-size:0.78rem; margin-left:10px;">
-                    ({{ proc.actividades|length }} actividades)
-                </span>
+                <span style="color:#888; font-size:0.78rem; margin-left:10px;">({{ proc.actividades|length }} actividades)</span>
             </div>
             <div style="display:flex; gap:12px; align-items:center;">
                 <a href="{{ url_for('main.editar_procedimiento', id=proc.id_procedimiento) }}"
@@ -108,7 +127,6 @@
                 <span id="flecha-{{ proc.id_procedimiento }}" style="color:var(--guinda); font-size:0.8rem;">▼</span>
             </div>
         </div>
-
         <div id="detalle-{{ proc.id_procedimiento }}" style="display:none;">
             <div class="cap-table-wrap" style="border-radius:0; border:none; border-top:1px solid var(--gris-suave);">
                 <table class="cap-table" style="min-width:700px;">
@@ -128,41 +146,32 @@
                             <td style="font-size:0.78rem; color:#666;">{{ act.responsable_ejecucion }}</td>
                             <td>
                                 {% if act.unidad_interna %}
-                                    <span class="badge-doc" style="background:var(--guinda); color:#fff; border-color:var(--guinda);">INT</span>
+                                    <span class="badge-doc" style="background:var(--guinda);color:#fff;border-color:var(--guinda);">INT</span>
                                     <span class="td-muted">{{ act.unidad_interna.siglas_ua }}</span>
                                 {% elif act.area_externa %}
-                                    <span class="badge-doc" style="background:var(--dorado); color:#2d1a00; border-color:var(--dorado);">EXT</span>
+                                    <span class="badge-doc" style="background:var(--dorado);color:#2d1a00;border-color:var(--dorado);">EXT</span>
                                     <span class="td-muted">{{ act.area_externa.siglas_institucion }}</span>
-                                {% else %}
-                                    <span style="color:#aaa;">—</span>
-                                {% endif %}
+                                {% else %}<span style="color:#aaa;">—</span>{% endif %}
                             </td>
                             <td style="font-size:0.78rem;">{{ act.tipo_documental_producido }}</td>
                             <td>
                                 <div class="cap-table-actions">
-                                    <a href="{{ url_for('main.editar_actividad', id=act.id_actividad) }}"
-                                       class="btn-tbl-edit">Editar</a>
-                                    <a href="{{ url_for('main.eliminar_actividad', id=act.id_actividad) }}"
-                                       class="btn-tbl-del"
+                                    <a href="{{ url_for('main.editar_actividad', id=act.id_actividad) }}" class="btn-tbl-edit">Editar</a>
+                                    <a href="{{ url_for('main.eliminar_actividad', id=act.id_actividad) }}" class="btn-tbl-del"
                                        onclick="return confirm('¿Eliminar esta actividad?')">Eliminar</a>
                                 </div>
                             </td>
                         </tr>
                         {% else %}
-                        <tr>
-                            <td colspan="5" class="td-empty">Sin actividades registradas.</td>
-                        </tr>
+                        <tr><td colspan="5" class="td-empty">Sin actividades registradas.</td></tr>
                         {% endfor %}
                     </tbody>
                 </table>
             </div>
         </div>
-
     </div>
     {% else %}
-    <div style="text-align:center; padding:30px; color:#aaa; font-style:italic;">
-        No hay procedimientos registrados.
-    </div>
+    <div style="text-align:center; padding:30px; color:#aaa; font-style:italic;">No hay procedimientos registrados.</div>
     {% endfor %}
 
 </div>
@@ -171,13 +180,8 @@
 function toggleDetalle(id) {
     const div = document.getElementById('detalle-' + id);
     const flecha = document.getElementById('flecha-' + id);
-    if (div.style.display === 'none') {
-        div.style.display = 'block';
-        flecha.innerHTML = '▲';
-    } else {
-        div.style.display = 'none';
-        flecha.innerHTML = '▼';
-    }
+    div.style.display = div.style.display === 'none' ? 'block' : 'none';
+    flecha.innerHTML = div.style.display === 'none' ? '▼' : '▲';
 }
 
 document.getElementById('btn-agregar').addEventListener('click', function() {
@@ -186,7 +190,12 @@ document.getElementById('btn-agregar').addEventListener('click', function() {
     const nueva = plantilla.cloneNode(true);
 
     nueva.querySelectorAll('input, textarea').forEach(el => el.value = '');
-    nueva.querySelectorAll('select').forEach(el => el.selectedIndex = 0);
+    nueva.querySelectorAll('select').forEach(el => {
+        el.selectedIndex = 0;
+        if (el.classList.contains('select-area')) {
+            el.innerHTML = '<option value="">-- Primero seleccione tipo --</option>';
+        }
+    });
 
     const btnQuitar = document.createElement('button');
     btnQuitar.type = 'button';
