@@ -22,4 +22,4 @@ EXPOSE 8080
 
 # 7. Ejecutamos la aplicación usando Gunicorn (servidor de producción)
 # 'run:app' se refiere a tu archivo run.py y la variable app que contiene
-CMD exec gunicorn --bind :$PORT --workers 1 --threads 8 --timeout 0 run:app
+CMD exec gunicorn --bind 0.0.0.0:8080 --workers 1 --threads 8 --timeout 0 run:app
