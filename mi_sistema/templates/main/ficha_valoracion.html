@@ -590,65 +590,113 @@
                 </div>
             </div>
 
-            <div class="ficha-fila ficha-fila-2">
-                <div class="ficha-campo">
-                    <div class="ficha-campo-label">Valores Primarios</div>
-                    <div class="ficha-campo-valor">
-                        <div class="ficha-valor-check">
-                            <span class="{{ 'ficha-check-si' if v.administrativo else 'ficha-check-no' }}">
-                                {{ '☑' if v.administrativo else '☐' }}
-                            </span> Administrativo
-                            {% if v.administrativo and v.justificacion_admvo %}
-                            <small style="color:#666;"> — {{ v.justificacion_admvo }}</small>
-                            {% endif %}
-                        </div>
-                        <div class="ficha-valor-check">
-                            <span class="{{ 'ficha-check-si' if v.legal else 'ficha-check-no' }}">
-                                {{ '☑' if v.legal else '☐' }}
-                            </span> Legal
-                            {% if v.legal and v.justificacion_legal %}
-                            <small style="color:#666;"> — {{ v.justificacion_legal }}</small>
-                            {% endif %}
-                        </div>
-                        <div class="ficha-valor-check">
-                            <span class="{{ 'ficha-check-si' if v.fiscal else 'ficha-check-no' }}">
-                                {{ '☑' if v.fiscal else '☐' }}
-                            </span> Fiscal
-                            {% if v.fiscal and v.justificacion_fiscal %}
-                            <small style="color:#666;"> — {{ v.justificacion_fiscal }}</small>
-                            {% endif %}
-                        </div>
-                    </div>
-                </div>
-                <div class="ficha-campo">
-                    <div class="ficha-campo-label">Valores Secundarios</div>
-                    <div class="ficha-campo-valor">
-                        <div class="ficha-valor-check">
-                            <span class="{{ 'ficha-check-si' if v.testimonial else 'ficha-check-no' }}">
-                                {{ '☑' if v.testimonial else '☐' }}
-                            </span> Testimonial
-                            {% if v.testimonial and v.justificacion_testimonial %}
-                            <small style="color:#666;"> — {{ v.justificacion_testimonial }}</small>
-                            {% endif %}
-                        </div>
-                        <div class="ficha-valor-check">
-                            <span class="{{ 'ficha-check-si' if v.historico else 'ficha-check-no' }}">
-                                {{ '☑' if v.historico else '☐' }}
-                            </span> Histórico
-                            {% if v.historico and v.justificacion_historico %}
-                            <small style="color:#666;"> — {{ v.justificacion_historico }}</small>
-                            {% endif %}
-                        </div>
-                        <div class="ficha-valor-check">
-                            <span class="{{ 'ficha-check-si' if v.evidencial else 'ficha-check-no' }}">
-                                {{ '☑' if v.evidencial else '☐' }}
-                            </span> Evidencial
-                            {% if v.evidencial and v.justificacion_evidencial %}
-                            <small style="color:#666;"> — {{ v.justificacion_evidencial }}</small>
-                            {% endif %}
-                        </div>
-                    </div>
-                </div>
+            <!-- TABLA DE VALORES -->
+            <div class="ficha-campo" style="margin-bottom:6px;">
+                <table class="ficha-tabla">
+                    <thead>
+                        <tr>
+                            <th style="width:5%; text-align:center;">✓</th>
+                            <th style="width:20%;">Tipo de Valor</th>
+                            <th>Justificación</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Separador primarios -->
+                        <tr>
+                            <td colspan="3" style="background:#e8e8e8; color:#4E1324; font-weight:700;
+                                font-size:0.68rem; text-transform:uppercase; letter-spacing:0.8px;
+                                padding:4px 8px;">
+                                Valores Primarios
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="text-align:center; font-size:1rem;">
+                                <span class="{{ 'ficha-check-si' if v.administrativo else 'ficha-check-no' }}">
+                                    {{ '☑' if v.administrativo else '☐' }}
+                                </span>
+                            </td>
+                            <td style="font-weight:{{ '700' if v.administrativo else '400' }}; color:{{ '#111' if v.administrativo else '#aaa' }};">
+                                Administrativo
+                            </td>
+                            <td style="font-size:0.75rem; color:#555;">
+                                {{ v.justificacion_admvo if v.administrativo and v.justificacion_admvo else '—' }}
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="text-align:center; font-size:1rem;">
+                                <span class="{{ 'ficha-check-si' if v.legal else 'ficha-check-no' }}">
+                                    {{ '☑' if v.legal else '☐' }}
+                                </span>
+                            </td>
+                            <td style="font-weight:{{ '700' if v.legal else '400' }}; color:{{ '#111' if v.legal else '#aaa' }};">
+                                Legal
+                            </td>
+                            <td style="font-size:0.75rem; color:#555;">
+                                {{ v.justificacion_legal if v.legal and v.justificacion_legal else '—' }}
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="text-align:center; font-size:1rem;">
+                                <span class="{{ 'ficha-check-si' if v.fiscal else 'ficha-check-no' }}">
+                                    {{ '☑' if v.fiscal else '☐' }}
+                                </span>
+                            </td>
+                            <td style="font-weight:{{ '700' if v.fiscal else '400' }}; color:{{ '#111' if v.fiscal else '#aaa' }};">
+                                Fiscal
+                            </td>
+                            <td style="font-size:0.75rem; color:#555;">
+                                {{ v.justificacion_fiscal if v.fiscal and v.justificacion_fiscal else '—' }}
+                            </td>
+                        </tr>
+                        <!-- Separador secundarios -->
+                        <tr>
+                            <td colspan="3" style="background:#e8e8e8; color:#4E1324; font-weight:700;
+                                font-size:0.68rem; text-transform:uppercase; letter-spacing:0.8px;
+                                padding:4px 8px;">
+                                Valores Secundarios
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="text-align:center; font-size:1rem;">
+                                <span class="{{ 'ficha-check-si' if v.testimonial else 'ficha-check-no' }}">
+                                    {{ '☑' if v.testimonial else '☐' }}
+                                </span>
+                            </td>
+                            <td style="font-weight:{{ '700' if v.testimonial else '400' }}; color:{{ '#111' if v.testimonial else '#aaa' }};">
+                                Testimonial
+                            </td>
+                            <td style="font-size:0.75rem; color:#555;">
+                                {{ v.justificacion_testimonial if v.testimonial and v.justificacion_testimonial else '—' }}
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="text-align:center; font-size:1rem;">
+                                <span class="{{ 'ficha-check-si' if v.historico else 'ficha-check-no' }}">
+                                    {{ '☑' if v.historico else '☐' }}
+                                </span>
+                            </td>
+                            <td style="font-weight:{{ '700' if v.historico else '400' }}; color:{{ '#111' if v.historico else '#aaa' }};">
+                                Histórico
+                            </td>
+                            <td style="font-size:0.75rem; color:#555;">
+                                {{ v.justificacion_historico if v.historico and v.justificacion_historico else '—' }}
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="text-align:center; font-size:1rem;">
+                                <span class="{{ 'ficha-check-si' if v.evidencial else 'ficha-check-no' }}">
+                                    {{ '☑' if v.evidencial else '☐' }}
+                                </span>
+                            </td>
+                            <td style="font-weight:{{ '700' if v.evidencial else '400' }}; color:{{ '#111' if v.evidencial else '#aaa' }};">
+                                Evidencial
+                            </td>
+                            <td style="font-size:0.75rem; color:#555;">
+                                {{ v.justificacion_evidencial if v.evidencial and v.justificacion_evidencial else '—' }}
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
             </div>
 
             <div class="ficha-fila ficha-fila-2" style="margin-top:4px;">
