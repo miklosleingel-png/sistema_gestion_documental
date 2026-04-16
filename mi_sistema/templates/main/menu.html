@@ -127,20 +127,12 @@
         <h2 class="menu-subtitle">Información del Sistema</h2>
         <div class="cards-grid">
 
-            <a href="#" class="menu-card" onclick="alert('Manual de usuario en desarrollo.'); return false;">
+            <a href="{{ url_for('main.documentacion') }}" class="menu-card">
                 <div class="menu-card-icon">
-                    <img src="{{ url_for('static', filename='09icon_cdd.png') }}" alt="Manual">
+                    <img src="{{ url_for('static', filename='09icon_cdd.png') }}" alt="Documentación">
                 </div>
-                <h3 class="menu-card-title">Manual de Usuario</h3>
-                <p class="menu-card-desc">Guía de operación del sistema</p>
-            </a>
-
-            <a href="#" class="menu-card" onclick="alert('Documentación técnica en desarrollo.'); return false;">
-                <div class="menu-card-icon">
-                    <img src="{{ url_for('static', filename='08icon_cgca.png') }}" alt="Documentación">
-                </div>
-                <h3 class="menu-card-title">Documentación Técnica</h3>
-                <p class="menu-card-desc">Arquitectura y estructura del sistema</p>
+                <h3 class="menu-card-title">Documentación del Sistema</h3>
+                <p class="menu-card-desc">Ficha técnica, manuales y licencia</p>
             </a>
 
             <div class="menu-card" style="cursor:default;">

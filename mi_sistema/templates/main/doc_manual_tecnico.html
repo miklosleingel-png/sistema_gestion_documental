@@ -1,0 +1,311 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="cap-container" style="max-width:900px;">
+    <div class="cap-header">
+        <div>
+            <h2 class="cap-title">Manual Técnico</h2>
+            <p class="cap-subtitle">SIGEDO v1.0 — Sistema de Gestión Documental</p>
+        </div>
+        <div style="display:flex; gap:8px;">
+            <a href="{{ url_for('main.documentacion') }}" class="cap-btn-cancel">← Documentación</a>
+            <a href="{{ url_for('main.dashboard') }}" class="cap-btn-menu">← Menú</a>
+        </div>
+    </div>
+    <div class="cap-card" style="line-height:1.6;">
+        <h2 style="color:var(--guinda); font-size:1.3rem; margin-top:24px; margin-bottom:8px;">SIGEDO — Manual Técnico</h2>
+<h3 style="color:var(--guinda); font-size:1.1rem; margin-top:20px; margin-bottom:6px; border-bottom:2px solid var(--dorado-suave); padding-bottom:4px;">Sistema de Gestión Documental</h3>
+<p style="font-size:0.84rem;color:#444;margin:6px 0;line-height:1.6;"><strong>Versión 1.0 | Abril 2026</strong></p>
+<br>
+<hr style="border:none; border-top:2px solid var(--dorado-suave); margin:20px 0;">
+<br>
+<h3 style="color:var(--guinda); font-size:1.1rem; margin-top:20px; margin-bottom:6px; border-bottom:2px solid var(--dorado-suave); padding-bottom:4px;">1. Requisitos del Sistema</h3>
+<br>
+<h4 style="color:#444; font-size:0.95rem; margin-top:14px; margin-bottom:4px;">1.1 Entorno de Producción (Railway)</h4>
+<li style="margin-bottom:4px;font-size:0.84rem;">Cuenta en Railway (https://railway.app)</li>
+<li style="margin-bottom:4px;font-size:0.84rem;">Cuenta en GitHub con el repositorio del proyecto</li>
+<li style="margin-bottom:4px;font-size:0.84rem;">Docker instalado (para builds locales opcionales)</li>
+<br>
+<h4 style="color:#444; font-size:0.95rem; margin-top:14px; margin-bottom:4px;">1.2 Entorno de Desarrollo Local</h4>
+<li style="margin-bottom:4px;font-size:0.84rem;">Python 3.9 o superior</li>
+<li style="margin-bottom:4px;font-size:0.84rem;">Git</li>
+<li style="margin-bottom:4px;font-size:0.84rem;">Git Bash (Windows) o terminal (Linux/macOS)</li>
+<li style="margin-bottom:4px;font-size:0.84rem;">Navegador web moderno</li>
+<br>
+<hr style="border:none; border-top:2px solid var(--dorado-suave); margin:20px 0;">
+<br>
+<h3 style="color:var(--guinda); font-size:1.1rem; margin-top:20px; margin-bottom:6px; border-bottom:2px solid var(--dorado-suave); padding-bottom:4px;">2. Estructura del Proyecto</h3>
+<br>
+<div style="background:#f8f4ec; border:1px solid var(--dorado-suave); border-radius:8px; padding:14px; font-family:monospace; font-size:0.78rem; margin:12px 0; white-space:pre-wrap; overflow-x:auto;">
+sistema_gestion_documental/
+├── Dockerfile                  # Configuración de contenedor Docker
+├── requirements.txt            # Dependencias Python
+├── run.py                      # Punto de entrada de la aplicación
+├── migrations/                 # Migraciones de base de datos (Alembic)
+│   ├── env.py
+│   ├── alembic.ini
+│   └── versions/
+│       └── *.py               # Archivos de migración
+└── mi_sistema/
+    ├── __init__.py             # Factory de la aplicación Flask
+    ├── config.py               # Configuración por entorno
+    ├── models.py               # Modelos SQLAlchemy (31 tablas)
+    ├── routes.py               # Rutas y lógica de negocio
+    ├── static/
+    │   ├── estilos.css         # Estilos personalizados
+    │   ├── logo_gobierno.png
+    │   ├── logo_archivos.png
+    │   ├── logo_secretaria.png
+    │   └── *.png              # Iconos del menú
+    └── templates/
+        ├── base.html           # Template base con header y footer
+        └── main/
+            ├── login.html
+            ├── register.html
+            ├── menu.html
+            ├── catalogos.html
+            ├── cat_*.html     # Templates de catálogos
+            ├── editar_*.html  # Templates de edición
+            ├── cap_expedientes.html
+            ├── auditoria_archivo.html
+            ├── cgca.html
+            ├── ver_cdd.html
+            ├── inventario.html
+            ├── guia_archivos.html
+            └── ficha_valoracion.html
+</div>
+<br>
+<hr style="border:none; border-top:2px solid var(--dorado-suave); margin:20px 0;">
+<br>
+<h3 style="color:var(--guinda); font-size:1.1rem; margin-top:20px; margin-bottom:6px; border-bottom:2px solid var(--dorado-suave); padding-bottom:4px;">3. Instalación en Entorno Local</h3>
+<br>
+<h4 style="color:#444; font-size:0.95rem; margin-top:14px; margin-bottom:4px;">3.1 Clonar el repositorio</h4>
+<div style="background:#f8f4ec; border:1px solid var(--dorado-suave); border-radius:8px; padding:14px; font-family:monospace; font-size:0.78rem; margin:12px 0; white-space:pre-wrap; overflow-x:auto;">
+git clone https://github.com/miklosleingel-png/sistema_gestion_documental.git
+cd sistema_gestion_documental
+</div>
+<br>
+<h4 style="color:#444; font-size:0.95rem; margin-top:14px; margin-bottom:4px;">3.2 Crear entorno virtual</h4>
+<div style="background:#f8f4ec; border:1px solid var(--dorado-suave); border-radius:8px; padding:14px; font-family:monospace; font-size:0.78rem; margin:12px 0; white-space:pre-wrap; overflow-x:auto;">
+python -m venv venv
+source venv/Scripts/activate    # Windows (Git Bash)
+source venv/bin/activate        # Linux / macOS
+</div>
+<br>
+<h4 style="color:#444; font-size:0.95rem; margin-top:14px; margin-bottom:4px;">3.3 Instalar dependencias</h4>
+<div style="background:#f8f4ec; border:1px solid var(--dorado-suave); border-radius:8px; padding:14px; font-family:monospace; font-size:0.78rem; margin:12px 0; white-space:pre-wrap; overflow-x:auto;">
+pip install -r requirements.txt
+</div>
+<br>
+<h4 style="color:#444; font-size:0.95rem; margin-top:14px; margin-bottom:4px;">3.4 Configurar variables de entorno</h4>
+<p style="font-size:0.84rem;color:#444;margin:6px 0;line-height:1.6;">Crear archivo <code style="background:#f0f0f0;padding:1px 4px;border-radius:3px;font-size:0.85em;">.env</code> en la raíz del proyecto:</p>
+<div style="background:#f8f4ec; border:1px solid var(--dorado-suave); border-radius:8px; padding:14px; font-family:monospace; font-size:0.78rem; margin:12px 0; white-space:pre-wrap; overflow-x:auto;">
+SECRET_KEY=tu-clave-secreta
+DATABASE_URL=postgresql://usuario:password@host:puerto/basedatos
+</div>
+<br>
+<p style="font-size:0.84rem;color:#444;margin:6px 0;line-height:1.6;">Si no se define <code style="background:#f0f0f0;padding:1px 4px;border-radius:3px;font-size:0.85em;">DATABASE_URL</code>, el sistema usa SQLite automáticamente para desarrollo local:</p>
+<div style="background:#f8f4ec; border:1px solid var(--dorado-suave); border-radius:8px; padding:14px; font-family:monospace; font-size:0.78rem; margin:12px 0; white-space:pre-wrap; overflow-x:auto;">
+instance/sistema.db
+</div>
+<br>
+<h4 style="color:#444; font-size:0.95rem; margin-top:14px; margin-bottom:4px;">3.5 Ejecutar migraciones</h4>
+<div style="background:#f8f4ec; border:1px solid var(--dorado-suave); border-radius:8px; padding:14px; font-family:monospace; font-size:0.78rem; margin:12px 0; white-space:pre-wrap; overflow-x:auto;">
+export FLASK_APP=run.py
+flask db upgrade
+</div>
+<br>
+<h4 style="color:#444; font-size:0.95rem; margin-top:14px; margin-bottom:4px;">3.6 Iniciar el servidor de desarrollo</h4>
+<div style="background:#f8f4ec; border:1px solid var(--dorado-suave); border-radius:8px; padding:14px; font-family:monospace; font-size:0.78rem; margin:12px 0; white-space:pre-wrap; overflow-x:auto;">
+python run.py
+</div>
+<p style="font-size:0.84rem;color:#444;margin:6px 0;line-height:1.6;">Acceder en: <code style="background:#f0f0f0;padding:1px 4px;border-radius:3px;font-size:0.85em;">http://localhost:8080</code></p>
+<br>
+<hr style="border:none; border-top:2px solid var(--dorado-suave); margin:20px 0;">
+<br>
+<h3 style="color:var(--guinda); font-size:1.1rem; margin-top:20px; margin-bottom:6px; border-bottom:2px solid var(--dorado-suave); padding-bottom:4px;">4. Despliegue en Railway</h3>
+<br>
+<h4 style="color:#444; font-size:0.95rem; margin-top:14px; margin-bottom:4px;">4.1 Primer despliegue</h4>
+<li style="margin-bottom:6px;font-size:0.84rem;">Crear cuenta en https://railway.app</li>
+<li style="margin-bottom:6px;font-size:0.84rem;">Crear nuevo proyecto → <strong>GitHub Repository</strong></li>
+<li style="margin-bottom:6px;font-size:0.84rem;">Seleccionar el repositorio `sistema_gestion_documental`</li>
+<li style="margin-bottom:6px;font-size:0.84rem;">Railway detecta el `Dockerfile` y construye automáticamente</li>
+<li style="margin-bottom:6px;font-size:0.84rem;">Agregar servicio <strong>PostgreSQL</strong> desde el dashboard</li>
+<li style="margin-bottom:6px;font-size:0.84rem;">Configurar variables de entorno en el servicio:</li>
+<br>
+<div style="background:#f8f4ec; border:1px solid var(--dorado-suave); border-radius:8px; padding:14px; font-family:monospace; font-size:0.78rem; margin:12px 0; white-space:pre-wrap; overflow-x:auto;">
+DATABASE_URL=postgresql://postgres:PASSWORD@postgres.railway.internal:5432/railway
+SECRET_KEY=tu-clave-secreta
+</div>
+<br>
+<li style="margin-bottom:6px;font-size:0.84rem;">Railway asigna una URL pública automáticamente</li>
+<br>
+<h4 style="color:#444; font-size:0.95rem; margin-top:14px; margin-bottom:4px;">4.2 Migraciones en producción</h4>
+<p style="font-size:0.84rem;color:#444;margin:6px 0;line-height:1.6;">Ejecutar desde el entorno local con la URL pública de PostgreSQL:</p>
+<div style="background:#f8f4ec; border:1px solid var(--dorado-suave); border-radius:8px; padding:14px; font-family:monospace; font-size:0.78rem; margin:12px 0; white-space:pre-wrap; overflow-x:auto;">
+export DATABASE_URL="postgresql://postgres:PASSWORD@metro.proxy.rlwy.net:PUERTO/railway"
+export FLASK_APP=run.py
+flask db upgrade
+</div>
+<br>
+<h4 style="color:#444; font-size:0.95rem; margin-top:14px; margin-bottom:4px;">4.3 Actualizaciones</h4>
+<p style="font-size:0.84rem;color:#444;margin:6px 0;line-height:1.6;">El despliegue es automático:</p>
+<div style="background:#f8f4ec; border:1px solid var(--dorado-suave); border-radius:8px; padding:14px; font-family:monospace; font-size:0.78rem; margin:12px 0; white-space:pre-wrap; overflow-x:auto;">
+git add .
+git commit -m "descripción del cambio"
+git push
+</div>
+<p style="font-size:0.84rem;color:#444;margin:6px 0;line-height:1.6;">Railway detecta el push y redespliega en aproximadamente 2-3 minutos.</p>
+<br>
+<hr style="border:none; border-top:2px solid var(--dorado-suave); margin:20px 0;">
+<br>
+<h3 style="color:var(--guinda); font-size:1.1rem; margin-top:20px; margin-bottom:6px; border-bottom:2px solid var(--dorado-suave); padding-bottom:4px;">5. Dockerfile</h3>
+<br>
+<div style="background:#f8f4ec; border:1px solid var(--dorado-suave); border-radius:8px; padding:14px; font-family:monospace; font-size:0.78rem; margin:12px 0; white-space:pre-wrap; overflow-x:auto;">
+FROM python:3.9-slim
+WORKDIR /app
+RUN apt-get update && apt-get install -y \
+    libpq-dev gcc && rm -rf /var/lib/apt/lists/*
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
+COPY . .
+EXPOSE 8080
+CMD exec gunicorn --bind 0.0.0.0:8080 --workers 1 --threads 8 --timeout 0 run:app
+</div>
+<br>
+<hr style="border:none; border-top:2px solid var(--dorado-suave); margin:20px 0;">
+<br>
+<h3 style="color:var(--guinda); font-size:1.1rem; margin-top:20px; margin-bottom:6px; border-bottom:2px solid var(--dorado-suave); padding-bottom:4px;">6. Dependencias (requirements.txt)</h3>
+<br>
+<div style="background:#f8f4ec; border:1px solid var(--dorado-suave); border-radius:8px; padding:14px; font-family:monospace; font-size:0.78rem; margin:12px 0; white-space:pre-wrap; overflow-x:auto;">
+flask
+flask-sqlalchemy
+flask-login
+flask-migrate
+gunicorn
+psycopg2-binary
+pg8000
+python-dotenv
+</div>
+<br>
+<hr style="border:none; border-top:2px solid var(--dorado-suave); margin:20px 0;">
+<br>
+<h3 style="color:var(--guinda); font-size:1.1rem; margin-top:20px; margin-bottom:6px; border-bottom:2px solid var(--dorado-suave); padding-bottom:4px;">7. Configuración de la Aplicación</h3>
+<br>
+<h4 style="color:#444; font-size:0.95rem; margin-top:14px; margin-bottom:4px;">7.1 __init__.py — Factory de Flask</h4>
+<p style="font-size:0.84rem;color:#444;margin:6px 0;line-height:1.6;">La función <code style="background:#f0f0f0;padding:1px 4px;border-radius:3px;font-size:0.85em;">create_app()</code> inicializa la aplicación con:</p>
+<li style="margin-bottom:4px;font-size:0.84rem;">Configuración de base de datos (PostgreSQL en producción, SQLite en desarrollo)</li>
+<li style="margin-bottom:4px;font-size:0.84rem;">Registro de extensiones: SQLAlchemy, LoginManager, Migrate</li>
+<li style="margin-bottom:4px;font-size:0.84rem;">Registro del Blueprint principal <code style="background:#f0f0f0;padding:1px 4px;border-radius:3px;font-size:0.85em;">main</code></li>
+<li style="margin-bottom:4px;font-size:0.84rem;">Context processor para la función <code style="background:#f0f0f0;padding:1px 4px;border-radius:3px;font-size:0.85em;">now()</code> (fecha automática en templates)</li>
+<br>
+<h4 style="color:#444; font-size:0.95rem; margin-top:14px; margin-bottom:4px;">7.2 config.py — Entornos</h4>
+<div style="background:#f8f4ec; border:1px solid var(--dorado-suave); border-radius:8px; padding:14px; font-family:monospace; font-size:0.78rem; margin:12px 0; white-space:pre-wrap; overflow-x:auto;">
+class DevelopmentConfig:   # FLASK_ENV=development → debug=True
+class ProductionConfig:    # FLASK_ENV=production  → debug=False
+class TestingConfig:       # FLASK_ENV=testing     → testing=True
+</div>
+<br>
+<hr style="border:none; border-top:2px solid var(--dorado-suave); margin:20px 0;">
+<br>
+<h3 style="color:var(--guinda); font-size:1.1rem; margin-top:20px; margin-bottom:6px; border-bottom:2px solid var(--dorado-suave); padding-bottom:4px;">8. Base de Datos</h3>
+<br>
+<h4 style="color:#444; font-size:0.95rem; margin-top:14px; margin-bottom:4px;">8.1 Esquema simplificado</h4>
+<br>
+<div style="background:#f8f4ec; border:1px solid var(--dorado-suave); border-radius:8px; padding:14px; font-family:monospace; font-size:0.78rem; margin:12px 0; white-space:pre-wrap; overflow-x:auto;">
+cat_cgca ──────────────── cat_clave_cgca (maestra)
+                                │
+              ┌─────────────────┼─────────────────────┐
+              │                 │                     │
+    clavecgca_funcion   clavecgca_fundamento   clavecgca_procedimiento
+              │                 │                     │
+    cat_funcion          cat_leyes           cat_procedimientos
+                                                      │
+                                              cat_actividades
+                                           (id_ua / id_area_ext)
+</div>
+<br>
+<h4 style="color:#444; font-size:0.95rem; margin-top:14px; margin-bottom:4px;">8.2 Crear migraciones nuevas</h4>
+<p style="font-size:0.84rem;color:#444;margin:6px 0;line-height:1.6;">Cuando se modifica <code style="background:#f0f0f0;padding:1px 4px;border-radius:3px;font-size:0.85em;">models.py</code>:</p>
+<div style="background:#f8f4ec; border:1px solid var(--dorado-suave); border-radius:8px; padding:14px; font-family:monospace; font-size:0.78rem; margin:12px 0; white-space:pre-wrap; overflow-x:auto;">
+flask db migrate -m "descripción del cambio"
+flask db upgrade
+git add migrations/
+git commit -m "nueva migración"
+git push
+</div>
+<br>
+<h4 style="color:#444; font-size:0.95rem; margin-top:14px; margin-bottom:4px;">8.3 Rollback de migración</h4>
+<div style="background:#f8f4ec; border:1px solid var(--dorado-suave); border-radius:8px; padding:14px; font-family:monospace; font-size:0.78rem; margin:12px 0; white-space:pre-wrap; overflow-x:auto;">
+flask db downgrade
+</div>
+<br>
+<hr style="border:none; border-top:2px solid var(--dorado-suave); margin:20px 0;">
+<br>
+<h3 style="color:var(--guinda); font-size:1.1rem; margin-top:20px; margin-bottom:6px; border-bottom:2px solid var(--dorado-suave); padding-bottom:4px;">9. Gestión de Usuarios</h3>
+<br>
+<h4 style="color:#444; font-size:0.95rem; margin-top:14px; margin-bottom:4px;">9.1 Crear primer usuario administrador</h4>
+<p style="font-size:0.84rem;color:#444;margin:6px 0;line-height:1.6;">Acceder a <code style="background:#f0f0f0;padding:1px 4px;border-radius:3px;font-size:0.85em;">/register</code> en el navegador (solo disponible si no hay usuarios registrados, o con permisos de admin).</p>
+<br>
+<h4 style="color:#444; font-size:0.95rem; margin-top:14px; margin-bottom:4px;">9.2 Roles disponibles</h4>
+<p style="font-size:0.84rem;color:#444;margin:6px 0;line-height:1.6;">Deben existir en la tabla <code style="background:#f0f0f0;padding:1px 4px;border-radius:3px;font-size:0.85em;">roles</code> antes de registrar usuarios:</p>
+<div style="background:#f8f4ec; border:1px solid var(--dorado-suave); border-radius:8px; padding:14px; font-family:monospace; font-size:0.78rem; margin:12px 0; white-space:pre-wrap; overflow-x:auto;">
+INSERT INTO roles (id, nombre, descripcion) VALUES
+(1, 'Administrador', 'Acceso total al sistema'),
+(2, 'Capturista', 'Captura de expedientes'),
+(3, 'Consulta', 'Solo lectura');
+</div>
+<br>
+<hr style="border:none; border-top:2px solid var(--dorado-suave); margin:20px 0;">
+<br>
+<h3 style="color:var(--guinda); font-size:1.1rem; margin-top:20px; margin-bottom:6px; border-bottom:2px solid var(--dorado-suave); padding-bottom:4px;">10. Variables de Entorno</h3>
+<br>
+<div style="overflow-x:auto; margin:12px 0;"><table style="width:100%; border-collapse:collapse; font-size:0.82rem;">
+<tr><td style="padding:7px 10px; border-bottom:1px solid #eee;">Variable</td><td style="padding:7px 10px; border-bottom:1px solid #eee;">Descripción</td><td style="padding:7px 10px; border-bottom:1px solid #eee;">Requerida</td></tr>
+<tr><td style="padding:7px 10px; border-bottom:1px solid #eee;">`DATABASE_URL`</td><td style="padding:7px 10px; border-bottom:1px solid #eee;">URL de conexión PostgreSQL</td><td style="padding:7px 10px; border-bottom:1px solid #eee;">Sí (producción)</td></tr>
+<tr><td style="padding:7px 10px; border-bottom:1px solid #eee;">`SECRET_KEY`</td><td style="padding:7px 10px; border-bottom:1px solid #eee;">Clave secreta Flask para sesiones</td><td style="padding:7px 10px; border-bottom:1px solid #eee;">Sí</td></tr>
+<tr><td style="padding:7px 10px; border-bottom:1px solid #eee;">`FLASK_ENV`</td><td style="padding:7px 10px; border-bottom:1px solid #eee;">Entorno: development / production</td><td style="padding:7px 10px; border-bottom:1px solid #eee;">No (default: production)</td></tr>
+<tr><td style="padding:7px 10px; border-bottom:1px solid #eee;">`PORT`</td><td style="padding:7px 10px; border-bottom:1px solid #eee;">Puerto del servidor (Railway lo inyecta)</td><td style="padding:7px 10px; border-bottom:1px solid #eee;">No (default: 8080)</td></tr>
+</table></div>
+<br>
+<hr style="border:none; border-top:2px solid var(--dorado-suave); margin:20px 0;">
+<br>
+<h3 style="color:var(--guinda); font-size:1.1rem; margin-top:20px; margin-bottom:6px; border-bottom:2px solid var(--dorado-suave); padding-bottom:4px;">11. Archivos a Ignorar en Git</h3>
+<br>
+<p style="font-size:0.84rem;color:#444;margin:6px 0;line-height:1.6;">El archivo <code style="background:#f0f0f0;padding:1px 4px;border-radius:3px;font-size:0.85em;">.gitignore</code> debe incluir:</p>
+<div style="background:#f8f4ec; border:1px solid var(--dorado-suave); border-radius:8px; padding:14px; font-family:monospace; font-size:0.78rem; margin:12px 0; white-space:pre-wrap; overflow-x:auto;">
+venv/
+__pycache__/
+*.pyc
+instance/
+*.db
+.env
+cloud-sql-proxy
+migrations/versions/
+*.gnumeric
+</div>
+<br>
+<hr style="border:none; border-top:2px solid var(--dorado-suave); margin:20px 0;">
+<br>
+<h3 style="color:var(--guinda); font-size:1.1rem; margin-top:20px; margin-bottom:6px; border-bottom:2px solid var(--dorado-suave); padding-bottom:4px;">12. Solución de Problemas Comunes</h3>
+<br>
+<div style="overflow-x:auto; margin:12px 0;"><table style="width:100%; border-collapse:collapse; font-size:0.82rem;">
+<tr><td style="padding:7px 10px; border-bottom:1px solid #eee;">Problema</td><td style="padding:7px 10px; border-bottom:1px solid #eee;">Causa probable</td><td style="padding:7px 10px; border-bottom:1px solid #eee;">Solución</td></tr>
+<tr><td style="padding:7px 10px; border-bottom:1px solid #eee;">Error 500 en producción</td><td style="padding:7px 10px; border-bottom:1px solid #eee;">Template corrupto o error en ruta</td><td style="padding:7px 10px; border-bottom:1px solid #eee;">Revisar Deploy Logs en Railway</td></tr>
+<tr><td style="padding:7px 10px; border-bottom:1px solid #eee;">`no such table`</td><td style="padding:7px 10px; border-bottom:1px solid #eee;">Base de datos sin migrar</td><td style="padding:7px 10px; border-bottom:1px solid #eee;">Ejecutar `flask db upgrade`</td></tr>
+<tr><td style="padding:7px 10px; border-bottom:1px solid #eee;">`could not translate host name`</td><td style="padding:7px 10px; border-bottom:1px solid #eee;">DATABASE_URL usa host interno fuera de Railway</td><td style="padding:7px 10px; border-bottom:1px solid #eee;">Cambiar a URL pública (`metro.proxy.rlwy.net`)</td></tr>
+<tr><td style="padding:7px 10px; border-bottom:1px solid #eee;">`$PORT is not a valid port number`</td><td style="padding:7px 10px; border-bottom:1px solid #eee;">Procfile o Dockerfile con variable sin expandir</td><td style="padding:7px 10px; border-bottom:1px solid #eee;">Usar puerto fijo `0.0.0.0:8080` en Dockerfile</td></tr>
+<tr><td style="padding:7px 10px; border-bottom:1px solid #eee;">Login falla con SQLite</td><td style="padding:7px 10px; border-bottom:1px solid #eee;">DATABASE_URL no configurada</td><td style="padding:7px 10px; border-bottom:1px solid #eee;">Agregar variable en Railway → Variables</td></tr>
+<tr><td style="padding:7px 10px; border-bottom:1px solid #eee;">Template con 5000+ líneas</td><td style="padding:7px 10px; border-bottom:1px solid #eee;">Archivo corrupto por escritura incorrecta</td><td style="padding:7px 10px; border-bottom:1px solid #eee;">Restaurar desde outputs del proyecto</td></tr>
+</table></div>
+<br>
+<hr style="border:none; border-top:2px solid var(--dorado-suave); margin:20px 0;">
+<br>
+<p style="font-size:0.84rem;color:#444;margin:6px 0;line-height:1.6;">*Manual Técnico — SIGEDO v1.0 — Abril 2026*</p>
+<p style="font-size:0.84rem;color:#444;margin:6px 0;line-height:1.6;">*© Manuel Alejandro Hernández Maimone — Todos los derechos reservados*</p>
+<br>
+        <div style="text-align:right;font-size:0.72rem;color:#aaa;border-top:1px solid #eee;padding-top:10px;margin-top:20px;">
+            SIGEDO v1.0 — © 2025–2026 Manuel Alejandro Hernández Maimone
+        </div>
+    </div>
+</div>
+{% endblock %}

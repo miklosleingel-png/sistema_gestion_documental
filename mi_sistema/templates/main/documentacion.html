@@ -1,0 +1,81 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="cap-container">
+
+    <div class="cap-header">
+        <div>
+            <h2 class="cap-title">Documentación del Sistema</h2>
+            <p class="cap-subtitle">SIGEDO v1.0 — Sistema de Gestión Documental</p>
+        </div>
+        <a href="{{ url_for('main.dashboard') }}" class="cap-btn-menu">← Menú Principal</a>
+    </div>
+
+    <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap:20px; margin-top:10px;">
+
+        <a href="{{ url_for('main.documentacion_seccion', seccion='ficha_tecnica') }}"
+           style="text-decoration:none;">
+            <div class="cap-card" style="border-left:5px solid var(--guinda); transition:0.2s; cursor:pointer;"
+                 onmouseover="this.style.transform='translateY(-3px)'"
+                 onmouseout="this.style.transform='translateY(0)'">
+                <div style="font-size:2.5rem; margin-bottom:12px;">📋</div>
+                <div class="cap-legend" style="margin-bottom:8px;">Ficha Técnica</div>
+                <p style="font-size:0.82rem; color:#666; margin:0;">
+                    Descripción general del sistema, arquitectura, stack tecnológico, 
+                    base de datos e identidad visual.
+                </p>
+            </div>
+        </a>
+
+        <a href="{{ url_for('main.documentacion_seccion', seccion='manual_usuario') }}"
+           style="text-decoration:none;">
+            <div class="cap-card" style="border-left:5px solid var(--dorado); transition:0.2s; cursor:pointer;"
+                 onmouseover="this.style.transform='translateY(-3px)'"
+                 onmouseout="this.style.transform='translateY(0)'">
+                <div style="font-size:2.5rem; margin-bottom:12px;">👤</div>
+                <div class="cap-legend" style="margin-bottom:8px;">Manual de Usuario</div>
+                <p style="font-size:0.82rem; color:#666; margin:0;">
+                    Guía paso a paso para el uso de todos los módulos del sistema.
+                    Dirigido al personal archivístico.
+                </p>
+            </div>
+        </a>
+
+        <a href="{{ url_for('main.documentacion_seccion', seccion='manual_tecnico') }}"
+           style="text-decoration:none;">
+            <div class="cap-card" style="border-left:5px solid #2C5F2D; transition:0.2s; cursor:pointer;"
+                 onmouseover="this.style.transform='translateY(-3px)'"
+                 onmouseout="this.style.transform='translateY(0)'">
+                <div style="font-size:2.5rem; margin-bottom:12px;">⚙️</div>
+                <div class="cap-legend" style="margin-bottom:8px;">Manual Técnico</div>
+                <p style="font-size:0.82rem; color:#666; margin:0;">
+                    Instalación, configuración, despliegue, base de datos y 
+                    solución de problemas.
+                </p>
+            </div>
+        </a>
+
+        <a href="{{ url_for('main.documentacion_seccion', seccion='licencia') }}"
+           style="text-decoration:none;">
+            <div class="cap-card" style="border-left:5px solid #555; transition:0.2s; cursor:pointer;"
+                 onmouseover="this.style.transform='translateY(-3px)'"
+                 onmouseout="this.style.transform='translateY(0)'">
+                <div style="font-size:2.5rem; margin-bottom:12px;">⚖️</div>
+                <div class="cap-legend" style="margin-bottom:8px;">Licencia de Uso</div>
+                <p style="font-size:0.82rem; color:#666; margin:0;">
+                    Términos y condiciones de uso, derechos de autor y 
+                    restricciones del software.
+                </p>
+            </div>
+        </a>
+
+    </div>
+
+    <div class="cap-card" style="margin-top:24px; background:#f8f4ec; border:1px solid var(--dorado-suave);">
+        <p style="margin:0; font-size:0.8rem; color:#555; text-align:center;">
+            <strong>SIGEDO v1.0</strong> — © 2025–2026 Manuel Alejandro Hernández Maimone.
+            Todos los derechos reservados. Software propietario — uso autorizado exclusivamente bajo licencia vigente.
+        </p>
+    </div>
+
+</div>
+{% endblock %}

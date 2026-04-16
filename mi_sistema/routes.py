@@ -356,6 +356,19 @@ def cgca():
 # --------------------------
 # -------- Catálogos -------
 # --------------------------
+@main.route('/documentacion')
+@login_required
+def documentacion():
+    return render_template('main/documentacion.html')
+
+@main.route('/documentacion/<seccion>')
+@login_required
+def documentacion_seccion(seccion):
+    secciones_validas = ['ficha_tecnica', 'manual_usuario', 'manual_tecnico', 'licencia']
+    if seccion not in secciones_validas:
+        return redirect(url_for('main.documentacion'))
+    return render_template(f'main/doc_{seccion}.html')
+
 @main.route('/catalogos')
 @login_required
 def mostrar_catalogos():

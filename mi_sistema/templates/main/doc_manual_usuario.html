@@ -1,0 +1,255 @@
+{%  extends "base.html" %}
+{% block content %}
+<div class="cap-container" style="max-width:900px;">
+
+    <div class="cap-header">
+        <div>
+            <h2 class="cap-title">Manual de Usuario</h2>
+            <p class="cap-subtitle">SIGEDO v1.0 — Sistema de Gestión Documental</p>
+        </div>
+        <div style="display:flex; gap:8px;">
+            <a href="{{ url_for('main.documentacion') }}" class="cap-btn-cancel">← Documentación</a>
+            <a href="{{ url_for('main.dashboard') }}" class="cap-btn-menu">← Menú</a>
+        </div>
+    </div>
+
+    <div class="cap-card" style="line-height:1.6;">
+        <h2 style="color:var(--guinda); font-size:1.3rem; margin-top:24px; margin-bottom:8px;">SIGEDO — Manual de Usuario</h2>
+<h3 style="color:var(--guinda); font-size:1.1rem; margin-top:20px; margin-bottom:6px; border-bottom:2px solid var(--dorado-suave); padding-bottom:4px;">Sistema de Gestión Documental</h3>
+<p style="font-size:0.84rem; color:#444; margin:6px 0; line-height:1.6;"><strong>Versión 1.0 | Abril 2026</strong></p>
+<br>
+<hr style="border:none; border-top:2px solid var(--dorado-suave); margin:20px 0;">
+<br>
+<h3 style="color:var(--guinda); font-size:1.1rem; margin-top:20px; margin-bottom:6px; border-bottom:2px solid var(--dorado-suave); padding-bottom:4px;">Introducción</h3>
+<br>
+<p style="font-size:0.84rem; color:#444; margin:6px 0; line-height:1.6;">Este manual describe el uso de SIGEDO (Sistema de Gestión Documental) para el personal responsable de la gestión archivística institucional. El sistema está diseñado conforme a la normatividad archivística mexicana y permite administrar el ciclo de vida de los documentos desde su clasificación hasta su disposición final.</p>
+<br>
+<p style="font-size:0.84rem; color:#444; margin:6px 0; line-height:1.6;"><strong>Dirigido a:</strong> Coordinadores de Archivo, Enlaces de Archivo, Responsables de Área y personal capturista.</p>
+<br>
+<hr style="border:none; border-top:2px solid var(--dorado-suave); margin:20px 0;">
+<br>
+<h3 style="color:var(--guinda); font-size:1.1rem; margin-top:20px; margin-bottom:6px; border-bottom:2px solid var(--dorado-suave); padding-bottom:4px;">1. Acceso al Sistema</h3>
+<br>
+<h4 style="color:#444; font-size:0.95rem; margin-top:14px; margin-bottom:4px;">1.1 Requisitos</h4>
+<li style="margin-bottom:4px; font-size:0.84rem;">Navegador web moderno (Chrome, Edge o Firefox recomendados)</li>
+<li style="margin-bottom:4px; font-size:0.84rem;">Conexión a internet</li>
+<li style="margin-bottom:4px; font-size:0.84rem;">Usuario y contraseña asignados por el Administrador</li>
+<br>
+<h4 style="color:#444; font-size:0.95rem; margin-top:14px; margin-bottom:4px;">1.2 Inicio de sesión</h4>
+<li style="margin-bottom:6px; font-size:0.84rem;">Abra el navegador y escriba la dirección del sistema</li>
+<li style="margin-bottom:6px; font-size:0.84rem;">Ingrese su <strong>nombre de usuario</strong> y <strong>contraseña</strong></li>
+<li style="margin-bottom:6px; font-size:0.84rem;">Haga clic en <strong>Iniciar sesión</strong></li>
+<br>
+<blockquote style="border-left:4px solid var(--dorado); background:#fdfaf3; padding:10px 16px; margin:10px 0; font-size:0.82rem; color:#555;">Si olvidó su contraseña, contacte al administrador del sistema para restablecerla.</blockquote>
+<br>
+<h4 style="color:#444; font-size:0.95rem; margin-top:14px; margin-bottom:4px;">1.3 Roles de usuario</h4>
+<br>
+<div style="overflow-x:auto; margin:12px 0;"><table style="width:100%; border-collapse:collapse; font-size:0.82rem;">
+<tr><th style="background:var(--guinda); color:white; padding:7px 10px; text-align:left;">Rol</th><th style="background:var(--guinda); color:white; padding:7px 10px; text-align:left;">Permisos</th></tr>
+<tr><th style="background:var(--guinda); color:white; padding:7px 10px; text-align:left;">**Administrador**</th><th style="background:var(--guinda); color:white; padding:7px 10px; text-align:left;">Acceso total: captura, edición, eliminación y configuración</th></tr>
+<tr><th style="background:var(--guinda); color:white; padding:7px 10px; text-align:left;">**Capturista**</th><th style="background:var(--guinda); color:white; padding:7px 10px; text-align:left;">Puede registrar y editar expedientes y catálogos</th></tr>
+<tr><th style="background:var(--guinda); color:white; padding:7px 10px; text-align:left;">**Consulta**</th><th style="background:var(--guinda); color:white; padding:7px 10px; text-align:left;">Solo visualización — sin edición ni eliminación</th></tr>
+</table></div>
+<br>
+<hr style="border:none; border-top:2px solid var(--dorado-suave); margin:20px 0;">
+<br>
+<h3 style="color:var(--guinda); font-size:1.1rem; margin-top:20px; margin-bottom:6px; border-bottom:2px solid var(--dorado-suave); padding-bottom:4px;">2. Menú Principal</h3>
+<br>
+<p style="font-size:0.84rem; color:#444; margin:6px 0; line-height:1.6;">Al iniciar sesión, verá el Menú Principal organizado en cuatro secciones:</p>
+<br>
+<li style="margin-bottom:6px; font-size:0.84rem;"><strong>Gestión de Expedientes</strong> — Operaciones cotidianas del archivo</li>
+<li style="margin-bottom:6px; font-size:0.84rem;"><strong>Instrumentos de Control y Consulta</strong> — Documentos imprimibles normados</li>
+<li style="margin-bottom:6px; font-size:0.84rem;"><strong>Configuración del Sistema</strong> — Catálogos institucionales base</li>
+<li style="margin-bottom:6px; font-size:0.84rem;"><strong>Información del Sistema</strong> — Documentación, licencia y versión</li>
+<br>
+<hr style="border:none; border-top:2px solid var(--dorado-suave); margin:20px 0;">
+<br>
+<h3 style="color:var(--guinda); font-size:1.1rem; margin-top:20px; margin-bottom:6px; border-bottom:2px solid var(--dorado-suave); padding-bottom:4px;">3. Configuración Inicial (Primer Uso)</h3>
+<br>
+<p style="font-size:0.84rem; color:#444; margin:6px 0; line-height:1.6;">Antes de capturar expedientes, es necesario llenar los catálogos base en este orden:</p>
+<br>
+<h4 style="color:#444; font-size:0.95rem; margin-top:14px; margin-bottom:4px;">Paso 1 — Catálogos Institucionales</h4>
+<p style="font-size:0.84rem; color:#444; margin:6px 0; line-height:1.6;">Vaya a <strong>Configuración del Sistema → Catálogos Institucionales</strong> y registre en orden:</p>
+<br>
+<li style="margin-bottom:6px; font-size:0.84rem;"><strong>Dependencia</strong> — La institución (ej. SMADSOT)</li>
+<li style="margin-bottom:6px; font-size:0.84rem;"><strong>Unidades Administrativas</strong> — Direcciones y subdirecciones</li>
+<li style="margin-bottom:6px; font-size:0.84rem;"><strong>Áreas Productoras</strong> — Departamentos y oficinas</li>
+<li style="margin-bottom:6px; font-size:0.84rem;"><strong>Funcionarios</strong> — Titulares responsables</li>
+<li style="margin-bottom:6px; font-size:0.84rem;"><strong>Marco Jurídico (Leyes)</strong> — Fundamentos legales con artículo y texto</li>
+<li style="margin-bottom:6px; font-size:0.84rem;"><strong>Funciones Institucionales</strong> — Atribuciones del organigrama</li>
+<li style="margin-bottom:6px; font-size:0.84rem;"><strong>Procedimientos y Actividades</strong> — Flujos de trabajo documentales</li>
+<li style="margin-bottom:6px; font-size:0.84rem;"><strong>Archivos y Depósitos</strong> — Sedes físicas del archivo</li>
+<li style="margin-bottom:6px; font-size:0.84rem;"><strong>Soporte Documental</strong> — Papel, electrónico, híbrido, etc.</li>
+<li style="margin-bottom:6px; font-size:0.84rem;"><strong>Áreas Externas</strong> — Instituciones con las que se relaciona la dependencia</li>
+<li style="margin-bottom:6px; font-size:0.84rem;"><strong>Enlaces de Archivo</strong> — Personal responsable de cada depósito</li>
+<br>
+<h4 style="color:#444; font-size:0.95rem; margin-top:14px; margin-bottom:4px;">Paso 2 — Series Documentales (CGCA)</h4>
+<p style="font-size:0.84rem; color:#444; margin:6px 0; line-height:1.6;">Vaya a <strong>Gestión de Expedientes → Series Documentales</strong> y registre el Cuadro General de Clasificación Archivística con su estructura jerárquica: Sección → Subsección → Serie → Subserie.</p>
+<br>
+<h4 style="color:#444; font-size:0.95rem; margin-top:14px; margin-bottom:4px;">Paso 3 — Auditoría y Vinculación Normativa</h4>
+<p style="font-size:0.84rem; color:#444; margin:6px 0; line-height:1.6;">Vaya a <strong>Auditoría y Vinculación Normativa</strong> y vincule cada serie documental con su función, fundamento legal y procedimiento correspondiente.</p>
+<br>
+<h4 style="color:#444; font-size:0.95rem; margin-top:14px; margin-bottom:4px;">Paso 4 — Valoración Documental (CDD)</h4>
+<p style="font-size:0.84rem; color:#444; margin:6px 0; line-height:1.6;">Vaya a <strong>Valoración Documental</strong> y configure para cada serie: valores primarios/secundarios, plazos de conservación y técnica de selección.</p>
+<br>
+<h4 style="color:#444; font-size:0.95rem; margin-top:14px; margin-bottom:4px;">Paso 5 — Guía de Archivo</h4>
+<p style="font-size:0.84rem; color:#444; margin:6px 0; line-height:1.6;">Vaya a <strong>Guía de Archivo Documental</strong> y registre para cada serie: el archivo físico donde se resguarda, el funcionario responsable y el enlace de archivo con sus datos de contacto.</p>
+<br>
+<hr style="border:none; border-top:2px solid var(--dorado-suave); margin:20px 0;">
+<br>
+<h3 style="color:var(--guinda); font-size:1.1rem; margin-top:20px; margin-bottom:6px; border-bottom:2px solid var(--dorado-suave); padding-bottom:4px;">4. Captura de Expedientes</h3>
+<br>
+<h4 style="color:#444; font-size:0.95rem; margin-top:14px; margin-bottom:4px;">4.1 Nuevo expediente</h4>
+<li style="margin-bottom:6px; font-size:0.84rem;">Vaya a <strong>Gestión de Expedientes → Captura de Expedientes</strong></li>
+<li style="margin-bottom:6px; font-size:0.84rem;">Seleccione la <strong>Clave CGCA</strong> de la serie a la que pertenece el expediente</li>
+<li style="margin-bottom:6px; font-size:0.84rem;">Llene los campos:</li>
+<p style="font-size:0.84rem; color:#444; margin:6px 0; line-height:1.6;">   - <strong>Descripción</strong> del expediente</p>
+<p style="font-size:0.84rem; color:#444; margin:6px 0; line-height:1.6;">   - <strong>Fecha de inicio</strong> y <strong>fecha final</strong></p>
+<p style="font-size:0.84rem; color:#444; margin:6px 0; line-height:1.6;">   - <strong>Fojas</strong> (hojas del expediente)</p>
+<p style="font-size:0.84rem; color:#444; margin:6px 0; line-height:1.6;">   - <strong>Legajo</strong> y total de legajos</p>
+<p style="font-size:0.84rem; color:#444; margin:6px 0; line-height:1.6;">   - <strong>Archivo</strong> donde se resguarda</p>
+<p style="font-size:0.84rem; color:#444; margin:6px 0; line-height:1.6;">   - <strong>Estantería</strong> y <strong>caja</strong> de ubicación</p>
+<li style="margin-bottom:6px; font-size:0.84rem;">Haga clic en <strong>Guardar</strong></li>
+<br>
+<h4 style="color:#444; font-size:0.95rem; margin-top:14px; margin-bottom:4px;">4.2 Editar expediente</h4>
+<p style="font-size:0.84rem; color:#444; margin:6px 0; line-height:1.6;">En la lista de expedientes, haga clic en el botón <strong>Editar</strong> (✏️) del registro que desea modificar, realice los cambios y guarde.</p>
+<br>
+<h4 style="color:#444; font-size:0.95rem; margin-top:14px; margin-bottom:4px;">4.3 Eliminar expediente</h4>
+<p style="font-size:0.84rem; color:#444; margin:6px 0; line-height:1.6;">Haga clic en el botón <strong>Eliminar</strong> (🗑️) y confirme la acción. Esta operación es irreversible.</p>
+<br>
+<hr style="border:none; border-top:2px solid var(--dorado-suave); margin:20px 0;">
+<br>
+<h3 style="color:var(--guinda); font-size:1.1rem; margin-top:20px; margin-bottom:6px; border-bottom:2px solid var(--dorado-suave); padding-bottom:4px;">5. Series Documentales (CGCA)</h3>
+<br>
+<h4 style="color:#444; font-size:0.95rem; margin-top:14px; margin-bottom:4px;">5.1 Registrar una serie</h4>
+<li style="margin-bottom:6px; font-size:0.84rem;">Vaya a <strong>Series Documentales</strong></li>
+<li style="margin-bottom:6px; font-size:0.84rem;">Llene la estructura jerárquica:</li>
+<p style="font-size:0.84rem; color:#444; margin:6px 0; line-height:1.6;">   - <strong>Función</strong> (C = Común / S = Sustantiva)</p>
+<p style="font-size:0.84rem; color:#444; margin:6px 0; line-height:1.6;">   - <strong>Sección</strong> y nombre</p>
+<p style="font-size:0.84rem; color:#444; margin:6px 0; line-height:1.6;">   - <strong>Subsección</strong> (si aplica)</p>
+<p style="font-size:0.84rem; color:#444; margin:6px 0; line-height:1.6;">   - <strong>Serie</strong> y nombre</p>
+<p style="font-size:0.84rem; color:#444; margin:6px 0; line-height:1.6;">   - <strong>Subserie</strong> (si aplica)</p>
+<p style="font-size:0.84rem; color:#444; margin:6px 0; line-height:1.6;">   - <strong>Descripción</strong> del contenido</p>
+<li style="margin-bottom:6px; font-size:0.84rem;">El sistema generará automáticamente la <strong>Clave CGCA</strong></li>
+<li style="margin-bottom:6px; font-size:0.84rem;">Haga clic en <strong>Guardar</strong></li>
+<br>
+<hr style="border:none; border-top:2px solid var(--dorado-suave); margin:20px 0;">
+<br>
+<h3 style="color:var(--guinda); font-size:1.1rem; margin-top:20px; margin-bottom:6px; border-bottom:2px solid var(--dorado-suave); padding-bottom:4px;">6. Guía de Archivo Documental (Captura)</h3>
+<br>
+<li style="margin-bottom:6px; font-size:0.84rem;">Vaya a <strong>Guía de Archivo Documental</strong></li>
+<li style="margin-bottom:6px; font-size:0.84rem;">Seleccione la <strong>Serie Documental</strong> a vincular</li>
+<li style="margin-bottom:6px; font-size:0.84rem;">Asigne:</li>
+<p style="font-size:0.84rem; color:#444; margin:6px 0; line-height:1.6;">   - <strong>Archivo físico</strong> donde se resguarda</p>
+<p style="font-size:0.84rem; color:#444; margin:6px 0; line-height:1.6;">   - <strong>Funcionario responsable</strong> del área productora</p>
+<p style="font-size:0.84rem; color:#444; margin:6px 0; line-height:1.6;">   - <strong>Enlace de archivo</strong> con sus datos de contacto</p>
+<p style="font-size:0.84rem; color:#444; margin:6px 0; line-height:1.6;">   - <strong>Soporte(s) documental(es)</strong> (papel, electrónico, etc.)</p>
+<li style="margin-bottom:6px; font-size:0.84rem;">Haga clic en <strong>Guardar</strong></li>
+<br>
+<hr style="border:none; border-top:2px solid var(--dorado-suave); margin:20px 0;">
+<br>
+<h3 style="color:var(--guinda); font-size:1.1rem; margin-top:20px; margin-bottom:6px; border-bottom:2px solid var(--dorado-suave); padding-bottom:4px;">7. Valoración Documental (CDD)</h3>
+<br>
+<li style="margin-bottom:6px; font-size:0.84rem;">Vaya a <strong>Valoración Documental (CDD)</strong></li>
+<li style="margin-bottom:6px; font-size:0.84rem;">Seleccione la <strong>Clave CGCA</strong></li>
+<li style="margin-bottom:6px; font-size:0.84rem;">Configure:</li>
+<p style="font-size:0.84rem; color:#444; margin:6px 0; line-height:1.6;">   - <strong>Valores primarios</strong>: administrativo, legal, fiscal</p>
+<p style="font-size:0.84rem; color:#444; margin:6px 0; line-height:1.6;">   - <strong>Valores secundarios</strong>: testimonial, histórico, evidencial</p>
+<p style="font-size:0.84rem; color:#444; margin:6px 0; line-height:1.6;">   - Para cada valor marcado, agregue su <strong>justificación</strong></p>
+<p style="font-size:0.84rem; color:#444; margin:6px 0; line-height:1.6;">   - <strong>Años en Archivo de Trámite</strong> (AT)</p>
+<p style="font-size:0.84rem; color:#444; margin:6px 0; line-height:1.6;">   - <strong>Años en Archivo de Concentración</strong> (AC)</p>
+<p style="font-size:0.84rem; color:#444; margin:6px 0; line-height:1.6;">   - <strong>Técnica de selección</strong>: conservación total, eliminación, muestreo</p>
+<p style="font-size:0.84rem; color:#444; margin:6px 0; line-height:1.6;">   - <strong>Justificación</strong> de la disposición final</p>
+<li style="margin-bottom:6px; font-size:0.84rem;">Guarde el registro</li>
+<br>
+<hr style="border:none; border-top:2px solid var(--dorado-suave); margin:20px 0;">
+<br>
+<h3 style="color:var(--guinda); font-size:1.1rem; margin-top:20px; margin-bottom:6px; border-bottom:2px solid var(--dorado-suave); padding-bottom:4px;">8. Auditoría y Vinculación Normativa</h3>
+<br>
+<li style="margin-bottom:6px; font-size:0.84rem;">Vaya a <strong>Auditoría y Vinculación Normativa</strong></li>
+<li style="margin-bottom:6px; font-size:0.84rem;">Seleccione la <strong>Serie Documental (CGCA)</strong></li>
+<li style="margin-bottom:6px; font-size:0.84rem;">Configure la <strong>Adscripción Orgánica</strong>: dependencia, unidad administrativa y área productora</li>
+<li style="margin-bottom:6px; font-size:0.84rem;">Seleccione los <strong>Fundamentos Legales</strong> (puede agregar varios)</li>
+<li style="margin-bottom:6px; font-size:0.84rem;">Seleccione la <strong>Función Institucional</strong> correspondiente</li>
+<li style="margin-bottom:6px; font-size:0.84rem;">Seleccione el <strong>Procedimiento Asociado</strong></li>
+<li style="margin-bottom:6px; font-size:0.84rem;">Haga clic en <strong>Generar Vinculación Íntegra</strong></li>
+<br>
+<hr style="border:none; border-top:2px solid var(--dorado-suave); margin:20px 0;">
+<br>
+<h3 style="color:var(--guinda); font-size:1.1rem; margin-top:20px; margin-bottom:6px; border-bottom:2px solid var(--dorado-suave); padding-bottom:4px;">9. Condiciones de Acceso</h3>
+<br>
+<li style="margin-bottom:6px; font-size:0.84rem;">Vaya a <strong>Condiciones de Acceso</strong></li>
+<li style="margin-bottom:6px; font-size:0.84rem;">Seleccione la <strong>Serie Documental</strong></li>
+<li style="margin-bottom:6px; font-size:0.84rem;">Marque la clasificación:</li>
+<p style="font-size:0.84rem; color:#444; margin:6px 0; line-height:1.6;">   - <strong>Pública</strong>: acceso irrestricto</p>
+<p style="font-size:0.84rem; color:#444; margin:6px 0; line-height:1.6;">   - <strong>Reservada</strong>: acceso restringido temporalmente — indique años y justificación</p>
+<p style="font-size:0.84rem; color:#444; margin:6px 0; line-height:1.6;">   - <strong>Confidencial</strong>: datos personales — indique justificación</p>
+<li style="margin-bottom:6px; font-size:0.84rem;">Guarde el registro</li>
+<br>
+<hr style="border:none; border-top:2px solid var(--dorado-suave); margin:20px 0;">
+<br>
+<h3 style="color:var(--guinda); font-size:1.1rem; margin-top:20px; margin-bottom:6px; border-bottom:2px solid var(--dorado-suave); padding-bottom:4px;">10. Instrumentos de Consulta (Impresión)</h3>
+<br>
+<p style="font-size:0.84rem; color:#444; margin:6px 0; line-height:1.6;">Todos los instrumentos se generan automáticamente con los datos capturados y se pueden imprimir directamente desde el navegador con el botón <strong>Imprimir</strong>.</p>
+<br>
+<h4 style="color:#444; font-size:0.95rem; margin-top:14px; margin-bottom:4px;">10.1 Cuadro General de Clasificación Archivística (CGCA)</h4>
+<p style="font-size:0.84rem; color:#444; margin:6px 0; line-height:1.6;">Vaya a <strong>Instrumentos → Cuadro General (CGCA)</strong>.</p>
+<p style="font-size:0.84rem; color:#444; margin:6px 0; line-height:1.6;">Muestra la estructura completa de clasificación ordenada jerárquicamente.</p>
+<br>
+<h4 style="color:#444; font-size:0.95rem; margin-top:14px; margin-bottom:4px;">10.2 Catálogo de Disposición Documental (CADIDO)</h4>
+<p style="font-size:0.84rem; color:#444; margin:6px 0; line-height:1.6;">Vaya a <strong>Instrumentos → Catálogo de Disposición (CADIDO)</strong>.</p>
+<p style="font-size:0.84rem; color:#444; margin:6px 0; line-height:1.6;">Muestra valores, plazos y técnica de selección por serie.</p>
+<br>
+<h4 style="color:#444; font-size:0.95rem; margin-top:14px; margin-bottom:4px;">10.3 Inventario General</h4>
+<p style="font-size:0.84rem; color:#444; margin:6px 0; line-height:1.6;">Vaya a <strong>Instrumentos → Inventario General</strong>.</p>
+<p style="font-size:0.84rem; color:#444; margin:6px 0; line-height:1.6;">Muestra el conteo de expedientes por tipo de archivo (Trámite, Concentración, Histórico).</p>
+<br>
+<h4 style="color:#444; font-size:0.95rem; margin-top:14px; margin-bottom:4px;">10.4 Guía de Archivos</h4>
+<p style="font-size:0.84rem; color:#444; margin:6px 0; line-height:1.6;">Vaya a <strong>Instrumentos → Guía de Archivos</strong>.</p>
+<p style="font-size:0.84rem; color:#444; margin:6px 0; line-height:1.6;">Muestra la ubicación física y responsables de cada serie.</p>
+<br>
+<h4 style="color:#444; font-size:0.95rem; margin-top:14px; margin-bottom:4px;">10.5 Ficha de Valoración Documental</h4>
+<p style="font-size:0.84rem; color:#444; margin:6px 0; line-height:1.6;">Vaya a <strong>Instrumentos → Ficha de Valoración Documental</strong>.</p>
+<p style="font-size:0.84rem; color:#444; margin:6px 0; line-height:1.6;">Busque por Clave CGCA para generar la ficha completa de una serie con todos sus datos vinculados.</p>
+<p style="font-size:0.84rem; color:#444; margin:6px 0; line-height:1.6;">Esta ficha está diseñada para impresión oficial conforme al formato del AGEP.</p>
+<br>
+<hr style="border:none; border-top:2px solid var(--dorado-suave); margin:20px 0;">
+<br>
+<h3 style="color:var(--guinda); font-size:1.1rem; margin-top:20px; margin-bottom:6px; border-bottom:2px solid var(--dorado-suave); padding-bottom:4px;">11. Catálogos Institucionales</h3>
+<br>
+<p style="font-size:0.84rem; color:#444; margin:6px 0; line-height:1.6;">Todos los catálogos siguen la misma lógica: formulario de captura arriba, tabla de registros abajo, con botones de <strong>Editar</strong> y <strong>Eliminar</strong> por registro.</p>
+<br>
+<p style="font-size:0.84rem; color:#444; margin:6px 0; line-height:1.6;">Los catálogos disponibles son:</p>
+<li style="margin-bottom:4px; font-size:0.84rem;">Dependencias</li>
+<li style="margin-bottom:4px; font-size:0.84rem;">Unidades Administrativas</li>
+<li style="margin-bottom:4px; font-size:0.84rem;">Áreas Productoras</li>
+<li style="margin-bottom:4px; font-size:0.84rem;">Funcionarios Responsables</li>
+<li style="margin-bottom:4px; font-size:0.84rem;">Marco Jurídico (Leyes y Normas)</li>
+<li style="margin-bottom:4px; font-size:0.84rem;">Funciones Institucionales</li>
+<li style="margin-bottom:4px; font-size:0.84rem;">Procedimientos y Actividades</li>
+<li style="margin-bottom:4px; font-size:0.84rem;">Archivos y Depósitos</li>
+<li style="margin-bottom:4px; font-size:0.84rem;">Soporte Documental</li>
+<li style="margin-bottom:4px; font-size:0.84rem;">Áreas e Instituciones Externas</li>
+<li style="margin-bottom:4px; font-size:0.84rem;">Enlaces de Archivo</li>
+<br>
+<hr style="border:none; border-top:2px solid var(--dorado-suave); margin:20px 0;">
+<br>
+<h3 style="color:var(--guinda); font-size:1.1rem; margin-top:20px; margin-bottom:6px; border-bottom:2px solid var(--dorado-suave); padding-bottom:4px;">12. Recomendaciones de Uso</h3>
+<br>
+<li style="margin-bottom:4px; font-size:0.84rem;"><strong>Llenar los catálogos antes de capturar expedientes</strong>. El sistema depende de los catálogos para funcionar correctamente.</li>
+<li style="margin-bottom:4px; font-size:0.84rem;"><strong>Respetar el orden jerárquico del CGCA</strong>. Una clave mal estructurada afecta todos los instrumentos.</li>
+<li style="margin-bottom:4px; font-size:0.84rem;"><strong>Completar la auditoría y vinculación</strong> antes de generar la Ficha de Valoración, ya que esta toma datos de todos los módulos.</li>
+<li style="margin-bottom:4px; font-size:0.84rem;"><strong>Usar Chrome o Edge</strong> para la mejor experiencia de impresión de los instrumentos.</li>
+<li style="margin-bottom:4px; font-size:0.84rem;"><strong>No compartir contraseñas</strong>. Cada usuario debe tener su propio acceso.</li>
+<br>
+<hr style="border:none; border-top:2px solid var(--dorado-suave); margin:20px 0;">
+<br>
+<p style="font-size:0.84rem; color:#444; margin:6px 0; line-height:1.6;">*Manual de Usuario — SIGEDO v1.0 — Abril 2026*</p>
+<p style="font-size:0.84rem; color:#444; margin:6px 0; line-height:1.6;">*© Manuel Alejandro Hernández Maimone — Todos los derechos reservados*</p>
+<br>
+        <div style="text-align:right; font-size:0.72rem; color:#aaa; border-top:1px solid #eee; padding-top:10px; margin-top:20px;">
+            SIGEDO v1.0 — © 2025–2026 Manuel Alejandro Hernández Maimone
+        </div>
+    </div>
+</div>
+{% endblock %}

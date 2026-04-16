@@ -1,0 +1,124 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="cap-container" style="max-width:900px;">
+
+    <div class="cap-header">
+        <div>
+            <h2 class="cap-title">Ficha Técnica</h2>
+            <p class="cap-subtitle">SIGEDO v1.0 — Sistema de Gestión Documental</p>
+        </div>
+        <div style="display:flex; gap:8px;">
+            <a href="{{ url_for('main.documentacion') }}" class="cap-btn-cancel">← Documentación</a>
+            <a href="{{ url_for('main.dashboard') }}" class="cap-btn-menu">← Menú</a>
+        </div>
+    </div>
+
+    <div class="cap-card">
+
+        <div class="cap-legend">1. Identificación del Sistema</div>
+        <table style="width:100%; font-size:0.85rem; border-collapse:collapse; margin-bottom:20px;">
+            {% set datos = [
+                ('Nombre completo', 'Sistema de Gestión Documental'),
+                ('Acrónimo', 'SIGEDO'),
+                ('Versión', '1.0'),
+                ('Fecha de inicio', 'Noviembre 2025'),
+                ('Versión estable', 'Abril 2026'),
+                ('Propietario', 'Manuel Alejandro Hernández Maimone'),
+                ('Institución piloto', 'Secretaría de Medio Ambiente, Desarrollo Sustentable y Ordenamiento Territorial (SMADSOT), Gobierno del Estado de Puebla'),
+            ] %}
+            {% for campo, valor in datos %}
+            <tr style="border-bottom:1px solid #f0f0f0;">
+                <td style="padding:8px 12px; font-weight:700; color:var(--guinda); width:35%; background:#fafafa;">{{ campo }}</td>
+                <td style="padding:8px 12px;">{{ valor }}</td>
+            </tr>
+            {% endfor %}
+        </table>
+
+        <div class="cap-legend">2. Descripción General</div>
+        <p style="font-size:0.85rem; color:#444; line-height:1.7; margin-bottom:20px;">
+            SIGEDO es un sistema web de gestión documental archivística desarrollado para dar cumplimiento a la normatividad 
+            en materia de archivos aplicable en México, particularmente la Ley General de Archivos y la Ley de Archivos del 
+            Estado de Puebla. Permite a las instituciones organizar, clasificar, valorar y controlar su acervo documental 
+            mediante instrumentos archivísticos normados: el Cuadro General de Clasificación Archivística (CGCA), el Catálogo 
+            de Disposición Documental (CADIDO), la Guía de Archivo, el Inventario General y la Ficha de Valoración Documental.
+        </p>
+
+        <div class="cap-legend">3. Stack Tecnológico</div>
+        <table style="width:100%; font-size:0.82rem; border-collapse:collapse; margin-bottom:20px;">
+            <thead>
+                <tr style="background:var(--guinda); color:white;">
+                    <th style="padding:8px 12px; text-align:left;">Capa</th>
+                    <th style="padding:8px 12px; text-align:left;">Tecnología</th>
+                    <th style="padding:8px 12px; text-align:left;">Versión</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% set stack = [
+                    ('Lenguaje backend', 'Python', '3.9'),
+                    ('Framework web', 'Flask', '3.x'),
+                    ('ORM', 'SQLAlchemy / Flask-SQLAlchemy', '2.x / 3.x'),
+                    ('Migraciones', 'Flask-Migrate / Alembic', '4.x / 1.x'),
+                    ('Autenticación', 'Flask-Login', '0.6.x'),
+                    ('Base de datos', 'PostgreSQL', '14'),
+                    ('Driver BD', 'psycopg2-binary', '2.9.x'),
+                    ('Servidor WSGI', 'Gunicorn', '23.x'),
+                    ('Contenedor', 'Docker', '—'),
+                    ('Frontend CSS', 'Bootstrap', '5.3.3'),
+                    ('Búsqueda avanzada', 'Choices.js', '—'),
+                    ('Control de versiones', 'Git / GitHub', '—'),
+                    ('Plataforma cloud', 'Railway', '—'),
+                ] %}
+                {% for capa, tech, ver in stack %}
+                <tr style="border-bottom:1px solid #eee; {% if loop.index is odd %}background:#fafafa;{% endif %}">
+                    <td style="padding:7px 12px; font-weight:600; color:var(--guinda);">{{ capa }}</td>
+                    <td style="padding:7px 12px;">{{ tech }}</td>
+                    <td style="padding:7px 12px; color:#888;">{{ ver }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <div class="cap-legend">4. Arquitectura</div>
+        <div style="background:#f8f4ec; border:1px solid var(--dorado-suave); border-radius:8px; padding:16px; font-family:monospace; font-size:0.8rem; color:#333; margin-bottom:20px; white-space:pre-wrap;">SIGEDO v1.0
+├── Frontend
+│   ├── HTML5 + Jinja2 (templates)
+│   ├── CSS3 personalizado (paleta institucional Puebla)
+│   └── Bootstrap 5.3.3
+├── Backend
+│   ├── Python 3.9
+│   ├── Flask 3.x (framework web)
+│   ├── Flask-Login (autenticación)
+│   ├── Flask-SQLAlchemy (ORM)
+│   └── Flask-Migrate / Alembic (migraciones)
+├── Base de Datos
+│   └── PostgreSQL 14 (Railway Cloud)
+└── Infraestructura
+    ├── Docker (contenedorización)
+    ├── Gunicorn (servidor WSGI)
+    └── Railway (plataforma cloud)</div>
+
+        <div class="cap-legend">5. Identidad Visual</div>
+        <div style="display:flex; gap:12px; flex-wrap:wrap; margin-bottom:20px;">
+            {% for nombre, uso, hex, bg in [
+                ('Guinda', 'Color primario', '#6A1B32', '#6A1B32'),
+                ('Guinda oscuro', 'Hover / énfasis', '#4E1324', '#4E1324'),
+                ('Dorado', 'Acentos', '#B08A4A', '#B08A4A'),
+                ('Crema', 'Fondos', '#F8F4EC', '#e8dfd0'),
+            ] %}
+            <div style="display:flex; align-items:center; gap:10px; background:#fafafa; border:1px solid #eee; border-radius:8px; padding:10px 16px;">
+                <div style="width:32px; height:32px; border-radius:50%; background:{{ bg }}; border:1px solid #ccc;"></div>
+                <div>
+                    <div style="font-weight:700; font-size:0.82rem; color:var(--guinda);">{{ nombre }}</div>
+                    <div style="font-size:0.72rem; color:#888;">{{ uso }} — {{ hex }}</div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+
+        <div style="text-align:right; font-size:0.72rem; color:#aaa; border-top:1px solid #eee; padding-top:10px;">
+            SIGEDO v1.0 — © 2025–2026 Manuel Alejandro Hernández Maimone
+        </div>
+
+    </div>
+</div>
+{% endblock %}
