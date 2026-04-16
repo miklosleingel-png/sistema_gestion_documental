@@ -1419,10 +1419,10 @@ def ficha_valoracion():
                     tipos_set.add(act.tipo_documental_producido.strip().upper())
             tipos_documentales = sorted(list(tipos_set))
 
-            # Soportes: vinculados directamente a la clave CGCA
-            soportes_serie = ClaveCGCASoporte.query.filter_by(
-                id_cgca=serie_maestra.id_cgca
-            ).all()
+            # Soportes: se obtienen desde la Guía de Archivo vinculada a esta clave CGCA
+            soportes_serie = []
+            if serie_maestra.guia_vinculo and serie_maestra.guia_vinculo.soportes_rel:
+                soportes_serie = serie_maestra.guia_vinculo.soportes_rel
 
     # El return envía 'master', que ahora contiene una LISTA de fundamentos
     return render_template('main/ficha_valoracion.html', 
@@ -1526,6 +1526,7 @@ def editar_guia(id):
                            archivos=archivos, 
                            funcionarios=funcionarios, 
                            enlaces=enlaces)
+
 
 @main.route('/eliminar_guia/<int:id>')
 @login_required
