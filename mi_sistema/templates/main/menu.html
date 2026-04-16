@@ -8,8 +8,9 @@
         <a href="{{ url_for('main.logout') }}" class="btn-logout">Cerrar sesión</a>
     </div>
 
+    <!-- GESTIÓN DE EXPEDIENTES -->
     <section class="menu-section">
-        <h2 class="menu-subtitle">Gestión de expedientes</h2>
+        <h2 class="menu-subtitle">Gestión de Expedientes</h2>
         <div class="cards-grid">
 
             <a href="{{ url_for('main.cap_expedientes') }}" class="menu-card">
@@ -59,6 +60,7 @@
         </div>
     </section>
 
+    <!-- INSTRUMENTOS DE CONTROL Y CONSULTA -->
     <section class="menu-section">
         <h2 class="menu-subtitle">Instrumentos de Control y Consulta</h2>
         <div class="cards-grid">
@@ -86,6 +88,14 @@
                 <h3 class="menu-card-title">Cuadro General (CGCA)</h3>
             </a>
 
+            <a href="{{ url_for('main.guia_archivos') }}" class="menu-card menu-card-accent-dorado-bottom">
+                <div class="menu-card-icon">
+                    <img src="{{ url_for('static', filename='12icon_inventario.png') }}" alt="Guía de Archivos">
+                </div>
+                <h3 class="menu-card-title">Guía de Archivos</h3>
+                <p class="menu-card-desc">Instrumento de consulta imprimible</p>
+            </a>
+
             <a href="{{ url_for('main.ficha_valoracion') }}" class="menu-card">
                 <div class="menu-card-icon">
                     <img src="{{ url_for('static', filename='09icon_cdd.png') }}" alt="Ficha Valoración">
@@ -96,6 +106,7 @@
         </div>
     </section>
 
+    <!-- CONFIGURACIÓN DEL SISTEMA -->
     <section class="menu-section">
         <h2 class="menu-subtitle">Configuración del Sistema</h2>
         <div class="cards-grid">
@@ -107,6 +118,42 @@
                 <h3 class="menu-card-title">Catálogos Institucionales</h3>
                 <p class="menu-card-desc">Áreas, Unidades y Funcionarios</p>
             </a>
+
+        </div>
+    </section>
+
+    <!-- INFORMACIÓN DEL SISTEMA -->
+    <section class="menu-section">
+        <h2 class="menu-subtitle">Información del Sistema</h2>
+        <div class="cards-grid">
+
+            <a href="#" class="menu-card" onclick="alert('Manual de usuario en desarrollo.'); return false;">
+                <div class="menu-card-icon">
+                    <img src="{{ url_for('static', filename='09icon_cdd.png') }}" alt="Manual">
+                </div>
+                <h3 class="menu-card-title">Manual de Usuario</h3>
+                <p class="menu-card-desc">Guía de operación del sistema</p>
+            </a>
+
+            <a href="#" class="menu-card" onclick="alert('Documentación técnica en desarrollo.'); return false;">
+                <div class="menu-card-icon">
+                    <img src="{{ url_for('static', filename='08icon_cgca.png') }}" alt="Documentación">
+                </div>
+                <h3 class="menu-card-title">Documentación Técnica</h3>
+                <p class="menu-card-desc">Arquitectura y estructura del sistema</p>
+            </a>
+
+            <div class="menu-card" style="cursor:default;">
+                <div class="menu-card-icon">
+                    <img src="{{ url_for('static', filename='03icon_areas.png') }}" alt="Licencia">
+                </div>
+                <h3 class="menu-card-title">Licencia y Versión</h3>
+                <p class="menu-card-desc" style="font-size:0.75rem; color:#888;">
+                    v1.0 — 2026<br>
+                    © Manuel Alejandro Hernández Maimone<br>
+                    Todos los derechos reservados
+                </p>
+            </div>
 
         </div>
     </section>
