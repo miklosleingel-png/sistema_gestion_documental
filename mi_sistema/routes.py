@@ -1382,6 +1382,8 @@ def ficha_valoracion():
     serie_maestra = None
     areas_internas = [] 
     areas_externas = []
+    tipos_documentales = []
+    soportes_serie = []
 
     if clave_busqueda:
         # Optimizamos con joinedload para traer los fundamentos y las leyes en una sola consulta
@@ -1410,11 +1412,25 @@ def ficha_valoracion():
             areas_internas = sorted(list(internas_set), key=lambda x: x.nombre_ua)
             areas_externas = sorted(list(externas_set), key=lambda x: x.nombre_area_externa)
 
+            # Tipos documentales: extraídos de actividades, sin duplicados, sin vacíos
+            tipos_set = set()
+            for act in actividades:
+                if act.tipo_documental_producido and act.tipo_documental_producido.strip():
+                    tipos_set.add(act.tipo_documental_producido.strip().upper())
+            tipos_documentales = sorted(list(tipos_set))
+
+            # Soportes: vinculados directamente a la clave CGCA
+            soportes_serie = ClaveCGCASoporte.query.filter_by(
+                id_cgca=serie_maestra.id_cgca
+            ).all()
+
     # El return envía 'master', que ahora contiene una LISTA de fundamentos
     return render_template('main/ficha_valoracion.html', 
                            master=serie_maestra, 
                            areas_internas_asociadas=areas_internas,
                            areas_externas_asociadas=areas_externas,
+                           tipos_documentales=tipos_documentales,
+                           soportes_serie=soportes_serie,
                            clave_busqueda=clave_busqueda)
 
 @main.route('/cat_guia', methods=['GET', 'POST'])
