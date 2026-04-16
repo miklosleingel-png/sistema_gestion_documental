@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Guía de Archivo — SMADSOT</title>
+<style>
+    body {
+        background-color: #f0f0f0;
+        padding: 40px 0;
+        font-family: 'Segoe UI', Arial, sans-serif;
+    }
+    .document-container {
+        background-color: white;
+        width: 279mm;
+        min-height: 216mm;
+        margin: 0 auto;
+        padding: 40px;
+        box-shadow: 0 0 15px rgba(0,0,0,0.2);
+    }
+    .botones-flotantes {
+        position: fixed;
+        top: 20px;
+        left: 20px;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        z-index: 100;
+    }
+    .btn-flotante {
+        background: #691C32;
+        color: white;
+        padding: 10px 18px;
+        text-decoration: none;
+        border-radius: 4px;
+        font-weight: bold;
+        border: none;
+        cursor: pointer;
+        text-align: center;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    }
+    .btn-print { background: #B08B57; }
+    .header-top-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 5px;
+    }
+    .logo-doc { height: 65px; width: auto; object-fit: contain; }
+    .document-title {
+        color: #691C32;
+        text-align: center;
+        flex: 1;
+        font-size: 1.3rem;
+        font-weight: bold;
+        text-transform: uppercase;
+        margin: 0 20px;
+    }
+    .doc-divider { border: none; border-top: 3px solid #B08B57; margin: 10px 0; }
+    .update-line { text-align: right; font-size: 0.9rem; color: #333; margin-bottom: 20px; }
+    .table-section { margin-top: 10px; border: 1px solid #ccc; border-radius: 4px; overflow: hidden; }
+    .guia-table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 0.72rem;
+        background-color: #ffffff;
+        table-layout: fixed;
+    }
+    .guia-table thead th {
+        background-color: #691C32;
+        color: #ffffff;
+        font-weight: bold;
+        padding: 8px 4px;
+        text-align: center;
+        text-transform: uppercase;
+        border: 1px solid #4a0d26;
+        font-size: 0.65rem;
+    }
+    .guia-table td {
+        padding: 5px 6px;
+        border: 1px solid #e0e0e0;
+        color: #333;
+        vertical-align: middle;
+        word-wrap: break-word;
+        text-align: center;
+    }
+    .text-left { text-align: left !important; padding-left: 6px !important; }
+    .bold { font-weight: bold; color: #691C32; }
+    .td-vacio { color: #bbb; font-style: italic; font-size: 0.65rem; }
+
+    @media print {
+        @page { size: landscape; margin: 0.8cm; }
+        .no-print, .botones-flotantes { display: none !important; }
+        body { background-color: white !important; padding: 0; width: 100%; }
+        .document-container { box-shadow: none; margin: 0; width: 100% !important; padding: 0 !important; }
+        .guia-table thead th {
+            background-color: #691C32 !important;
+            color: white !important;
+            -webkit-print-color-adjust: exact;
+        }
+        tr { page-break-inside: avoid; }
+    }
+</style>
+</head>
+<body>
+
+<div class="botones-flotantes no-print">
+    <a href="{{ url_for('main.dashboard') }}" class="btn-flotante">← Volver al menú</a>
+    <button onclick="window.print();" class="btn-flotante btn-print">🖨️ Imprimir Guía</button>
+</div>
+
+<div class="document-container">
+    <header>
+        <div class="header-top-row">
+            <img src="{{ url_for('static', filename='logo_gobierno.png') }}" alt="Gobierno" class="logo-doc">
+            <h1 class="document-title">Guía de Archivo Documental</h1>
+            <img src="{{ url_for('static', filename='logo_secretaria.png') }}" alt="Secretaría" class="logo-doc">
+        </div>
+        <p style="text-align:center; font-weight:bold; margin-top:-8px; color:#333; font-size:0.82rem;">
+            FONDO: SECRETARÍA DE MEDIO AMBIENTE, DESARROLLO SUSTENTABLE Y ORDENAMIENTO TERRITORIAL
+        </p>
+        <hr class="doc-divider">
+        <div class="update-line">
+            Fecha de Reporte: <strong>{{ fecha_actualizacion }}</strong>
+        </div>
+    </header>
+
+    <section class="table-section">
+        <table class="guia-table">
+            <thead>
+                <tr>
+                    <th style="width:9%;">Código</th>
+                    <th style="width:18%;">Nombre de la Serie</th>
+                    <th style="width:12%;">Área Productora</th>
+                    <th style="width:12%;">Unidad Administrativa</th>
+                    <th style="width:12%;">Nombre del Archivo</th>
+                    <th style="width:13%;">Responsable Archivo de Trámite</th>
+                    <th style="width:10%;">Cargo del Responsable</th>
+                    <th style="width:14%;">Dirección del Archivo</th>
+                    <th style="width:10%;">Correo del Archivo</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for cgca, guia in registros %}
+                <tr>
+                    <td class="bold">{{ cgca.clave_cgca }}</td>
+                    <td class="text-left">{{ cgca.serie_nombre }}</td>
+
+                    {% if guia %}
+                        <td class="text-left">
+                            {{ guia.funcionario.area.nombre_area if guia.funcionario and guia.funcionario.area else '—' }}
+                        </td>
+                        <td class="text-left">
+                            {{ guia.funcionario.area.unidad.nombre_ua if guia.funcionario and guia.funcionario.area and guia.funcionario.area.unidad else '—' }}
+                        </td>
+                        <td class="text-left">
+                            {{ guia.archivo.nombre_archivo if guia.archivo else '—' }}
+                        </td>
+                        <td class="text-left">
+                            {{ guia.enlace.nombre_enlace if guia.enlace else '—' }}
+                        </td>
+                        <td class="text-left">
+                            {{ guia.enlace.cargo if guia.enlace else '—' }}
+                        </td>
+                        <td class="text-left" style="font-size:0.65rem;">
+                            {{ guia.archivo.ubicacion if guia.archivo and guia.archivo.ubicacion else '—' }}
+                        </td>
+                        <td style="font-size:0.65rem;">
+                            {{ guia.enlace.correo_electronico if guia.enlace and guia.enlace.correo_electronico else '—' }}
+                        </td>
+                    {% else %}
+                        <td class="td-vacio">—</td>
+                        <td class="td-vacio">—</td>
+                        <td class="td-vacio">—</td>
+                        <td class="td-vacio">—</td>
+                        <td class="td-vacio">—</td>
+                        <td class="td-vacio">—</td>
+                        <td class="td-vacio">—</td>
+                    {% endif %}
+                </tr>
+                {% else %}
+                <tr>
+                    <td colspan="9" style="text-align:center; padding:20px; color:#999;">
+                        No hay series documentales registradas.
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </section>
+</div>
+
+</body>
+</html>

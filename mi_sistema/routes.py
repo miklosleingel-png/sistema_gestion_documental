@@ -1214,7 +1214,11 @@ def ver_cdd():
     registros = db.session.query(CatCGCA, ClaveCGCACDD).outerjoin(
         ClaveCGCACDD, CatCGCA.id_cgca == ClaveCGCACDD.id_cgca
     ).order_by(
-        CatCGCA.clave_cgca # Esto mantiene el orden jerárquico (1.1, 1.2, etc.)
+        CatCGCA.funcion_clave.asc(),
+        CatCGCA.seccion_clave.asc(),
+        CatCGCA.subseccion_clave.asc(),
+        CatCGCA.serie_clave.asc(),
+        CatCGCA.subserie_clave.asc()
     ).all()
     
     # Generamos la fecha actual para el reporte
@@ -1240,14 +1244,42 @@ def inventario_general():
     inventario = db.session.query(CatCGCA, stats_expedientes).outerjoin(
         stats_expedientes, CatCGCA.clave_cgca == stats_expedientes.c.clave_cgca
     ).order_by(
-        CatCGCA.seccion_clave, 
-        CatCGCA.subseccion_clave, 
-        CatCGCA.serie_clave
+        CatCGCA.funcion_clave.asc(),
+        CatCGCA.seccion_clave.asc(),
+        CatCGCA.subseccion_clave.asc(),
+        CatCGCA.serie_clave.asc(),
+        CatCGCA.subserie_clave.asc()
     ).all()
 
     return render_template('main/inventario.html', inventario=inventario)
 
 # --- VISTA UNIFICADA: CAPTURA + TABLA ---
+@main.route('/guia_archivos')
+@login_required
+def guia_archivos():
+    from datetime import datetime
+    meses = ["Enero","Febrero","Marzo","Abril","Mayo","Junio",
+             "Julio","Agosto","Septiembre","Octubre","Noviembre","Diciembre"]
+    ahora = datetime.now()
+    fecha_hoy = f"{ahora.day} de {meses[ahora.month - 1]} de {ahora.year}"
+
+    # Traer todas las series con su guía vinculada, ordenadas jerárquicamente
+    registros = db.session.query(CatCGCA, ClaveCGCAGuia).outerjoin(
+        CatClaveCGCA, CatCGCA.id_cgca == CatClaveCGCA.id_cgca
+    ).outerjoin(
+        ClaveCGCAGuia, CatClaveCGCA.id_cgca == ClaveCGCAGuia.id_cgca
+    ).order_by(
+        CatCGCA.funcion_clave.asc(),
+        CatCGCA.seccion_clave.asc(),
+        CatCGCA.subseccion_clave.asc(),
+        CatCGCA.serie_clave.asc(),
+        CatCGCA.subserie_clave.asc()
+    ).all()
+
+    return render_template('main/guia_archivos.html',
+                           registros=registros,
+                           fecha_actualizacion=fecha_hoy)
+
 @main.route('/condiciones-acceso', methods=['GET'])
 @main.route('/condiciones-acceso/<int:id_maestro>', methods=['GET']) # Cambiado a int e id_maestro
 @login_required
