@@ -1384,6 +1384,8 @@ def ficha_valoracion():
     areas_externas = []
     tipos_documentales = []
     soportes_serie = []
+    fecha_min = None
+    fecha_max = None
 
     if clave_busqueda:
         # Optimizamos con joinedload para traer los fundamentos y las leyes en una sola consulta
@@ -1424,6 +1426,11 @@ def ficha_valoracion():
             if serie_maestra.guia_vinculo and serie_maestra.guia_vinculo.soportes_rel:
                 soportes_serie = serie_maestra.guia_vinculo.soportes_rel
 
+            # Fechas extremas: min y max de los expedientes relacionados
+            from sqlalchemy import func
+            fecha_min = db.session.query(func.min(Expediente.fecha_inicio)).filter_by(id_cgca=serie_maestra.id_cgca).scalar()
+            fecha_max = db.session.query(func.max(Expediente.fecha_final)).filter_by(id_cgca=serie_maestra.id_cgca).scalar()
+
     # El return envía 'master', que ahora contiene una LISTA de fundamentos
     return render_template('main/ficha_valoracion.html', 
                            master=serie_maestra, 
@@ -1431,6 +1438,8 @@ def ficha_valoracion():
                            areas_externas_asociadas=areas_externas,
                            tipos_documentales=tipos_documentales,
                            soportes_serie=soportes_serie,
+                           fecha_min=fecha_min,
+                           fecha_max=fecha_max,
                            clave_busqueda=clave_busqueda)
 
 @main.route('/cat_guia', methods=['GET', 'POST'])
@@ -1526,7 +1535,6 @@ def editar_guia(id):
                            archivos=archivos, 
                            funcionarios=funcionarios, 
                            enlaces=enlaces)
-
 
 @main.route('/eliminar_guia/<int:id>')
 @login_required

@@ -808,6 +808,142 @@
     </div>
     {% endif %}
 
+    <!-- DATOS DE GUÍA DE ARCHIVO (FORMATO AGEP) -->
+    <div class="ficha-seccion">
+        <div class="ficha-seccion-titulo">Datos del Archivo de Trámite</div>
+        <div class="ficha-seccion-body">
+
+            {% if master.guia_vinculo %}
+            {% set guia = master.guia_vinculo %}
+
+            <!-- Fila 1: Ubicación física -->
+            <div class="ficha-fila ficha-fila-2" style="margin-bottom:0;">
+                <div class="ficha-campo" style="grid-column: span 2;">
+                    <div class="ficha-campo-label">Ubicación Física de la Serie</div>
+                    <div class="ficha-campo-valor">
+                        {{ guia.archivo.ubicacion if guia.archivo and guia.archivo.ubicacion else '—' }}
+                    </div>
+                </div>
+            </div>
+
+            <!-- Fila 2: Fechas extremas -->
+            <div class="ficha-fila ficha-fila-3" style="margin-bottom:0;">
+                <div class="ficha-campo">
+                    <div class="ficha-campo-label" style="text-align:center;">Fechas Extremas de la Serie</div>
+                    <div class="ficha-campo-valor" style="padding:0;">
+                        <div style="display:grid; grid-template-columns:1fr 1fr; border-top:1px solid #ccc;">
+                            <div style="padding:5px 8px; border-right:1px solid #ccc;">
+                                <div style="font-size:0.62rem; color:#4E1324; font-weight:700; text-transform:uppercase; margin-bottom:3px;">Fecha de Apertura</div>
+                                <div style="font-size:0.8rem;">
+                                    {{ fecha_min.strftime('%d/%m/%Y') if fecha_min else '—' }}
+                                </div>
+                            </div>
+                            <div style="padding:5px 8px;">
+                                <div style="font-size:0.62rem; color:#4E1324; font-weight:700; text-transform:uppercase; margin-bottom:3px;">Fecha de Cierre</div>
+                                <div style="font-size:0.8rem;">
+                                    {{ fecha_max.strftime('%d/%m/%Y') if fecha_max else '—' }}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="ficha-campo" style="grid-column: span 2;">
+                    <div class="ficha-campo-label">Nombre y Cargo de los Responsables del Área Productora</div>
+                    <div class="ficha-campo-valor">
+                        {% if guia.funcionario %}
+                            {{ guia.funcionario.nombre_funcionario }}
+                            {% if guia.funcionario.cargo_funcionario %}
+                                — {{ guia.funcionario.cargo_funcionario }}
+                            {% endif %}
+                        {% else %}—{% endif %}
+                    </div>
+                </div>
+            </div>
+
+            <!-- Fila 3: Responsable archivo trámite -->
+            <div class="ficha-fila ficha-fila-2" style="margin-bottom:0;">
+                <div class="ficha-campo" style="grid-column: span 2;">
+                    <div class="ficha-campo-label">Nombre y Cargo del Responsable del Archivo de Trámite del Área Productora</div>
+                    <div class="ficha-campo-valor">
+                        {% if guia.enlace %}
+                            {{ guia.enlace.nombre_enlace }}
+                            {% if guia.enlace.cargo %} — {{ guia.enlace.cargo }}{% endif %}
+                        {% else %}—{% endif %}
+                    </div>
+                </div>
+            </div>
+
+            <!-- Fila 4: Correo y teléfono -->
+            <div class="ficha-fila ficha-fila-2" style="margin-bottom:0;">
+                <div class="ficha-campo">
+                    <div class="ficha-campo-label">Correo Electrónico del Responsable del Archivo de Trámite</div>
+                    <div class="ficha-campo-valor">
+                        {{ guia.enlace.correo_electronico if guia.enlace and guia.enlace.correo_electronico else '—' }}
+                    </div>
+                </div>
+                <div class="ficha-campo">
+                    <div class="ficha-campo-label">Teléfono del Responsable del Archivo de Trámite</div>
+                    <div class="ficha-campo-valor">
+                        {{ guia.enlace.telefono_archivo if guia.enlace and guia.enlace.telefono_archivo else '—' }}
+                    </div>
+                </div>
+            </div>
+
+            <!-- Fila 5: Domicilio -->
+            <div class="ficha-fila ficha-fila-2" style="margin-bottom:0;">
+                <div class="ficha-campo" style="grid-column: span 2;">
+                    <div class="ficha-campo-label">Domicilio</div>
+                    <div class="ficha-campo-valor" style="min-height:52px;">
+                        {{ guia.archivo.nombre_archivo if guia.archivo else '—' }}
+                        {% if guia.archivo and guia.archivo.ubicacion %}
+                            — {{ guia.archivo.ubicacion }}
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+
+            {% else %}
+            <p style="color:#888; font-style:italic; font-size:0.78rem;">Sin guía de archivo registrada para esta serie.</p>
+            {% endif %}
+
+        </div>
+    </div>
+
+    <!-- SECCIÓN DE FIRMAS -->
+    <div class="ficha-seccion" style="page-break-inside: avoid;">
+        <div class="ficha-seccion-body" style="padding:20px;">
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:40px; margin-bottom:8px;">
+
+                <div style="text-align:center;">
+                    <div class="ficha-campo-label" style="margin-bottom:8px;">Titular del Área Generadora</div>
+                    <div style="border-bottom:1px solid #333; margin:0 20px 6px; height:48px;"></div>
+                    <div style="border-bottom:1px solid #333; margin:0 20px 6px; height:24px;"></div>
+                    <div style="border-bottom:1px solid #333; margin:0 20px 6px; height:24px;"></div>
+                    <div style="font-size:0.68rem; color:#555; margin-top:4px;">Nombre, cargo y firma</div>
+                </div>
+
+                <div style="text-align:center;">
+                    <div class="ficha-campo-label" style="margin-bottom:8px;">Responsable del Archivo de Trámite</div>
+                    <div style="border-bottom:1px solid #333; margin:0 20px 6px; height:48px;"></div>
+                    <div style="border-bottom:1px solid #333; margin:0 20px 6px; height:24px;"></div>
+                    <div style="border-bottom:1px solid #333; margin:0 20px 6px; height:24px;"></div>
+                    <div style="font-size:0.68rem; color:#555; margin-top:4px;">Nombre, cargo y firma</div>
+                </div>
+
+            </div>
+
+            <!-- Fecha de impresión -->
+            <div style="text-align:right; font-size:0.72rem; color:#555; margin-top:16px; border-top:1px solid #eee; padding-top:8px;">
+                Puebla, Pue., a
+                <span style="display:inline-block; border-bottom:1px solid #333; min-width:30px;">&nbsp;</span>
+                de
+                <span style="display:inline-block; border-bottom:1px solid #333; min-width:80px;">&nbsp;</span>
+                de
+                <span style="display:inline-block; border-bottom:1px solid #333; min-width:50px;">&nbsp;</span>
+            </div>
+        </div>
+    </div>
+
     <!-- PIE DEL DOCUMENTO -->
     <div style="padding:10px 20px; font-size:0.7rem; color:#666; text-align:right; border-top:1px solid #ccc;">
         Secretaría de Medio Ambiente, Desarrollo Sustentable y Ordenamiento Territorial — Archivos Verdes
