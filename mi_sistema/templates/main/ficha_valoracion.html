@@ -915,19 +915,29 @@
             <div style="display:grid; grid-template-columns:1fr 1fr; gap:40px; margin-bottom:8px;">
 
                 <div style="text-align:center;">
-                    <div class="ficha-campo-label" style="margin-bottom:8px;">Titular del Área Generadora</div>
-                    <div style="border-bottom:1px solid #333; margin:0 20px 6px; height:48px;"></div>
-                    <div style="border-bottom:1px solid #333; margin:0 20px 6px; height:24px;"></div>
-                    <div style="border-bottom:1px solid #333; margin:0 20px 6px; height:24px;"></div>
-                    <div style="font-size:0.68rem; color:#555; margin-top:4px;">Nombre, cargo y firma</div>
+                    <div class="ficha-campo-label" style="margin-bottom:16px;">Titular del Área Generadora</div>
+                    {% if master.guia_vinculo and master.guia_vinculo.funcionario %}
+                    <div style="font-size:0.8rem; font-weight:700; margin-bottom:4px;">
+                        {{ master.guia_vinculo.funcionario.nombre_funcionario }}
+                    </div>
+                    {% endif %}
+                    <div style="border-bottom:1px solid #333; margin:20px 20px 6px;"></div>
+                    <div style="font-size:0.72rem; color:#333;">
+                        {{ master.guia_vinculo.funcionario.cargo_funcionario if master.guia_vinculo and master.guia_vinculo.funcionario else '&nbsp;' }}
+                    </div>
                 </div>
 
                 <div style="text-align:center;">
-                    <div class="ficha-campo-label" style="margin-bottom:8px;">Responsable del Archivo de Trámite</div>
-                    <div style="border-bottom:1px solid #333; margin:0 20px 6px; height:48px;"></div>
-                    <div style="border-bottom:1px solid #333; margin:0 20px 6px; height:24px;"></div>
-                    <div style="border-bottom:1px solid #333; margin:0 20px 6px; height:24px;"></div>
-                    <div style="font-size:0.68rem; color:#555; margin-top:4px;">Nombre, cargo y firma</div>
+                    <div class="ficha-campo-label" style="margin-bottom:16px;">Responsable del Archivo de Trámite</div>
+                    {% if master.guia_vinculo and master.guia_vinculo.enlace %}
+                    <div style="font-size:0.8rem; font-weight:700; margin-bottom:4px;">
+                        {{ master.guia_vinculo.enlace.nombre_enlace }}
+                    </div>
+                    {% endif %}
+                    <div style="border-bottom:1px solid #333; margin:20px 20px 6px;"></div>
+                    <div style="font-size:0.72rem; color:#333;">
+                        {{ master.guia_vinculo.enlace.cargo if master.guia_vinculo and master.guia_vinculo.enlace else '&nbsp;' }}
+                    </div>
                 </div>
 
             </div>
