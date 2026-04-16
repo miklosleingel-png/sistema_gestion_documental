@@ -20,6 +20,11 @@ from .models import (
 
 main = Blueprint('main', __name__)
 
+@main.app_context_processor
+def inject_now():
+    from datetime import datetime
+    return {'now': datetime.now}
+
 # -------------------------- 
 # RUTA DE LOGIN (ACCESO) ---
 #---------------------------
