@@ -1,5 +1,57 @@
 {% extends "base.html" %}
 {% block content %}
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/choices.js/public/assets/styles/choices.min.css"/>
+<script src="https://cdn.jsdelivr.net/npm/choices.js/public/assets/scripts/choices.min.js"></script>
+
+<style>
+/* Choices.js — dropdown ancho y legible */
+.choices { width: 100% !important; }
+.choices__inner {
+    min-height: 42px !important;
+    border: 1px solid #ccc !important;
+    border-radius: 6px !important;
+    font-size: 0.85rem !important;
+    padding: 6px 10px !important;
+    background: #fff !important;
+}
+.choices__list--dropdown {
+    z-index: 9999 !important;
+    border: 1px solid var(--guinda) !important;
+    border-radius: 8px !important;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.15) !important;
+    min-width: 100% !important;
+}
+.choices__list--dropdown .choices__item {
+    font-size: 0.82rem !important;
+    padding: 10px 14px !important;
+    white-space: normal !important;
+    line-height: 1.4 !important;
+    border-bottom: 1px solid #f0f0f0 !important;
+}
+.choices__list--dropdown .choices__item--selectable.is-highlighted {
+    background: var(--guinda) !important;
+    color: #fff !important;
+}
+.choices__input {
+    font-size: 0.85rem !important;
+    width: 100% !important;
+    padding: 4px 8px !important;
+}
+/* Mostrar info de la serie seleccionada */
+#info-serie {
+    background: #fdfaf3;
+    border: 1px solid var(--dorado-suave);
+    border-radius: 8px;
+    padding: 10px 14px;
+    font-size: 0.82rem;
+    color: #555;
+    margin-top: 8px;
+    display: none;
+}
+#info-serie strong { color: var(--guinda); }
+</style>
+
 <div class="cap-container">
 
     <div class="cap-header">
@@ -17,9 +69,19 @@
 
             <div class="cap-grid-1">
                 <div class="cap-field">
-                    <label class="cap-label">Clave CGCA</label>
-                    <input type="text" name="clave_cgca" class="cap-input"
-                           placeholder="Ej. 1S.1.2" required autocomplete="off">
+                    <label class="cap-label">Serie Documental (Clave CGCA)</label>
+                    <select name="clave_cgca" id="select-serie" class="cap-select" required>
+                        <option value="">-- Buscar serie por clave o nombre --</option>
+                        {% for s in series %}
+                        <option value="{{ s.clave_cgca }}"
+                                data-nombre="{{ s.nombre_cgca }}">
+                            {{ s.clave_cgca }} — {{ s.nombre_cgca }}
+                        </option>
+                        {% endfor %}
+                    </select>
+                    <div id="info-serie">
+                        Serie seleccionada: <strong id="nombre-serie"></strong>
+                    </div>
                 </div>
             </div>
 
@@ -65,7 +127,7 @@
                 </div>
             </div>
 
-            <div class="cap-grid-3-1">
+            <div class="cap-grid-3">
                 <div class="cap-field">
                     <label class="cap-label">Archivo</label>
                     <select name="id_archivo" class="cap-select" required>
@@ -143,4 +205,31 @@
     </div>
 
 </div>
+
+<script>
+// Inicializar Choices.js en el select de series
+const selectSerie = document.getElementById('select-serie');
+const choices = new Choices(selectSerie, {
+    searchEnabled: true,
+    searchPlaceholderValue: 'Escriba clave o nombre de la serie...',
+    itemSelectText: '',
+    noResultsText: 'No se encontró ninguna serie',
+    noChoicesText: 'No hay series registradas',
+});
+
+// Mostrar nombre de la serie seleccionada
+selectSerie.addEventListener('change', function() {
+    const opt = this.options[this.selectedIndex];
+    const nombre = opt ? opt.getAttribute('data-nombre') : '';
+    const infoDiv = document.getElementById('info-serie');
+    const nombreEl = document.getElementById('nombre-serie');
+    if (this.value && nombre) {
+        nombreEl.textContent = nombre;
+        infoDiv.style.display = 'block';
+    } else {
+        infoDiv.style.display = 'none';
+    }
+});
+</script>
+
 {% endblock %}

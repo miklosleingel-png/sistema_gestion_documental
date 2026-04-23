@@ -103,12 +103,13 @@ def logout():
 @main.route('/cap_expedientes')
 @login_required
 def cap_expedientes():
-    # Agregamos la consulta de archivos para el dropdown del formulario
     archivos = CatArchivo.query.all()
     expedientes = Expediente.query.order_by(Expediente.id_expediente.desc()).all()
+    series = CatClaveCGCA.query.order_by(CatClaveCGCA.clave_cgca.asc()).all()
     return render_template('main/cap_expedientes.html', 
                            expedientes=expedientes, 
-                           archivos=archivos) # <-- Importante
+                           archivos=archivos,
+                           series=series)
 
 @main.route('/guardar_expediente', methods=['POST'])
 @login_required
@@ -144,7 +145,7 @@ def guardar_expediente():
             total_legajos=limpiar_int(request.form.get('total_legajos')),
             id_archivo=limpiar_int(request.form.get('id_archivo')),
             estanteria=request.form.get('estanteria'),
-            cbox=request.form.get('caja')
+            caja=request.form.get('caja')
         )
         db.session.add(nuevo_exp)
         db.session.commit()
