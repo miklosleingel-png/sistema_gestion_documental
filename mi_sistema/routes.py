@@ -378,25 +378,17 @@ def mostrar_catalogos():
 @main.route('/cat_dependencia', methods=['GET', 'POST'])
 @login_required
 def cat_dependencia():
-    mostrar_todas = request.args.get('todas', '0') == '1'
-
     if request.method == 'POST':
         nombre = request.form.get('nombre_dependencia').upper()
         siglas = request.form.get('siglas_dependencia').upper()
-        nueva_dep = CatDependencia(nombre_dependencia=nombre, siglas_dependencia=siglas, vigente=True)
+        nueva_dep = CatDependencia(nombre_dependencia=nombre, siglas_dependencia=siglas)
         db.session.add(nueva_dep)
         db.session.commit()
         flash('Dependencia registrada', 'success')
         return redirect(url_for('main.cat_dependencia'))
-
-    if mostrar_todas:
-        dependencias = CatDependencia.query.order_by(CatDependencia.nombre_dependencia).all()
-    else:
-        dependencias = CatDependencia.query.filter_by(vigente=True).order_by(CatDependencia.nombre_dependencia).all()
-
-    return render_template('main/cat_dependencia.html',
-                           dependencias=dependencias,
-                           mostrar_todas=mostrar_todas)
+    
+    dependencias = CatDependencia.query.all()
+    return render_template('main/cat_dependencia.html', dependencias=dependencias)
 
 # --- RUTA DE EDICIÓN ---
 @main.route('/editar_dependencia/<int:id_dependencia>', methods=['GET', 'POST'])
@@ -406,45 +398,77 @@ def editar_dependencia(id_dependencia):
     if request.method == 'POST':
         registro.nombre_dependencia = request.form.get('nombre_dependencia').upper()
         registro.siglas_dependencia = request.form.get('siglas_dependencia').upper()
-        registro.vigente = request.form.get('vigente') == '1'
         db.session.commit()
         flash('Dependencia actualizada', 'success')
         return redirect(url_for('main.cat_dependencia'))
-    historia = HistoriaInstitucional.query.filter_by(id_dependencia=id_dependencia).order_by(HistoriaInstitucional.fecha_decreto).all()
-    return render_template('main/editar_dependencia.html', registro=registro, historia=historia)
+    return render_template('main/editar_dependencia.html', registro=registro)
 
 # --- RUTA DE ELIMINACIÓN ---
-@main.route('/historia_institucional/<int:id_dependencia>', methods=['POST'])
+@main.route('/historia_institucional', methods=['GET', 'POST'])
 @login_required
-def guardar_historia(id_dependencia):
-    CatDependencia.query.get_or_404(id_dependencia)
-    tipo = request.form.get('tipo')
-    fecha_str = request.form.get('fecha_decreto')
+def historia_institucional():
     from datetime import datetime
-    fecha = datetime.strptime(fecha_str, '%Y-%m-%d').date() if fecha_str else None
-    entrada = HistoriaInstitucional(
-        id_dependencia=id_dependencia,
-        tipo=tipo,
-        fecha_decreto=fecha,
-        tomo=request.form.get('tomo'),
-        numero=request.form.get('numero'),
-        seccion=request.form.get('seccion'),
-        titulo_decreto=request.form.get('titulo_decreto')
-    )
-    db.session.add(entrada)
-    db.session.commit()
-    flash('Registro histórico guardado', 'success')
-    return redirect(url_for('main.editar_dependencia', id_dependencia=id_dependencia))
+
+    if request.method == 'POST':
+        nivel = request.form.get('nivel')  # 'dependencia', 'ua', 'area'
+        fecha_str = request.form.get('fecha_decreto')
+        fecha = datetime.strptime(fecha_str, '%Y-%m-%d').date() if fecha_str else None
+
+        entrada = HistoriaInstitucional(
+            tipo=request.form.get('tipo'),
+            fecha_decreto=fecha,
+            tomo=request.form.get('tomo'),
+            numero=request.form.get('numero'),
+            seccion=request.form.get('seccion'),
+            titulo_decreto=request.form.get('titulo_decreto'),
+            id_dependencia=request.form.get('id_dependencia') or None,
+            id_ua=request.form.get('id_ua') or None,
+            id_area=request.form.get('id_area') or None,
+        )
+        db.session.add(entrada)
+        db.session.commit()
+        flash('Registro histórico guardado', 'success')
+        return redirect(url_for('main.historia_institucional'))
+
+    # Filtros
+    nivel_filter = request.args.get('nivel', 'todos')
+    dep_id = request.args.get('dep_id', type=int)
+    ua_id = request.args.get('ua_id', type=int)
+
+    query = HistoriaInstitucional.query
+    if nivel_filter == 'dependencia':
+        query = query.filter(HistoriaInstitucional.id_dependencia != None)
+    elif nivel_filter == 'ua':
+        query = query.filter(HistoriaInstitucional.id_ua != None)
+    elif nivel_filter == 'area':
+        query = query.filter(HistoriaInstitucional.id_area != None)
+    if dep_id:
+        query = query.filter_by(id_dependencia=dep_id)
+    if ua_id:
+        query = query.filter_by(id_ua=ua_id)
+
+    registros = query.order_by(HistoriaInstitucional.fecha_decreto.desc()).all()
+    dependencias = CatDependencia.query.order_by(CatDependencia.nombre_dependencia).all()
+    unidades = CatUnidadesAdministrativas.query.order_by(CatUnidadesAdministrativas.nombre_ua).all()
+    areas = CatAreasProductoras.query.order_by(CatAreasProductoras.nombre_area).all()
+
+    return render_template('main/historia_institucional.html',
+                           registros=registros,
+                           dependencias=dependencias,
+                           unidades=unidades,
+                           areas=areas,
+                           nivel_filter=nivel_filter,
+                           dep_id=dep_id,
+                           ua_id=ua_id)
 
 @main.route('/eliminar_historia/<int:id_historia>')
 @login_required
 def eliminar_historia(id_historia):
     entrada = HistoriaInstitucional.query.get_or_404(id_historia)
-    id_dep = entrada.id_dependencia
     db.session.delete(entrada)
     db.session.commit()
     flash('Registro eliminado', 'warning')
-    return redirect(url_for('main.editar_dependencia', id_dependencia=id_dep))
+    return redirect(url_for('main.historia_institucional'))
 
 @main.route('/eliminar_dependencia/<int:id_dependencia>')
 @login_required
@@ -483,20 +507,17 @@ def cat_unidades():
         return redirect(url_for('main.cat_unidades', dep_id=id_dep))
     
     # Lógica de filtrado para la tabla
-    mostrar_todas = request.args.get('todas', '0') == '1'
     query = CatUnidadesAdministrativas.query
     if dep_id_filter:
-        query = query.filter_by(id_dependencia=dep_id_filter)
-    if not mostrar_todas:
-        query = query.filter_by(vigente=True)
-    unidades = query.order_by(CatUnidadesAdministrativas.nombre_ua).all()
-
-    dependencias = CatDependencia.query.filter_by(vigente=True).order_by(CatDependencia.nombre_dependencia).all()
-    return render_template('main/cat_unidades.html',
-                           unidades=unidades,
-                           dependencias=dependencias,
-                           dep_id_filter=dep_id_filter,
-                           mostrar_todas=mostrar_todas)
+        unidades = query.filter_by(id_dependencia=dep_id_filter).all()
+    else:
+        unidades = query.all()
+        
+    dependencias = CatDependencia.query.all()
+    return render_template('main/cat_unidades.html', 
+                           unidades=unidades, 
+                           dependencias=dependencias, 
+                           dep_id_filter=dep_id_filter)
 
 # --- EDITAR ---
 @main.route('/editar_ua/<int:id_ua>', methods=['GET', 'POST'])
@@ -507,12 +528,11 @@ def editar_ua(id_ua):
         registro.nombre_ua = request.form.get('nombre_ua').upper()
         registro.siglas_ua = request.form.get('siglas_ua').upper()
         registro.id_dependencia = request.form.get('id_dependencia')
-        registro.vigente = request.form.get('vigente') == '1'
         db.session.commit()
         flash('Unidad actualizada', 'success')
         return redirect(url_for('main.cat_unidades', dep_id=registro.id_dependencia))
-
-    dependencias = CatDependencia.query.order_by(CatDependencia.nombre_dependencia).all()
+    
+    dependencias = CatDependencia.query.all()
     return render_template('main/editar_ua.html', registro=registro, dependencias=dependencias)
 
 # --- ELIMINAR ---
@@ -552,17 +572,11 @@ def cat_areas():
         flash('Área Productora registrada', 'success')
         return redirect(url_for('main.cat_areas', ua_id=id_ua))
 
-    mostrar_todas = request.args.get('todas', '0') == '1'
-    unidades = CatUnidadesAdministrativas.query.filter_by(vigente=True).order_by(CatUnidadesAdministrativas.nombre_ua).all()
+    unidades = CatUnidadesAdministrativas.query.all()
     query = CatAreasProductoras.query
-    if ua_id_filter:
-        query = query.filter_by(id_ua=ua_id_filter)
-    if not mostrar_todas:
-        query = query.filter_by(vigente=True)
-    areas = query.order_by(CatAreasProductoras.nombre_area).all()
-
-    return render_template('main/cat_areas.html', areas=areas, unidades=unidades,
-                           ua_id_filter=ua_id_filter, mostrar_todas=mostrar_todas)
+    areas = query.filter_by(id_ua=ua_id_filter).all() if ua_id_filter else query.all()
+    
+    return render_template('main/cat_areas.html', areas=areas, unidades=unidades, ua_id_filter=ua_id_filter)
 
 # --- EDITAR ---
 @main.route('/editar_area/<int:id_area>', methods=['GET', 'POST'])
@@ -573,11 +587,10 @@ def editar_area(id_area):
         registro.nombre_area = request.form.get('nombre_area').upper()
         registro.siglas_area = request.form.get('siglas_area').upper()
         registro.id_ua = request.form.get('id_ua')
-        registro.vigente = request.form.get('vigente') == '1'
-
+        
         ua_parent = CatUnidadesAdministrativas.query.get(registro.id_ua)
         registro.id_dependencia = ua_parent.id_dependencia
-
+        
         db.session.commit()
         flash('Área actualizada', 'success')
         return redirect(url_for('main.cat_areas', ua_id=registro.id_ua))

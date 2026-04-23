@@ -49,8 +49,24 @@
         </form>
     </div>
 
-    <!-- Historia Institucional -->
-    <div class="cap-card" style="margin-top:20px;">
+    <!-- Link a Historia Institucional -->
+    <div class="cap-card" style="margin-top:20px; background:#f8f4ec; border:1px solid var(--dorado-suave);">
+        <div style="display:flex; align-items:center; justify-content:space-between; padding:4px 0;">
+            <div>
+                <div class="cap-legend" style="margin-bottom:4px;">Historia Institucional</div>
+                <p style="margin:0; font-size:0.8rem; color:#666;">
+                    Registre los decretos del Periódico Oficial relacionados con esta dependencia.
+                </p>
+            </div>
+            <a href="{{ url_for('main.historia_institucional', nivel='dependencia') }}"
+               class="cap-btn-add" style="white-space:nowrap; padding:8px 16px;">
+                Ver / Registrar Historia
+            </a>
+        </div>
+    </div>
+
+    <!-- Historia Institucional OCULTA (reemplazada por módulo independiente) -->
+    <div class="cap-card" style="margin-top:20px; display:none;">
         <div class="cap-legend">Historia Institucional</div>
         <p style="font-size:0.8rem; color:#666; margin-bottom:14px;">
             Registre los decretos de creación o supresión de esta dependencia tal como aparecen en el Periódico Oficial del Estado.

@@ -72,11 +72,16 @@ class CatDependencia(db.Model):
     def __repr__(self):
         return f'<Dependencia {self.siglas_dependencia}>'
 
+
 class HistoriaInstitucional(db.Model):
     __tablename__ = 'historia_institucional'
     id_historia = db.Column(db.Integer, primary_key=True)
-    id_dependencia = db.Column(db.Integer, db.ForeignKey('cat_dependencia.id_dependencia'), nullable=False)
-    tipo = db.Column(db.String(20), nullable=False)  # CREACION o SUPRESION
+    # Vínculos opcionales — solo uno activo por registro
+    id_dependencia = db.Column(db.Integer, db.ForeignKey('cat_dependencia.id_dependencia'), nullable=True)
+    id_ua = db.Column(db.Integer, db.ForeignKey('cat_unidades_administrativas.id_ua'), nullable=True)
+    id_area = db.Column(db.Integer, db.ForeignKey('cat_areas_productoras.id_area'), nullable=True)
+    # Tipo: CREACION, MODIFICACION o SUPRESION
+    tipo = db.Column(db.String(20), nullable=False)
     fecha_decreto = db.Column(db.Date, nullable=True)
     tomo = db.Column(db.String(50), nullable=True)
     numero = db.Column(db.String(50), nullable=True)
@@ -84,9 +89,11 @@ class HistoriaInstitucional(db.Model):
     titulo_decreto = db.Column(db.Text, nullable=True)
 
     dependencia = db.relationship('CatDependencia', backref=db.backref('historia', lazy=True))
+    unidad = db.relationship('CatUnidadesAdministrativas', backref=db.backref('historia', lazy=True))
+    area = db.relationship('CatAreasProductoras', backref=db.backref('historia', lazy=True))
 
     def __repr__(self):
-        return f'<Historia {self.tipo} {self.id_dependencia}>'
+        return f'<Historia {self.tipo}>'
 
 class CatUnidadesAdministrativas(db.Model):
     __tablename__ = 'cat_unidades_administrativas'

@@ -1,0 +1,256 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="cap-container">
+
+    <div class="cap-header">
+        <div>
+            <h2 class="cap-title">Historia Institucional</h2>
+            <p class="cap-subtitle">Registro de decretos publicados en el Periódico Oficial del Estado</p>
+        </div>
+        <a href="{{ url_for('main.mostrar_catalogos') }}" class="cap-btn-menu">← Catálogos</a>
+    </div>
+
+    <!-- Formulario de captura -->
+    <div class="cap-card">
+        <div class="cap-legend">Nuevo Decreto / Registro Histórico</div>
+        <form action="{{ url_for('main.historia_institucional') }}" method="POST">
+
+            <!-- Nivel y tipo -->
+            <div class="cap-grid-2">
+                <div class="cap-field">
+                    <label class="cap-label">Nivel Institucional</label>
+                    <select name="nivel" id="sel-nivel" class="cap-select" onchange="mostrarNivel()" required>
+                        <option value="">-- Seleccionar nivel --</option>
+                        <option value="dependencia">Dependencia</option>
+                        <option value="ua">Unidad Administrativa</option>
+                        <option value="area">Área Productora</option>
+                    </select>
+                </div>
+                <div class="cap-field">
+                    <label class="cap-label">Tipo de Decreto</label>
+                    <select name="tipo" class="cap-select" required>
+                        <option value="CREACION">Creación</option>
+                        <option value="MODIFICACION">Modificación / Cambio de Nombre</option>
+                        <option value="SUPRESION">Supresión</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Selects de nivel — se muestran según selección -->
+            <div id="bloque-dependencia" style="display:none;">
+                <div class="cap-grid-1">
+                    <div class="cap-field">
+                        <label class="cap-label">Dependencia</label>
+                        <select name="id_dependencia" id="sel-dep" class="cap-select" onchange="filtrarUAs()">
+                            <option value="">-- Seleccionar dependencia --</option>
+                            {% for dep in dependencias %}
+                            <option value="{{ dep.id_dependencia }}">{{ dep.siglas_dependencia }} — {{ dep.nombre_dependencia }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <div id="bloque-ua" style="display:none;">
+                <div class="cap-grid-2">
+                    <div class="cap-field">
+                        <label class="cap-label">Dependencia</label>
+                        <select id="sel-dep-ua" class="cap-select" onchange="filtrarUAsForm()">
+                            <option value="">-- Seleccionar dependencia --</option>
+                            {% for dep in dependencias %}
+                            <option value="{{ dep.id_dependencia }}">{{ dep.siglas_dependencia }} — {{ dep.nombre_dependencia }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="cap-field">
+                        <label class="cap-label">Unidad Administrativa</label>
+                        <select name="id_ua" id="sel-ua" class="cap-select">
+                            <option value="">-- Primero seleccione dependencia --</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <div id="bloque-area" style="display:none;">
+                <div class="cap-grid-3">
+                    <div class="cap-field">
+                        <label class="cap-label">Dependencia</label>
+                        <select id="sel-dep-area" class="cap-select" onchange="filtrarUAsArea()">
+                            <option value="">-- Seleccionar --</option>
+                            {% for dep in dependencias %}
+                            <option value="{{ dep.id_dependencia }}">{{ dep.siglas_dependencia }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="cap-field">
+                        <label class="cap-label">Unidad Administrativa</label>
+                        <select id="sel-ua-area" class="cap-select" onchange="filtrarAreasForm()">
+                            <option value="">-- Primero dependencia --</option>
+                        </select>
+                    </div>
+                    <div class="cap-field">
+                        <label class="cap-label">Área Productora</label>
+                        <select name="id_area" id="sel-area" class="cap-select">
+                            <option value="">-- Primero UA --</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Datos del decreto -->
+            <div class="cap-grid-2" style="margin-top:8px;">
+                <div class="cap-field">
+                    <label class="cap-label">Fecha de Publicación en el POE</label>
+                    <input type="date" name="fecha_decreto" class="cap-input" required>
+                </div>
+                <div class="cap-field">
+                    <label class="cap-label">Número del Periódico</label>
+                    <input type="text" name="numero" class="cap-input" placeholder="Ej. 15">
+                </div>
+            </div>
+
+            <div class="cap-grid-3">
+                <div class="cap-field">
+                    <label class="cap-label">Tomo</label>
+                    <input type="text" name="tomo" class="cap-input" placeholder="Ej. CDXXX">
+                </div>
+                <div class="cap-field" style="grid-column:span 2;">
+                    <label class="cap-label">Sección</label>
+                    <input type="text" name="seccion" class="cap-input" placeholder="Ej. Primera Sección">
+                </div>
+            </div>
+
+            <div class="cap-grid-1">
+                <div class="cap-field">
+                    <label class="cap-label">Título del Decreto</label>
+                    <textarea name="titulo_decreto" class="cap-textarea" rows="2"
+                              placeholder="Ej. DECRETO mediante el cual se modifica la denominación de..."></textarea>
+                </div>
+            </div>
+
+            <div class="cap-actions">
+                <button type="submit" class="cap-btn-save">Guardar Registro Histórico</button>
+            </div>
+        </form>
+    </div>
+
+    <!-- Filtros de consulta -->
+    <div class="cap-card" style="padding:14px 20px;">
+        <div style="display:flex; align-items:center; gap:12px; flex-wrap:wrap;">
+            <label class="cap-label" style="margin:0;">Filtrar por nivel:</label>
+            {% for val, label in [('todos','Todos'), ('dependencia','Dependencias'), ('ua','Unidades Adm.'), ('area','Áreas Productoras')] %}
+            <a href="{{ url_for('main.historia_institucional', nivel=val) }}"
+               class="{{ 'cap-btn-save' if nivel_filter == val else 'cap-btn-cancel' }}"
+               style="padding:5px 12px; font-size:0.78rem; text-decoration:none;">{{ label }}</a>
+            {% endfor %}
+        </div>
+    </div>
+
+    <hr class="cap-separator">
+    <h3 class="cap-table-title">Registros Históricos</h3>
+    <div class="cap-table-wrap">
+        <table class="cap-table">
+            <thead>
+                <tr>
+                    <th style="width:12%;">Tipo</th>
+                    <th style="width:20%;">Entidad</th>
+                    <th style="width:12%;">Fecha POE</th>
+                    <th style="width:8%;">Tomo</th>
+                    <th style="width:8%;">Núm.</th>
+                    <th style="width:12%;">Sección</th>
+                    <th>Título del Decreto</th>
+                    <th style="width:8%;">Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for h in registros %}
+                <tr>
+                    <td>
+                        {% set colores = {'CREACION': '#2C5F2D', 'MODIFICACION': '#B08A4A', 'SUPRESION': '#8B0000'} %}
+                        <span class="badge-doc"
+                              style="background:{{ colores.get(h.tipo, '#666') }}; color:#fff; border-color:{{ colores.get(h.tipo, '#666') }}; font-size:0.65rem;">
+                            {{ h.tipo }}
+                        </span>
+                    </td>
+                    <td style="font-size:0.78rem;">
+                        {% if h.dependencia %}
+                            <span class="td-clave">DEP</span> {{ h.dependencia.siglas_dependencia }}<br>
+                            <span class="td-muted">{{ h.dependencia.nombre_dependencia | truncate(35) }}</span>
+                        {% elif h.unidad %}
+                            <span class="td-clave">UA</span> {{ h.unidad.siglas_ua }}<br>
+                            <span class="td-muted">{{ h.unidad.nombre_ua | truncate(35) }}</span>
+                        {% elif h.area %}
+                            <span class="td-clave">AP</span> {{ h.area.siglas_area }}<br>
+                            <span class="td-muted">{{ h.area.nombre_area | truncate(35) }}</span>
+                        {% endif %}
+                    </td>
+                    <td>{{ h.fecha_decreto.strftime('%d/%m/%Y') if h.fecha_decreto else '—' }}</td>
+                    <td>{{ h.tomo or '—' }}</td>
+                    <td>{{ h.numero or '—' }}</td>
+                    <td style="font-size:0.75rem;">{{ h.seccion or '—' }}</td>
+                    <td style="font-size:0.75rem;">{{ h.titulo_decreto or '—' }}</td>
+                    <td>
+                        <a href="{{ url_for('main.eliminar_historia', id_historia=h.id_historia) }}"
+                           class="btn-tbl-del"
+                           onclick="return confirm('¿Eliminar este registro?')">Eliminar</a>
+                    </td>
+                </tr>
+                {% else %}
+                <tr>
+                    <td colspan="8" class="td-empty">No hay registros históricos.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+</div>
+
+<script>
+const UNIDADES_H = [
+    {% for ua in unidades %}
+    { id: {{ ua.id_ua }}, dep: {{ ua.id_dependencia }}, texto: "{{ ua.siglas_ua }} — {{ ua.nombre_ua }}" }{% if not loop.last %},{% endif %}
+    {% endfor %}
+];
+const AREAS_H = [
+    {% for area in areas %}
+    { id: {{ area.id_area }}, ua: {{ area.id_ua }}, texto: "{{ area.siglas_area }} — {{ area.nombre_area }}" }{% if not loop.last %},{% endif %}
+    {% endfor %}
+];
+
+function mostrarNivel() {
+    const nivel = document.getElementById('sel-nivel').value;
+    document.getElementById('bloque-dependencia').style.display = nivel === 'dependencia' ? 'block' : 'none';
+    document.getElementById('bloque-ua').style.display = nivel === 'ua' ? 'block' : 'none';
+    document.getElementById('bloque-area').style.display = nivel === 'area' ? 'block' : 'none';
+}
+
+function filtrarUAsForm() {
+    const depId = parseInt(document.getElementById('sel-dep-ua').value);
+    const sel = document.getElementById('sel-ua');
+    sel.innerHTML = '<option value="">-- Seleccionar UA --</option>';
+    UNIDADES_H.filter(u => u.dep === depId).forEach(u => {
+        sel.innerHTML += `<option value="${u.id}">${u.texto}</option>`;
+    });
+}
+
+function filtrarUAsArea() {
+    const depId = parseInt(document.getElementById('sel-dep-area').value);
+    const sel = document.getElementById('sel-ua-area');
+    sel.innerHTML = '<option value="">-- Seleccionar UA --</option>';
+    UNIDADES_H.filter(u => u.dep === depId).forEach(u => {
+        sel.innerHTML += `<option value="${u.id}">${u.texto}</option>`;
+    });
+    document.getElementById('sel-area').innerHTML = '<option value="">-- Primero UA --</option>';
+}
+
+function filtrarAreasForm() {
+    const uaId = parseInt(document.getElementById('sel-ua-area').value);
+    const sel = document.getElementById('sel-area');
+    sel.innerHTML = '<option value="">-- Seleccionar Área --</option>';
+    AREAS_H.filter(a => a.ua === uaId).forEach(a => {
+        sel.innerHTML += `<option value="${a.id}">${a.texto}</option>`;
+    });
+}
+</script>
+{% endblock %}
