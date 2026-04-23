@@ -67,9 +67,26 @@ class CatDependencia(db.Model):
     id_dependencia = db.Column(db.Integer, primary_key=True)
     nombre_dependencia = db.Column(db.String(255), nullable=False)
     siglas_dependencia = db.Column(db.String(50), nullable=False)
+    vigente = db.Column(db.Boolean, default=True, nullable=False, server_default='true')
 
     def __repr__(self):
         return f'<Dependencia {self.siglas_dependencia}>'
+
+class HistoriaInstitucional(db.Model):
+    __tablename__ = 'historia_institucional'
+    id_historia = db.Column(db.Integer, primary_key=True)
+    id_dependencia = db.Column(db.Integer, db.ForeignKey('cat_dependencia.id_dependencia'), nullable=False)
+    tipo = db.Column(db.String(20), nullable=False)  # CREACION o SUPRESION
+    fecha_decreto = db.Column(db.Date, nullable=True)
+    tomo = db.Column(db.String(50), nullable=True)
+    numero = db.Column(db.String(50), nullable=True)
+    seccion = db.Column(db.String(100), nullable=True)
+    titulo_decreto = db.Column(db.Text, nullable=True)
+
+    dependencia = db.relationship('CatDependencia', backref=db.backref('historia', lazy=True))
+
+    def __repr__(self):
+        return f'<Historia {self.tipo} {self.id_dependencia}>'
 
 class CatUnidadesAdministrativas(db.Model):
     __tablename__ = 'cat_unidades_administrativas'
@@ -77,6 +94,7 @@ class CatUnidadesAdministrativas(db.Model):
     nombre_ua = db.Column(db.String(255), nullable=False)
     siglas_ua = db.Column(db.String(50), nullable=False)
     id_dependencia = db.Column(db.Integer, db.ForeignKey('cat_dependencia.id_dependencia'), nullable=False)
+    vigente = db.Column(db.Boolean, default=True, nullable=False, server_default='true')
 
     # Relación para obtener datos de la dependencia padre
     dependencia = db.relationship('CatDependencia', backref=db.backref('unidades', lazy=True))
@@ -88,6 +106,7 @@ class CatAreasProductoras(db.Model):
     siglas_area = db.Column(db.String(50), nullable=False)
     id_ua = db.Column(db.Integer, db.ForeignKey('cat_unidades_administrativas.id_ua'), nullable=False)
     id_dependencia = db.Column(db.Integer, db.ForeignKey('cat_dependencia.id_dependencia'), nullable=False)
+    vigente = db.Column(db.Boolean, default=True, nullable=False, server_default='true')
 
     # Relaciones para navegar la jerarquía
     unidad = db.relationship('CatUnidadesAdministrativas', backref=db.backref('areas', lazy=True))

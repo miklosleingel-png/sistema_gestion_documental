@@ -44,22 +44,25 @@
     </div>
 
     <div class="cap-card" style="padding:14px 20px;">
-        <div style="display:flex; align-items:center; gap:12px;">
+        <div style="display:flex; align-items:center; gap:12px; flex-wrap:wrap;">
             <label class="cap-label" style="margin:0; white-space:nowrap;">Filtrar por Dependencia:</label>
             <select onchange="location = this.value;" class="cap-select" style="max-width:350px;">
-                <option value="{{ url_for('main.cat_unidades') }}">--- Todas ---</option>
+                <option value="{{ url_for('main.cat_unidades', todas='1' if mostrar_todas else '0') }}">--- Todas las Dependencias ---</option>
                 {% for dep in dependencias %}
-                <option value="{{ url_for('main.cat_unidades', dep_id=dep.id_dependencia) }}"
+                <option value="{{ url_for('main.cat_unidades', dep_id=dep.id_dependencia, todas='1' if mostrar_todas else '0') }}"
                     {% if dep_id_filter == dep.id_dependencia %}selected{% endif %}>
                     {{ dep.nombre_dependencia }} ({{ dep.siglas_dependencia }})
                 </option>
                 {% endfor %}
             </select>
+            <a href="{{ url_for('main.cat_unidades', dep_id=dep_id_filter or '', todas='0' if mostrar_todas else '1') }}"
+               class="cap-btn-cancel" style="font-size:0.78rem; padding:6px 12px; white-space:nowrap;">
+                {{ 'Ver solo vigentes' if mostrar_todas else 'Ver todas' }}
+            </a>
         </div>
     </div>
 
     <hr class="cap-separator">
-
     <h3 class="cap-table-title">Unidades Registradas</h3>
     <div class="cap-table-wrap">
         <table class="cap-table">
@@ -68,33 +71,41 @@
                     <th style="width:15%;">Dependencia</th>
                     <th style="width:15%;">Siglas UA</th>
                     <th>Nombre</th>
+                    <th style="width:10%; text-align:center;">Vigente</th>
                     <th style="width:15%;">Acciones</th>
                 </tr>
             </thead>
             <tbody>
                 {% for ua in unidades %}
-                <tr>
+                <tr style="{{ 'opacity:0.5;' if not ua.vigente else '' }}">
                     <td><span class="td-muted">{{ ua.dependencia.siglas_dependencia }}</span></td>
                     <td><span class="td-clave">{{ ua.siglas_ua }}</span></td>
-                    <td>{{ ua.nombre_ua }}</td>
+                    <td>
+                        {{ ua.nombre_ua }}
+                        {% if not ua.vigente %}
+                        <span class="badge-doc" style="background:#999; color:#fff; border-color:#999; font-size:0.65rem;">INACTIVA</span>
+                        {% endif %}
+                    </td>
+                    <td style="text-align:center;">
+                        {% if ua.vigente %}
+                        <span style="color:#2C5F2D; font-size:1.1rem;">✔</span>
+                        {% else %}
+                        <span style="color:#dc3545; font-size:1.1rem;">✘</span>
+                        {% endif %}
+                    </td>
                     <td>
                         <div class="cap-table-actions">
-                            <a href="{{ url_for('main.editar_ua', id_ua=ua.id_ua) }}"
-                               class="btn-tbl-edit">Editar</a>
-                            <a href="{{ url_for('main.eliminar_ua', id_ua=ua.id_ua) }}"
-                               class="btn-tbl-del"
+                            <a href="{{ url_for('main.editar_ua', id_ua=ua.id_ua) }}" class="btn-tbl-edit">Editar</a>
+                            <a href="{{ url_for('main.eliminar_ua', id_ua=ua.id_ua) }}" class="btn-tbl-del"
                                onclick="return confirm('¿Eliminar esta unidad?')">Eliminar</a>
                         </div>
                     </td>
                 </tr>
                 {% else %}
-                <tr>
-                    <td colspan="4" class="td-empty">No hay unidades registradas.</td>
-                </tr>
+                <tr><td colspan="5" class="td-empty">No hay unidades registradas.</td></tr>
                 {% endfor %}
             </tbody>
         </table>
     </div>
-
 </div>
 {% endblock %}

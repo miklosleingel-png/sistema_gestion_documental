@@ -36,21 +36,41 @@
 
     <hr class="cap-separator">
 
-    <h3 class="cap-table-title">Dependencias Registradas</h3>
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+        <h3 class="cap-table-title" style="margin:0;">Dependencias Registradas</h3>
+        <a href="{{ url_for('main.cat_dependencia', todas='0' if mostrar_todas else '1') }}"
+           class="cap-btn-cancel" style="font-size:0.78rem; padding:6px 12px;">
+            {{ 'Ver solo vigentes' if mostrar_todas else 'Ver todas (incluye inactivas)' }}
+        </a>
+    </div>
+
     <div class="cap-table-wrap">
         <table class="cap-table">
             <thead>
                 <tr>
-                    <th style="width:20%;">Siglas</th>
+                    <th style="width:15%;">Siglas</th>
                     <th>Nombre Completo</th>
+                    <th style="width:10%; text-align:center;">Vigente</th>
                     <th style="width:15%;">Acciones</th>
                 </tr>
             </thead>
             <tbody>
                 {% for dep in dependencias %}
-                <tr>
+                <tr style="{{ 'opacity:0.5;' if not dep.vigente else '' }}">
                     <td><span class="td-clave">{{ dep.siglas_dependencia }}</span></td>
-                    <td>{{ dep.nombre_dependencia }}</td>
+                    <td>
+                        {{ dep.nombre_dependencia }}
+                        {% if not dep.vigente %}
+                        <span class="badge-doc" style="background:#999; color:#fff; border-color:#999; font-size:0.65rem;">INACTIVA</span>
+                        {% endif %}
+                    </td>
+                    <td style="text-align:center;">
+                        {% if dep.vigente %}
+                        <span style="color:#2C5F2D; font-size:1.1rem;">✔</span>
+                        {% else %}
+                        <span style="color:#dc3545; font-size:1.1rem;">✘</span>
+                        {% endif %}
+                    </td>
                     <td>
                         <div class="cap-table-actions">
                             <a href="{{ url_for('main.editar_dependencia', id_dependencia=dep.id_dependencia) }}"
@@ -63,7 +83,7 @@
                 </tr>
                 {% else %}
                 <tr>
-                    <td colspan="3" class="td-empty">No hay dependencias registradas.</td>
+                    <td colspan="4" class="td-empty">No hay dependencias registradas.</td>
                 </tr>
                 {% endfor %}
             </tbody>
