@@ -28,21 +28,33 @@
                            placeholder="Ej. Director de Área" required>
                 </div>
             </div>
-            <div class="cap-grid-2">
+            <div class="cap-grid-3">
                 <div class="cap-field">
-                    <label class="cap-label">Área de Adscripción</label>
-                    <select name="id_area" class="cap-select" required>
-                        <option value="">-- Seleccionar Área --</option>
-                        {% for area in areas %}
-                        <option value="{{ area.id_area }}">
-                            {{ area.siglas_area }} — {{ area.unidad.siglas_ua }} ({{ area.dependencia.siglas_dependencia }})
-                        </option>
+                    <label class="cap-label">Dependencia</label>
+                    <select id="form-dep" class="cap-select" onchange="filtrarUAs()">
+                        <option value="">-- Seleccionar --</option>
+                        {% for dep in dependencias %}
+                        <option value="{{ dep.id_dependencia }}">{{ dep.siglas_dependencia }} — {{ dep.nombre_dependencia }}</option>
                         {% endfor %}
                     </select>
                 </div>
                 <div class="cap-field">
+                    <label class="cap-label">Unidad Administrativa</label>
+                    <select id="form-ua" class="cap-select" onchange="filtrarAreas()">
+                        <option value="">-- Primero seleccione dependencia --</option>
+                    </select>
+                </div>
+                <div class="cap-field">
+                    <label class="cap-label">Área de Adscripción</label>
+                    <select name="id_area" id="form-area" class="cap-select" required>
+                        <option value="">-- Primero seleccione UA --</option>
+                    </select>
+                </div>
+            </div>
+            <div class="cap-grid-1">
+                <div class="cap-field">
                     <label class="cap-label">Fecha de Designación</label>
-                    <input type="date" name="fecha_designacion_func" class="cap-input">
+                    <input type="date" name="fecha_designacion_func" class="cap-input" style="max-width:220px;">
                 </div>
             </div>
             <div class="cap-actions">
@@ -51,15 +63,36 @@
         </form>
     </div>
 
+    <!-- Filtros de tabla con cascada -->
     <div class="cap-card" style="padding:14px 20px;">
-        <div style="display:flex; align-items:center; gap:12px;">
-            <label class="cap-label" style="margin:0; white-space:nowrap;">Filtrar por Área:</label>
-            <select onchange="location = this.value;" class="cap-select" style="max-width:400px;">
-                <option value="{{ url_for('main.cat_funcionarios') }}">--- Todos ---</option>
+        <div style="display:flex; align-items:center; gap:12px; flex-wrap:wrap;">
+            <label class="cap-label" style="margin:0; white-space:nowrap;">Filtrar:</label>
+            <select id="filtro-dep" class="cap-select" style="max-width:220px;" onchange="aplicarFiltro()">
+                <option value="">— Todas las dependencias —</option>
+                {% for dep in dependencias %}
+                <option value="{{ dep.id_dependencia }}"
+                    {% if dep_id_filter == dep.id_dependencia %}selected{% endif %}>
+                    {{ dep.siglas_dependencia }}
+                </option>
+                {% endfor %}
+            </select>
+            <select id="filtro-ua" class="cap-select" style="max-width:220px;" onchange="aplicarFiltro()">
+                <option value="">— Todas las UA —</option>
+                {% for ua in unidades %}
+                <option value="{{ ua.id_ua }}"
+                    data-dep="{{ ua.id_dependencia }}"
+                    {% if ua_id_filter == ua.id_ua %}selected{% endif %}>
+                    {{ ua.siglas_ua }}
+                </option>
+                {% endfor %}
+            </select>
+            <select id="filtro-area" class="cap-select" style="max-width:220px;" onchange="aplicarFiltro()">
+                <option value="">— Todas las áreas —</option>
                 {% for area in areas %}
-                <option value="{{ url_for('main.cat_funcionarios', area_id=area.id_area) }}"
+                <option value="{{ area.id_area }}"
+                    data-ua="{{ area.id_ua }}"
                     {% if area_id_filter == area.id_area %}selected{% endif %}>
-                    {{ area.nombre_area }} ({{ area.siglas_area }})
+                    {{ area.siglas_area }} — {{ area.nombre_area }}
                 </option>
                 {% endfor %}
             </select>
@@ -67,7 +100,6 @@
     </div>
 
     <hr class="cap-separator">
-
     <h3 class="cap-table-title">Funcionarios Registrados</h3>
     <div class="cap-table-wrap">
         <table class="cap-table">
@@ -75,7 +107,7 @@
                 <tr>
                     <th>Funcionario</th>
                     <th>Cargo</th>
-                    <th style="width:20%;">Adscripción</th>
+                    <th>Adscripción</th>
                     <th style="width:12%;">Designación</th>
                     <th style="width:12%;">Acciones</th>
                 </tr>
@@ -85,7 +117,11 @@
                 <tr>
                     <td style="font-weight:600; color:var(--guinda);">{{ f.nombre_funcionario }}</td>
                     <td>{{ f.cargo_funcionario }}</td>
-                    <td><span class="td-muted">{{ f.area.siglas_area }} / {{ f.area.unidad.siglas_ua }}</span></td>
+                    <td>
+                        <span class="td-clave">{{ f.area.siglas_area }}</span>
+                        <span class="td-muted">{{ f.area.nombre_area }}</span><br>
+                        <span style="font-size:0.72rem; color:#aaa;">{{ f.area.unidad.siglas_ua }} / {{ f.area.dependencia.siglas_dependencia }}</span>
+                    </td>
                     <td style="text-align:center;">
                         {{ f.fecha_designacion_func.strftime('%d/%m/%Y') if f.fecha_designacion_func else '—' }}
                     </td>
@@ -109,4 +145,76 @@
     </div>
 
 </div>
+
+<script>
+// Datos para cascada en formulario de captura
+const UNIDADES_DATA = [
+    {% for ua in unidades %}
+    { id: {{ ua.id_ua }}, dep: {{ ua.id_dependencia }}, texto: "{{ ua.siglas_ua }} — {{ ua.nombre_ua }}" }{% if not loop.last %},{% endif %}
+    {% endfor %}
+];
+const AREAS_DATA = [
+    {% for area in areas %}
+    { id: {{ area.id_area }}, ua: {{ area.id_ua }}, texto: "{{ area.siglas_area }} — {{ area.nombre_area }}" }{% if not loop.last %},{% endif %}
+    {% endfor %}
+];
+
+function filtrarUAs() {
+    const depId = parseInt(document.getElementById('form-dep').value);
+    const selUA = document.getElementById('form-ua');
+    const selArea = document.getElementById('form-area');
+    selUA.innerHTML = '<option value="">-- Seleccionar UA --</option>';
+    selArea.innerHTML = '<option value="">-- Primero seleccione UA --</option>';
+    UNIDADES_DATA.filter(u => u.dep === depId).forEach(u => {
+        selUA.innerHTML += `<option value="${u.id}">${u.texto}</option>`;
+    });
+}
+
+function filtrarAreas() {
+    const uaId = parseInt(document.getElementById('form-ua').value);
+    const selArea = document.getElementById('form-area');
+    selArea.innerHTML = '<option value="">-- Seleccionar Área --</option>';
+    AREAS_DATA.filter(a => a.ua === uaId).forEach(a => {
+        selArea.innerHTML += `<option value="${a.id}">${a.texto}</option>`;
+    });
+}
+
+// Filtro cascada en tabla
+function aplicarFiltro() {
+    const depId = document.getElementById('filtro-dep').value;
+    const uaId = document.getElementById('filtro-ua').value;
+    const areaId = document.getElementById('filtro-area').value;
+
+    let url = '{{ url_for("main.cat_funcionarios") }}?';
+    if (depId) url += `dep_id=${depId}&`;
+    if (uaId) url += `ua_id=${uaId}&`;
+    if (areaId) url += `area_id=${areaId}&`;
+    window.location = url;
+}
+
+// Al cargar, sincronizar filtros con valores actuales
+document.addEventListener('DOMContentLoaded', function() {
+    const depId = {{ dep_id_filter or 'null' }};
+    const uaId = {{ ua_id_filter or 'null' }};
+
+    if (depId) {
+        // Filtrar UAs en select de filtro
+        const selUA = document.getElementById('filtro-ua');
+        Array.from(selUA.options).forEach(opt => {
+            if (opt.value && parseInt(opt.dataset.dep) !== depId) {
+                opt.style.display = 'none';
+            }
+        });
+    }
+    if (uaId) {
+        const selArea = document.getElementById('filtro-area');
+        Array.from(selArea.options).forEach(opt => {
+            if (opt.value && parseInt(opt.dataset.ua) !== uaId) {
+                opt.style.display = 'none';
+            }
+        });
+    }
+});
+</script>
+
 {% endblock %}

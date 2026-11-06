@@ -22,7 +22,13 @@ const EXTERNAS = [
             <h2 class="cap-title">Editar Procedimiento</h2>
             <p class="cap-subtitle">{{ procedimiento.nombre_procedimiento }}</p>
         </div>
-        <a href="{{ url_for('main.cat_procedimientos') }}" class="cap-btn-menu">← Regresar</a>
+        <div style="display:flex; gap:8px;">
+            <a href="{{ url_for('main.editar_procedimiento', id=procedimiento.id_procedimiento, todas_ua='0' if mostrar_todas_ua else '1') }}"
+               class="cap-btn-cancel" style="font-size:0.78rem;">
+                {{ 'Ver solo UA vigentes' if mostrar_todas_ua else 'Ver todas las UA' }}
+            </a>
+            <a href="{{ url_for('main.cat_procedimientos') }}" class="cap-btn-menu">← Regresar</a>
+        </div>
     </div>
 
     <!-- Nombre -->

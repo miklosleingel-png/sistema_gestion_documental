@@ -39,6 +39,10 @@ function filtrarAreas(selectTipo) {
             <p class="cap-subtitle">Registro de procedimientos y sus actividades vinculadas</p>
         </div>
         <div style="display:flex; gap:8px;">
+            <a href="{{ url_for('main.cat_procedimientos', todas_ua='0' if mostrar_todas_ua else '1') }}"
+               class="cap-btn-cancel" style="font-size:0.78rem;">
+                {{ 'Ver solo UA vigentes' if mostrar_todas_ua else 'Ver todas las UA' }}
+            </a>
             <a href="{{ url_for('main.mostrar_catalogos') }}" class="cap-btn-cancel">← Catálogos</a>
             <a href="{{ url_for('main.dashboard') }}" class="cap-btn-menu">← Menú Principal</a>
         </div>
