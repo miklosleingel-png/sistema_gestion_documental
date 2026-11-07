@@ -23,3 +23,4 @@ migrations/versions/
 
 # Archivos de build
 *.gnumeric
+*.dump
