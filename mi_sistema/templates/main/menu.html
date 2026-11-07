@@ -1,6 +1,45 @@
 {% extends "base.html" %}
 
 {% block content %}
+
+{# ---- Piezas reutilizables del menú ---- #}
+{% macro head(n, title, desc) %}
+<div class="menu-sec-head">
+    <span class="menu-sec-num">{{ n }}</span>
+    <div>
+        <h2 class="menu-sec-title">{{ title }}</h2>
+        <p class="menu-sec-desc">{{ desc }}</p>
+    </div>
+</div>
+{% endmacro %}
+
+{% macro card(endpoint, icon, title, desc='', accent='') %}
+<a href="{{ url_for(endpoint) }}" class="menu-card {{ accent }}">
+    <div class="menu-card-icon">
+        <img src="{{ url_for('static', filename=icon) }}" alt="{{ title }}">
+    </div>
+    <h3 class="menu-card-title">{{ title }}</h3>
+    {% if desc %}<p class="menu-card-desc">{{ desc }}</p>{% endif %}
+</a>
+{% endmacro %}
+
+<style>
+    .menu-sec-head {
+        display: flex; align-items: center; gap: 16px;
+        margin-top: 36px; padding-bottom: 12px;
+        border-bottom: 2px solid var(--dorado-suave, #E6D3A3);
+    }
+    .menu-sec-num {
+        flex: none; width: 40px; height: 40px; border-radius: 50%;
+        background: var(--guinda, #6A1B32); color: #fff; font-weight: 800; font-size: 1.1rem;
+        display: flex; align-items: center; justify-content: center;
+    }
+    .menu-sec-title { margin: 0; font-size: 1.1rem; font-weight: 700; color: var(--guinda, #6A1B32); line-height: 1.2; }
+    .menu-sec-desc  { margin: 3px 0 0; font-size: 0.82rem; color: #777; }
+    .menu-sec-info .menu-sec-num { background: #8a8a8a; }
+    .menu-sec-info .menu-sec-title { color: #555; }
+</style>
+
 <div class="page-container">
 
     <div class="page-header">
@@ -8,144 +47,78 @@
         <a href="{{ url_for('main.logout') }}" class="btn-logout">Cerrar sesión</a>
     </div>
 
-    <!-- GESTIÓN DE EXPEDIENTES -->
+    <!-- 1. ANÁLISIS DE PUESTOS -->
     <section class="menu-section">
-        <h2 class="menu-subtitle">Gestión de Expedientes</h2>
+        {{ head(1, 'Análisis de puestos', 'Estructura orgánica y personas responsables de cada área') }}
         <div class="cards-grid">
-
-            <a href="{{ url_for('main.cap_expedientes') }}" class="menu-card">
-                <div class="menu-card-icon">
-                    <img src="{{ url_for('static', filename='01icon_expedientes.png') }}" alt="Expedientes">
-                </div>
-                <h3 class="menu-card-title">Captura de Expedientes</h3>
-            </a>
-
-            <a href="{{ url_for('main.cat_cgca') }}" class="menu-card">
-                <div class="menu-card-icon">
-                    <img src="{{ url_for('static', filename='08icon_cgca.png') }}" alt="Series">
-                </div>
-                <h3 class="menu-card-title">Series Documentales</h3>
-            </a>
-
-            <a href="{{ url_for('main.cat_guia') }}" class="menu-card menu-card-accent-guinda">
-                <div class="menu-card-icon">
-                    <img src="{{ url_for('static', filename='12icon_inventario.png') }}" alt="Guía de Archivo">
-                </div>
-                <h3 class="menu-card-title">Guía de Archivo Documental</h3>
-                <p class="menu-card-desc">Ubicación Física y Responsables</p>
-            </a>
-
-            <a href="{{ url_for('main.cat_disposicion') }}" class="menu-card menu-card-accent-dorado">
-                <div class="menu-card-icon">
-                    <img src="{{ url_for('static', filename='09icon_cdd.png') }}" alt="CDD">
-                </div>
-                <h3 class="menu-card-title">Valoración Documental (CDD)</h3>
-                <p class="menu-card-desc">Configurar Vigencias y Valores</p>
-            </a>
-
-            <a href="{{ url_for('main.condiciones_acceso') }}" class="menu-card">
-                <div class="menu-card-icon">
-                    <img src="{{ url_for('static', filename='12icon_inventario.png') }}" alt="Condiciones de Acceso">
-                </div>
-                <h3 class="menu-card-title">Condiciones de Acceso</h3>
-            </a>
-
-            <a href="{{ url_for('main.auditoria_archivo') }}" class="menu-card">
-                <div class="menu-card-icon">
-                    <img src="{{ url_for('static', filename='08icon_cgca.png') }}" alt="Auditoría">
-                </div>
-                <h3 class="menu-card-title">Auditoría y Vinculación Normativa</h3>
-            </a>
-
+            {{ card('main.cat_dependencia', '02icon_dependencias.png', 'Dependencias', 'Organismos principales') }}
+            {{ card('main.cat_unidades', '14icon_uadministrativas.png.png', 'Unidades Administrativas', 'Direcciones y coordinaciones') }}
+            {{ card('main.cat_areas', '03icon_areas.png', 'Áreas Productoras', 'Departamentos y oficinas') }}
+            {{ card('main.cat_funcionarios', '07icon_funcionarios.png', 'Funcionarios Responsables', 'Titulares y cargos') }}
+            {{ card('main.historia_institucional', 'icon_licencia.png', 'Historia Institucional', 'Decretos del Periódico Oficial') }}
         </div>
     </section>
 
-    <!-- INSTRUMENTOS DE CONTROL Y CONSULTA -->
+    <!-- 2. ANÁLISIS DE FUNCIONES -->
     <section class="menu-section">
-        <h2 class="menu-subtitle">Instrumentos de Control y Consulta</h2>
+        {{ head(2, 'Análisis de funciones', 'Qué debe hacer cada área y con qué sustento') }}
         <div class="cards-grid">
-
-            <a href="{{ url_for('main.inventario_general') }}" class="menu-card menu-card-accent-dorado-bottom">
-                <div class="menu-card-icon">
-                    <img src="{{ url_for('static', filename='01icon_expedientes.png') }}" alt="Inventario">
-                </div>
-                <h3 class="menu-card-title">Inventario General</h3>
-                <p class="menu-card-desc">Sumatoria y Fechas Extremas</p>
-            </a>
-
-            <a href="{{ url_for('main.ver_cdd') }}" class="menu-card menu-card-accent-guinda-bottom">
-                <div class="menu-card-icon">
-                    <img src="{{ url_for('static', filename='09icon_cdd.png') }}" alt="CADIDO">
-                </div>
-                <h3 class="menu-card-title">Catálogo de Disposición (CADIDO)</h3>
-                <p class="menu-card-desc">Vista de Valoración y Vigencias</p>
-            </a>
-
-            <a href="{{ url_for('main.cgca') }}" class="menu-card">
-                <div class="menu-card-icon">
-                    <img src="{{ url_for('static', filename='08icon_cgca.png') }}" alt="CGCA">
-                </div>
-                <h3 class="menu-card-title">Cuadro General (CGCA)</h3>
-            </a>
-
-            <a href="{{ url_for('main.guia_archivos') }}" class="menu-card menu-card-accent-dorado-bottom">
-                <div class="menu-card-icon">
-                    <img src="{{ url_for('static', filename='12icon_inventario.png') }}" alt="Guía de Archivos">
-                </div>
-                <h3 class="menu-card-title">Guía de Archivos</h3>
-                <p class="menu-card-desc">Instrumento de consulta imprimible</p>
-            </a>
-
-            <a href="{{ url_for('main.ficha_valoracion') }}" class="menu-card">
-                <div class="menu-card-icon">
-                    <img src="{{ url_for('static', filename='09icon_cdd.png') }}" alt="Ficha Valoración">
-                </div>
-                <h3 class="menu-card-title">Ficha de Valoración Documental</h3>
-            </a>
-
+            {{ card('main.cat_funciones', '05icon_funciones.png', 'Funciones Institucionales', 'Atribuciones por área') }}
+            {{ card('main.cat_leyes', 'icon_normativa.png', 'Marco Jurídico', 'Leyes, reglamentos y artículos') }}
+            {{ card('main.auditoria_archivo', '10icon_valoración.png', 'Auditoría y Vinculación Normativa', 'Serie, función, norma y procedimiento') }}
         </div>
     </section>
 
-    <!-- CONFIGURACIÓN DEL SISTEMA -->
+    <!-- 3. ANÁLISIS DE PROCEDIMIENTOS -->
     <section class="menu-section">
-        <h2 class="menu-subtitle">Configuración del Sistema</h2>
+        {{ head(3, 'Análisis de procedimientos', 'Cómo se hace cada trámite, con quién y en cuántos pasos') }}
         <div class="cards-grid">
+            {{ card('main.cat_procedimientos', '06icon_procedimientos.png', 'Procedimientos y Actividades', 'Pasos, responsables y productos') }}
+            {{ card('main.cat_areas_externas', '04icon_externas.png', 'Áreas e Instituciones Externas', 'Intervienen en los procedimientos') }}
+        </div>
+    </section>
 
-            <a href="{{ url_for('main.mostrar_catalogos') }}" class="menu-card">
-                <div class="menu-card-icon">
-                    <img src="{{ url_for('static', filename='03icon_areas.png') }}" alt="Catálogos">
-                </div>
-                <h3 class="menu-card-title">Catálogos Institucionales</h3>
-                <p class="menu-card-desc">Áreas, Unidades y Funcionarios</p>
-            </a>
+    <!-- 4. ANÁLISIS DE DOCUMENTOS -->
+    <section class="menu-section">
+        {{ head(4, 'Análisis de documentos', 'Qué se produce, dónde se guarda y cuánto tiempo se conserva') }}
+        <div class="cards-grid">
+            {{ card('main.cat_cgca', '08icon_cgca.png', 'Series Documentales', 'Cuadro de clasificación') }}
+            {{ card('main.cap_expedientes', '01icon_expedientes.png', 'Captura de Expedientes', 'Registro por serie') }}
+            {{ card('main.cat_disposicion', '09icon_cdd.png', 'Valoración Documental', 'Vigencias, valores y destino final') }}
+            {{ card('main.condiciones_acceso', '12icon_inventario.png', 'Condiciones de Acceso', 'Pública, reservada o confidencial') }}
+            {{ card('main.cat_guia', '13icon_guia.png', 'Guía de Archivo Documental', 'Ubicación física y responsables') }}
+            {{ card('main.cat_archivo', '11icon_inv_area.png', 'Archivos y Ubicaciones', 'Depósitos y sedes') }}
+            {{ card('main.cat_soporte', 'icon_gia.png', 'Soportes Documentales', 'Papel, electrónico, híbrido') }}
+            {{ card('main.enlaces_archivo', 'icon_archivo_tramite.png', 'Enlaces de Archivo', 'Responsables de cada archivo') }}
+        </div>
+    </section>
 
-            <a href="{{ url_for('main.historia_institucional') }}" class="menu-card">
-                <div class="menu-card-icon">
-                    <img src="{{ url_for('static', filename='08icon_cgca.png') }}" alt="Historia">
-                </div>
-                <h3 class="menu-card-title">Historia Institucional</h3>
-                <p class="menu-card-desc">Decretos del Periódico Oficial del Estado</p>
-            </a>
-
+    <!-- 5. INSTRUMENTOS DE ANÁLISIS -->
+    <section class="menu-section">
+        {{ head(5, 'Instrumentos de análisis', 'Documentos imprimibles generados con la información capturada') }}
+        <div class="cards-grid">
+            {{ card('main.cgca', '08icon_cgca.png', 'Cuadro General de Clasificación', 'CGCA', 'menu-card-accent-dorado-bottom') }}
+            {{ card('main.ver_cdd', '09icon_cdd.png', 'Catálogo de Disposición Documental', 'CADIDO', 'menu-card-accent-dorado-bottom') }}
+            {{ card('main.inventario_general', '12icon_inventario.png', 'Inventario General', 'Sumatoria y fechas extremas', 'menu-card-accent-dorado-bottom') }}
+            {{ card('main.guia_archivos', '13icon_guia.png', 'Guía de Archivos', 'Instrumento de consulta', 'menu-card-accent-dorado-bottom') }}
+            {{ card('main.ficha_valoracion', '10icon_valoración.png', 'Ficha de Valoración Documental', 'Una serie completa, lista para imprimir', 'menu-card-accent-dorado-bottom') }}
         </div>
     </section>
 
     <!-- INFORMACIÓN DEL SISTEMA -->
-    <section class="menu-section">
-        <h2 class="menu-subtitle">Información del Sistema</h2>
+    <section class="menu-section menu-sec-info">
+        <div class="menu-sec-head">
+            <span class="menu-sec-num">i</span>
+            <div>
+                <h2 class="menu-sec-title">Información del sistema</h2>
+                <p class="menu-sec-desc">Documentación, licencia y versión</p>
+            </div>
+        </div>
         <div class="cards-grid">
-
-            <a href="{{ url_for('main.documentacion') }}" class="menu-card">
-                <div class="menu-card-icon">
-                    <img src="{{ url_for('static', filename='09icon_cdd.png') }}" alt="Documentación">
-                </div>
-                <h3 class="menu-card-title">Documentación del Sistema</h3>
-                <p class="menu-card-desc">Ficha técnica, manuales y licencia</p>
-            </a>
-
+            {{ card('main.documentacion', 'icon_sgd.png', 'Documentación del Sistema', 'Ficha técnica, manuales y licencia') }}
             <div class="menu-card" style="cursor:default;">
                 <div class="menu-card-icon">
-                    <img src="{{ url_for('static', filename='03icon_areas.png') }}" alt="Licencia">
+                    <img src="{{ url_for('static', filename='icon_licencia.png') }}" alt="Licencia">
                 </div>
                 <h3 class="menu-card-title">Licencia y Versión</h3>
                 <p class="menu-card-desc" style="font-size:0.75rem; color:#888;">
@@ -154,7 +127,6 @@
                     Todos los derechos reservados
                 </p>
             </div>
-
         </div>
     </section>
 
